@@ -2,6 +2,11 @@ import { useHandleSignInCallback } from '@logto/react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 import { isLogtoConfigured } from '#/config/env'
+import {
+  BootstrapSurface,
+  ConfigMissingSurface,
+  FailureSurface,
+} from '#/features/users/surfaces'
 
 export const Route = createFileRoute('/callback')({
   component: CallbackPage,
@@ -11,11 +16,7 @@ function CallbackPage() {
   const navigate = useNavigate()
 
   if (!isLogtoConfigured()) {
-    return (
-      <main>
-        <p>Logto is not configured. Set env vars from `.env.example`.</p>
-      </main>
-    )
+    return <ConfigMissingSurface />
   }
 
   return <CallbackHandler onDone={() => void navigate({ to: '/' })} />
@@ -23,27 +24,25 @@ function CallbackPage() {
 
 function CallbackHandler({ onDone }: { onDone: () => void }) {
   const { isLoading, error } = useHandleSignInCallback(onDone)
+  const navigate = useNavigate()
 
   if (error) {
     return (
-      <main>
-        <h1>Sign-in failed</h1>
-        <p>{error.message}</p>
-      </main>
+      <FailureSurface
+        title="Something went wrong"
+        description={
+          error.message ||
+          "We couldn't securely sign you in. Please try again or contact support if the problem persists."
+        }
+        primaryLabel="Try again"
+        onPrimary={() => void navigate({ to: '/' })}
+      />
     )
   }
 
   if (isLoading) {
-    return (
-      <main>
-        <p>Completing sign-in…</p>
-      </main>
-    )
+    return <BootstrapSurface message="Completing sign-in…" />
   }
 
-  return (
-    <main>
-      <p>Redirecting…</p>
-    </main>
-  )
+  return <BootstrapSurface message="Redirecting…" />
 }

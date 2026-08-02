@@ -1,6 +1,8 @@
 import { LogtoProvider } from '@logto/react'
 import { useEffect, useState, type ReactNode } from 'react'
 
+import { BootstrapSurface } from '#/features/users/surfaces'
+
 import { getLogtoConfig } from './config'
 
 function ClientOnly({ children, fallback }: { children: ReactNode; fallback: ReactNode }) {
@@ -25,13 +27,7 @@ export function AppLogtoProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <ClientOnly
-      fallback={
-        <main>
-          <p>Loading authentication…</p>
-        </main>
-      }
-    >
+    <ClientOnly fallback={<BootstrapSurface message="Loading authentication…" />}>
       <LogtoProvider config={config}>{children}</LogtoProvider>
     </ClientOnly>
   )

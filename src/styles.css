@@ -1,40 +1,130 @@
+@import "tailwindcss";
 
-
-* {
-  box-sizing: border-box;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: var(--font-manrope);
+  --font-serif: var(--font-newsreader);
 }
 
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
+:root {
+  --font-newsreader: "Newsreader", "Times New Roman", serif;
+  --font-manrope: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  /* Palette keys — brand anchors */
+  --palette-forest: #4a6741;
+  --palette-terracotta: #c67b5c;
+  --palette-warm: #efebe3;
+  --palette-charcoal: #2d2d2d;
+  --palette-cream: #fcf9f8;
+  --palette-danger: #ba1a1a;
+  --palette-muted-light: #f3f1ed;
+  --palette-muted-ink: #434840;
+  --palette-accent-light: #f6f3f2;
+  --palette-border-light: #e6e2d8;
+
+  /* Palette keys — dark companions */
+  --palette-ink: #141513;
+  --palette-ink-elevated: #1e1f1c;
+  --palette-ink-muted: #2a2b27;
+  --palette-mist: #ebe6dc;
+  --palette-mist-muted: #b8b3a8;
+  --palette-forest-bright: #8fad84;
+  --palette-terracotta-bright: #d49276;
+  --palette-danger-bright: #ffb4ab;
+  --palette-border-dark: #3a3b36;
+
+  /* Semantic — light */
+  --background: var(--palette-warm);
+  --foreground: var(--palette-charcoal);
+  --card: var(--palette-cream);
+  --card-foreground: var(--palette-charcoal);
+  --popover: var(--palette-cream);
+  --popover-foreground: var(--palette-charcoal);
+  --primary: var(--palette-forest);
+  --primary-foreground: #ffffff;
+  --secondary: var(--palette-terracotta);
+  --secondary-foreground: #ffffff;
+  --muted: var(--palette-muted-light);
+  --muted-foreground: var(--palette-muted-ink);
+  --accent: var(--palette-accent-light);
+  --accent-foreground: var(--palette-charcoal);
+  --destructive: var(--palette-danger);
+  --destructive-foreground: #ffffff;
+  --border: var(--palette-border-light);
+  --input: var(--palette-muted-light);
+  --ring: var(--palette-forest);
+  --radius: 0.5rem;
+  color-scheme: light;
 }
 
-main {
-  width: min(42rem, calc(100% - 2rem));
-  margin: 4rem auto;
-  line-height: 1.5;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--palette-ink);
+    --foreground: var(--palette-mist);
+    --card: var(--palette-ink-elevated);
+    --card-foreground: var(--palette-mist);
+    --popover: var(--palette-ink-elevated);
+    --popover-foreground: var(--palette-mist);
+    --primary: var(--palette-forest-bright);
+    --primary-foreground: var(--palette-ink);
+    --secondary: var(--palette-terracotta-bright);
+    --secondary-foreground: var(--palette-ink);
+    --muted: var(--palette-ink-muted);
+    --muted-foreground: var(--palette-mist-muted);
+    --accent: var(--palette-ink-muted);
+    --accent-foreground: var(--palette-mist);
+    --destructive: var(--palette-danger-bright);
+    --destructive-foreground: var(--palette-ink);
+    --border: var(--palette-border-dark);
+    --input: var(--palette-ink-muted);
+    --ring: var(--palette-forest-bright);
+    color-scheme: dark;
+  }
 }
 
-h1,
-h2 {
-  margin: 0 0 0.75rem;
-}
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
 
-button {
-  margin: 0.75rem 0;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
+  html {
+    @apply bg-background text-foreground antialiased;
+  }
 
-code {
-  font-size: 0.9em;
-}
+  body {
+    @apply m-0 min-h-svh bg-background font-sans text-foreground;
+  }
 
-dt {
-  font-weight: 600;
-}
+  h1,
+  h2,
+  h3 {
+    @apply font-serif font-medium tracking-tight text-foreground;
+  }
 
-dd {
-  margin: 0 0 0.75rem;
+  code {
+    @apply font-mono text-[0.9em];
+  }
 }
-

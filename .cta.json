@@ -2,7 +2,7 @@
   "projectName": "front",
   "mode": "file-router",
   "typescript": true,
-  "tailwind": false,
+  "tailwind": true,
   "packageManager": "npm",
   "git": false,
   "install": true,
