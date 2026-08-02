@@ -1,0 +1,40 @@
+
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+main {
+  width: min(42rem, calc(100% - 2rem));
+  margin: 4rem auto;
+  line-height: 1.5;
+}
+
+h1,
+h2 {
+  margin: 0 0 0.75rem;
+}
+
+button {
+  margin: 0.75rem 0;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+code {
+  font-size: 0.9em;
+}
+
+dt {
+  font-weight: 600;
+}
+
+dd {
+  margin: 0 0 0.75rem;
+}
+

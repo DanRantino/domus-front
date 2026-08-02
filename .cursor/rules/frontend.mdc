@@ -1,0 +1,108 @@
+---
+description: Frontend engineering conventions
+globs: **/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Frontend Engineering
+
+The frontend uses React and TypeScript.
+
+Current preferred stack:
+
+* TanStack Start
+* TanStack Query
+* TanStack Form
+* Zod
+* shadcn/ui
+
+Use these tools according to their intended responsibilities.
+
+## TanStack Start
+
+TanStack Start owns application routing and framework-level concerns.
+
+Prefer its native primitives before introducing parallel routing or application-framework abstractions.
+
+Keep route definitions focused on routing, loading boundaries, and composition.
+
+Business rules should not live in route components.
+
+## Server State
+
+TanStack Query is the default mechanism for asynchronous server state.
+
+Use it for:
+
+* API queries
+* mutations
+* caching
+* invalidation
+* asynchronous request state
+
+Do not duplicate server state into local React state or another state manager without a concrete reason.
+
+Query keys must be predictable and consistent.
+
+Keep query definitions close to the capability they belong to rather than creating one global collection of unrelated queries.
+
+Do not use effects to manually synchronize data that TanStack Query can own.
+
+## Forms
+
+TanStack Form is the default mechanism for non-trivial forms.
+
+Form state, validation state, and submission state should normally belong to the form abstraction rather than being manually duplicated through React state.
+
+Avoid custom form abstractions until recurring patterns justify them.
+
+## Validation
+
+Zod is the preferred schema validation tool on the frontend.
+
+Use schemas at system boundaries where runtime validation provides value.
+
+Do not create validation schemas merely to duplicate TypeScript types that never cross an untrusted or runtime boundary.
+
+When possible, avoid defining the same contract independently in multiple places.
+
+## UI
+
+shadcn/ui provides the base UI primitives.
+
+Prefer composition of existing primitives before creating new foundational components.
+
+Application-specific components should represent product concepts or reusable interaction patterns.
+
+Do not wrap every shadcn component merely to hide the dependency.
+
+Avoid premature design-system abstractions.
+
+## React
+
+Components should primarily express UI and interaction.
+
+Keep business decisions outside presentation components.
+
+Prefer local state for genuinely local UI state.
+
+Do not introduce global state when server state, route state, form state, or component state already owns the problem.
+
+Do not add memoization (`useMemo`, `useCallback`, `memo`) by default.
+
+Use memoization when there is an identified rendering or referential-stability requirement.
+
+Avoid effects when behavior can be expressed through events, queries, routing, derived values, or framework primitives.
+
+## Consistency
+
+Before introducing a new frontend pattern:
+
+* inspect the existing capability;
+* reuse an established pattern when it is suitable;
+* introduce a different pattern only when there is a clear advantage.
+
+Prefer one obvious way of solving common problems across the application.
+---
+alwaysApply: true
+---

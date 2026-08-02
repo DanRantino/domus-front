@@ -1,0 +1,8 @@
+schema: spec-driven
+
+
+context: |
+  Domus is a household management platform centered around the House domain.
+  Product direction is documented in docs/product/domus-overview.md.
+  Read that document when designing capabilities or cross-capability behavior.
+  Capability specs represent current explicit behavior and take precedence over product direction.
