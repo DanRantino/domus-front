@@ -39,5 +39,17 @@ See [docs/api-users-contract.md](docs/api-users-contract.md) for the API contrac
 ```bash
 npm run dev
 npm run build
+npm run start   # production server (Nitro → .output/server/index.mjs)
 npm run preview
 ```
+
+## Deploy (Railway)
+
+Production build uses Nitro and emits `.output/`. Start with:
+
+```bash
+npm run start
+# or: HOST=0.0.0.0 node .output/server/index.mjs
+```
+
+Ensure Logto redirect URIs include the Railway domain callback, e.g. `https://domus-front-preprod.up.railway.app/callback`.
