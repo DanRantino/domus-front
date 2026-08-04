@@ -8,6 +8,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
+import { ThemeSync } from '../features/users/ThemeSync'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import TanstackQueryProvider from '../integrations/tanstack-query/root-provider'
 import { AppLogtoProvider } from '../integrations/logto/provider'
@@ -70,6 +71,7 @@ function RootComponent() {
   return (
     <TanstackQueryProvider queryClient={queryClient}>
       <AppLogtoProvider>
+        <ThemeSync />
         <Outlet />
       </AppLogtoProvider>
     </TanstackQueryProvider>

@@ -1,9 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { AuthPanel } from '#/features/users/AuthPanel'
+import { HomePage } from '#/features/users/hoc/HomePage'
 
-export const Route = createFileRoute('/')({ component: Home })
-
-function Home() {
-  return <AuthPanel />
-}
+export const Route = createFileRoute('/')({ component: HomePage })

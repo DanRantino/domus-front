@@ -1,8 +1,10 @@
+# design-system Specification
+
 ## Purpose
 
 Establishes the Domus frontend visual foundation: shared design tokens, typography, a minimal set of reusable UI primitives, and an authenticated application shell that future capabilities can reuse without inventing parallel styles.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Design tokens are the single source of visual truth
 The frontend MUST expose a centralized set of design tokens for the approved palette, typography, spacing, and surface treatments. Product UI that participates in the design system MUST consume those tokens rather than hard-coding the approved brand values inline. Palette keys MUST exist for brand anchors; semantic tokens MUST map from those keys per color scheme.

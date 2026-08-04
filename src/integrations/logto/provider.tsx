@@ -1,7 +1,7 @@
 import { LogtoProvider } from '@logto/react'
 import { useEffect, useState, type ReactNode } from 'react'
 
-import { BootstrapSurface } from '#/features/users/surfaces'
+import { BootstrapSurface } from '#/features/users/components/surfaces'
 
 import { getLogtoConfig } from './config'
 

@@ -1,4 +1,4 @@
-import type { LogtoConfig } from '@logto/react'
+import { UserScope, type LogtoConfig } from '@logto/react'
 
 import { env, isLogtoConfigured } from '#/config/env'
 
@@ -10,6 +10,8 @@ export function getLogtoConfig(): LogtoConfig | null {
   const config: LogtoConfig = {
     endpoint: env.logtoEndpoint,
     appId: env.logtoAppId,
+    // Required for Logto Account API password / identity operations.
+    scopes: [UserScope.Identities],
   }
 
   if (env.logtoApiResource) {

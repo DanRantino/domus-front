@@ -1,12 +1,8 @@
-import { useLogto } from '@logto/react'
-import { useQuery } from '@tanstack/react-query'
-
 import { env, isDomusApiConfigured } from '#/config/env'
 import { DomusApiError } from '#/lib/domus-api/client'
-import { fetchMe, provisionMe, resolveMeError } from '#/lib/domus-api/me'
 import type { MeResolution } from '#/lib/domus-api/types'
 
-export const meQueryKey = ['users', 'me'] as const
+import { fetchMe, provisionMe, resolveMeError } from '../data/me'
 
 /** Single-flight guard so Strict Mode / remounts do not stack duplicate POSTs. */
 let provisionInFlight: Promise<'created' | 'already_exists'> | null = null
@@ -23,7 +19,7 @@ async function provisionOnce(
   return provisionInFlight
 }
 
-async function loadMeResolution(
+export async function resolveCurrentUser(
   getAccessToken: (resource?: string) => Promise<string | undefined>,
   signal?: AbortSignal,
 ): Promise<MeResolution> {
@@ -56,14 +52,4 @@ async function loadMeResolution(
       return resolveMeError(provisionError)
     }
   }
-}
-
-export function useMeResolution(enabled: boolean) {
-  const { getAccessToken, isAuthenticated } = useLogto()
-
-  return useQuery({
-    queryKey: meQueryKey,
-    enabled: enabled && isAuthenticated && isDomusApiConfigured(),
-    queryFn: ({ signal }) => loadMeResolution(getAccessToken, signal),
-  }) 
 }

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -79,29 +81,27 @@
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--palette-ink);
-    --foreground: var(--palette-mist);
-    --card: var(--palette-ink-elevated);
-    --card-foreground: var(--palette-mist);
-    --popover: var(--palette-ink-elevated);
-    --popover-foreground: var(--palette-mist);
-    --primary: var(--palette-forest-bright);
-    --primary-foreground: var(--palette-ink);
-    --secondary: var(--palette-terracotta-bright);
-    --secondary-foreground: var(--palette-ink);
-    --muted: var(--palette-ink-muted);
-    --muted-foreground: var(--palette-mist-muted);
-    --accent: var(--palette-ink-muted);
-    --accent-foreground: var(--palette-mist);
-    --destructive: var(--palette-danger-bright);
-    --destructive-foreground: var(--palette-ink);
-    --border: var(--palette-border-dark);
-    --input: var(--palette-ink-muted);
-    --ring: var(--palette-forest-bright);
-    color-scheme: dark;
-  }
+.dark {
+  --background: var(--palette-ink);
+  --foreground: var(--palette-mist);
+  --card: var(--palette-ink-elevated);
+  --card-foreground: var(--palette-mist);
+  --popover: var(--palette-ink-elevated);
+  --popover-foreground: var(--palette-mist);
+  --primary: var(--palette-forest-bright);
+  --primary-foreground: var(--palette-ink);
+  --secondary: var(--palette-terracotta-bright);
+  --secondary-foreground: var(--palette-ink);
+  --muted: var(--palette-ink-muted);
+  --muted-foreground: var(--palette-mist-muted);
+  --accent: var(--palette-ink-muted);
+  --accent-foreground: var(--palette-mist);
+  --destructive: var(--palette-danger-bright);
+  --destructive-foreground: var(--palette-ink);
+  --border: var(--palette-border-dark);
+  --input: var(--palette-ink-muted);
+  --ring: var(--palette-forest-bright);
+  color-scheme: dark;
 }
 
 @layer base {

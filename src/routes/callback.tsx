@@ -6,7 +6,7 @@ import {
   BootstrapSurface,
   ConfigMissingSurface,
   FailureSurface,
-} from '#/features/users/surfaces'
+} from '#/features/users/components/surfaces'
 
 export const Route = createFileRoute('/callback')({
   component: CallbackPage,

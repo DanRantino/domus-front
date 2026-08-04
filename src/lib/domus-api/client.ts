@@ -15,6 +15,7 @@ export async function domusFetch(
   options: {
     accessToken: string
     method?: string
+    body?: unknown
     signal?: AbortSignal
   },
 ): Promise<Response> {
@@ -23,13 +24,19 @@ export async function domusFetch(
   }
 
   const url = `${env.domusApiBaseUrl}${path.startsWith('/') ? path : `/${path}`}`
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+    Authorization: `Bearer ${options.accessToken}`,
+  }
+
+  if (options.body !== undefined) {
+    headers['Content-Type'] = 'application/json'
+  }
 
   return fetch(url, {
     method: options.method ?? 'GET',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${options.accessToken}`,
-    },
+    headers,
+    body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
     signal: options.signal,
   })
 }
