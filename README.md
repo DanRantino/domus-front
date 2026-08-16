@@ -53,3 +53,11 @@ npm run start
 ```
 
 Ensure Logto redirect URIs include the Railway domain callback, e.g. `https://domus-front-preprod.up.railway.app/callback`.
+
+The Railway CLI is installed in the Domus Dev Container. After `railway login` and `railway link` in this repo:
+
+```bash
+railway variable list --service <front-service>
+railway variable set VITE_LOGTO_APP_ID=<app-id> --service <front-service>
+printf '%s' "$SECRET" | railway variable set SOME_SECRET --stdin --service <front-service>
+```

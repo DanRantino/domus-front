@@ -18,6 +18,11 @@ const config = defineConfig({
     },
   },
   plugins: [devtools(), tanstackStart(), nitro(), viteReact(), tailwindcss()],
+  server: {
+    host: "0.0.0.0",
+    port: 5173,
+    allowedHosts: ['web.domus.dev']
+  }
 })
 
 export default config

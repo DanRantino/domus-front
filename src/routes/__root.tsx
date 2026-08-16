@@ -70,10 +70,10 @@ function RootComponent() {
 
   return (
     <TanstackQueryProvider queryClient={queryClient}>
-      <AppLogtoProvider>
-        <ThemeSync />
+      {/* <AppLogtoProvider> */}
+        {/* <ThemeSync /> */}
         <Outlet />
-      </AppLogtoProvider>
+      {/* </AppLogtoProvider> */}
     </TanstackQueryProvider>
   )
 }
