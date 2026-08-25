@@ -1,18 +1,28 @@
 # Domus — Design System
 
-Fonte da verdade visual do frontend. Tokens em código: `src/theme/tokens.ts`. Tema MUI: `src/theme/theme.ts`. Wordmark: `src/assets/brand/domus-wordmark.svg`.
+Fonte da verdade visual do frontend. O board abaixo é o guia; a UI consome tokens, não hex solto.
+
+![Board do design system Domus](assets/design-board.png)
+
+Tokens em código: [`src/theme/tokens.ts`](../src/theme/tokens.ts). Tema MUI: [`src/theme/theme.ts`](../src/theme/theme.ts). Wordmark: [`src/assets/brand/domus-wordmark.svg`](../src/assets/brand/domus-wordmark.svg).
+
+## Canvas
+
+O modo de produto de referência é o **escuro** do board: Neutral 700, texto e cromo em Secondary 200, ênfase em Primary.
+
+- Fundo: carvão profundo com **grid de pontos** branco, fino e de baixo contraste.
+- Layout: **bento** — cards em grelha, padding interno generoso, gap regular entre blocos.
+- Superfícies: um degrau mais claras que o canvas, borda sutil, canto largo.
 
 ## Marca
 
-O logo é um wordmark **DOMUS** em serifa de alto contraste.
+O logo de produto é o wordmark **DOMUS** em serifa de alto contraste. O ícone de paleta no canto do board é o frame do style guide, não substitui o wordmark.
 
 Detalhes próprios:
 
 - O **M** tem as diagonais internas cruzadas, com um losango no encontro.
 - **M** e **U** compartilham a haste direita/esquerda (ligadura).
 - Uma haste fina atravessa o centro do **U**.
-
-Arquivos:
 
 | Arquivo | Uso |
 | --- | --- |
@@ -23,18 +33,18 @@ Arquivos:
 
 Sobre superfície clara o wordmark usa Neutral `#2D2D2D`. Sobre superfície escura, Secondary `#EFEBE3`. Não recolorir o losango nem a ligadura com Primary.
 
-## Âncoras
+## Paleta
+
+Quatro âncoras. Cada uma tem 10 passos (50–900). A âncora de marca está marcada.
 
 | Papel | Hex | Uso |
 | --- | --- | --- |
-| Primary | `#4A6741` | Ação principal, ênfase, dados |
-| Secondary | `#EFEBE3` | Superfície clara, texto sobre dark, contraste em botão primary |
-| Tertiary | `#815166` | Acento, ênfase secundária |
-| Neutral | `#2D2D2D` | Chrome escuro, texto no claro, fundo dark |
+| Primary | `#4A6741` | Sage, ação, ênfase, dados |
+| Secondary | `#EFEBE3` | Creme: superfície clara, texto sobre dark |
+| Tertiary | `#815166` | Ameixa: acento, ênfase secundária |
+| Neutral | `#2D2D2D` | Carvão: chrome escuro, texto no claro, fundo dark |
 
-## Escalas
-
-Cada âncora tem 10 passos (50–900). A âncora de marca está marcada.
+Não inventar uma quinta cor de marca. Perigo (lixo, erro destrutivo) é semântico, não âncora.
 
 ### Primary
 
@@ -60,6 +70,52 @@ Cada âncora tem 10 passos (50–900). A âncora de marca está marcada.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `#F7F7F7` | `#EBEBEB` | `#D4D4D4` | `#B0B0B0` | `#8A8A8A` | `#5C5C5C` | `#404040` | **`#2D2D2D`** | `#1F1F1F` | `#141414` |
 
+## Tipografia
+
+| Papel | Família | Peso |
+| --- | --- | --- |
+| Headline | **Source Serif 4** | 400–600 |
+| Body / UI / Label | **Hanken Grotesk** | 400–600 |
+
+Títulos (`h1`–`h6`) usam Source Serif 4. Corpo, subtítulo, botão e label usam Hanken Grotesk. `textTransform` de botão permanece `none`.
+
+## Forma
+
+- Cards, inputs e superfícies: **12–16px**.
+- Botões: **~12px**.
+- Nav e busca largos: **pill** (canto cheio).
+- Sombra, quando houver, tingida de Primary (`rgba(74, 103, 65, …)`).
+
+## Componentes
+
+Alvo visual do board no canvas escuro.
+
+### Botões
+
+| Variante | Fundo | Texto / borda |
+| --- | --- | --- |
+| Primary | sage claro (Primary 100–200) | Neutral 700 |
+| Secondary | cinza escuro / translúcido | Secondary 200 |
+| Inverted | branco | Neutral 700 |
+| Outlined | transparente | texto e borda Secondary 200 |
+| Icon + label | Primary 600 | ícone e label em Secondary 200 |
+
+### Busca
+
+Campo escuro, canto largo ou pill, ícone de lupa à esquerda, placeholder curto. Sem chrome extra.
+
+### Navegação
+
+Barra pill no chrome escuro, poucos ícones. Item ativo: quadrado arredondado em sage (Primary).
+
+### Dados
+
+Barras horizontais de ponta redonda. Três faixas de marca: Primary, Neutral, Tertiary. Sem quinta cor.
+
+### Tiles de ícone
+
+Quadrados arredondados nas âncoras (Primary, Neutral, Tertiary). Ação destrutiva usa o tom de **perigo** (salmão/laranja no board), não uma âncora nova.
+
 ## Mapeamento semântico (MUI)
 
 Os nomes da paleta de marca não coincidem 1:1 com `palette.primary` / `palette.secondary` do MUI.
@@ -75,40 +131,7 @@ Os nomes da paleta de marca não coincidem 1:1 com `palette.primary` / `palette.
 | `text.secondary` | Neutral 500 | Neutral 300 |
 | `divider` | Secondary 300 | `rgba(239, 235, 227, 0.12)` |
 
-O esquema segue `prefers-color-scheme` (sem toggle nesta entrega). UI de produto consome tokens, não hex solto.
-
-## Tipografia
-
-| Papel | Família | Peso |
-| --- | --- | --- |
-| Headline | **Source Serif 4** | 400–600 |
-| Body / UI / Label | **Hanken Grotesk** | 400–600 |
-
-Títulos (`h1`–`h6`) usam Source Serif 4. Corpo, subtítulo, botão e label usam Hanken Grotesk. `textTransform` de botão permanece `none`.
-
-## Forma e componentes
-
-- Raio geral: **8px** (soft-square).
-- Botões: **10px**.
-- Navegação tipo pill e campos de busca largos: canto cheio (pill) quando o padrão do board pedir.
-- Superfícies: canto 8–12px, borda sutil, sombra tingida de Primary (`rgba(74, 103, 65, …)`).
-
-### Botões
-
-| Variante | Fundo | Texto / borda |
-| --- | --- | --- |
-| Primary | Primary 600 | Secondary 200 |
-| Secondary (MUI) | Tertiary | Secondary 200 |
-| Inverted | Secondary 200 / branco | Neutral 700 |
-| Outlined | transparente | texto e borda no `text.primary` do esquema |
-
-### Navegação
-
-Barra pill no chrome escuro. Item ativo: quadrado arredondado em Primary 600.
-
-### Dados
-
-Barras e acentos de gráfico usam Primary, Secondary e Tertiary — não inventar uma quinta cor de marca.
+O esquema segue `prefers-color-scheme` (sem toggle nesta entrega).
 
 ## Tom
 
