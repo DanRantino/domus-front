@@ -1,0 +1,45 @@
+<svg
+  width="1254"
+  height="1254"
+  viewBox="0 0 1254 1254"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Corpo / D -->
+  <path
+    d="M 682 318
+       L 770 364
+       C 932 364 1014 470 1014 620
+       C 1014 772 923 874 824 884
+       L 824 609
+       L 750 545
+       L 750 886
+       L 316 886
+       L 316 541
+       L 239 608
+       L 239 921
+       C 239 948 260 969 287 969
+       L 786 969
+       C 971 969 1099 823 1099 620
+       C 1099 418 971 277 790 277
+       L 681 277
+       C 672 277 667 288 674 294
+       Z"
+    fill="#2D2D2D"
+  />
+
+  <!-- Telhado -->
+  <path
+    d="M 191 548 L 529 244 L 867 548"
+    stroke="#4A6741"
+    stroke-width="69"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Janelas -->
+  <rect x="450" y="601" width="72" height="71" rx="7" fill="#2D2D2D" />
+  <rect x="540" y="601" width="72" height="71" rx="7" fill="#2D2D2D" />
+  <rect x="450" y="691" width="72" height="71" rx="7" fill="#2D2D2D" />
+  <rect x="540" y="691" width="72" height="71" rx="7" fill="#2D2D2D" />
+</svg>
