@@ -4,28 +4,27 @@ import { MemoryRouter } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import '#/i18n'
+import { AuthProvider } from '#/auth/AuthProvider'
 import { AppThemeProvider } from '#/theme/AppThemeProvider'
 
 const mocks = vi.hoisted(() => ({
-  isAuthenticated: false,
-  isLoading: false,
-  getIdTokenClaims: vi.fn(async () => undefined as
-    | { picture?: string; name?: string; username?: string }
-    | undefined),
-  config: undefined as { endpoint: string; appId: string } | undefined,
+  fetchBffSession: vi.fn(async () => null as
+    | {
+        authenticated: boolean
+        picture: string | null
+        name: string | null
+        username: string | null
+      }
+    | null),
 }))
 
-vi.mock('@logto/react', () => ({
-  useLogto: () => ({
-    isAuthenticated: mocks.isAuthenticated,
-    isLoading: mocks.isLoading,
-    getIdTokenClaims: mocks.getIdTokenClaims,
-  }),
-}))
-
-vi.mock('#/auth/logtoConfig', () => ({
-  getLogtoConfig: () => mocks.config,
-}))
+vi.mock('#/auth/bff', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('#/auth/bff')>()
+  return {
+    ...actual,
+    fetchBffSession: mocks.fetchBffSession,
+  }
+})
 
 import { HomePage } from './HomePage'
 
@@ -33,7 +32,9 @@ function renderHome() {
   return render(
     <MemoryRouter>
       <AppThemeProvider>
-        <HomePage />
+        <AuthProvider>
+          <HomePage />
+        </AuthProvider>
       </AppThemeProvider>
     </MemoryRouter>,
   )
@@ -41,11 +42,8 @@ function renderHome() {
 
 describe('HomePage', () => {
   beforeEach(() => {
-    mocks.isAuthenticated = false
-    mocks.isLoading = false
-    mocks.config = undefined
-    mocks.getIdTokenClaims.mockReset()
-    mocks.getIdTokenClaims.mockResolvedValue(undefined)
+    mocks.fetchBffSession.mockReset()
+    mocks.fetchBffSession.mockResolvedValue(null)
   })
 
   it('renders the Domus landing', () => {
@@ -74,23 +72,29 @@ describe('HomePage', () => {
     expect(screen.getByText('© 2026 Domus Household. Feito para durar.')).toBeInTheDocument()
   })
 
-  it('sends Entrar to /dashboard from the header and drawer', async () => {
+  it('sends Entrar to the BFF login from the header and drawer', async () => {
     const user = userEvent.setup()
     renderHome()
 
-    expect(screen.getByRole('link', { name: 'Entrar' })).toHaveAttribute('href', '/dashboard')
+    expect(screen.getByRole('link', { name: 'Entrar' })).toHaveAttribute(
+      'href',
+      '/bff/login?returnUrl=%2Fdashboard',
+    )
 
     await user.click(screen.getByRole('button', { name: 'Abrir menu' }))
 
-    expect(screen.getByRole('link', { name: 'Entrar' })).toHaveAttribute('href', '/dashboard')
+    expect(screen.getByRole('link', { name: 'Entrar' })).toHaveAttribute(
+      'href',
+      '/bff/login?returnUrl=%2Fdashboard',
+    )
   })
 
   it('shows the IdP avatar instead of Entrar when the visitor has a session', async () => {
-    mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
-    mocks.isAuthenticated = true
-    mocks.getIdTokenClaims.mockResolvedValue({
+    mocks.fetchBffSession.mockResolvedValue({
+      authenticated: true,
       picture: 'https://idp.test/photo.png',
       name: 'Marina',
+      username: null,
     })
 
     renderHome()
@@ -104,9 +108,12 @@ describe('HomePage', () => {
   })
 
   it('falls back to an initial when the IdP session has no picture', async () => {
-    mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
-    mocks.isAuthenticated = true
-    mocks.getIdTokenClaims.mockResolvedValue({ name: 'Marina' })
+    mocks.fetchBffSession.mockResolvedValue({
+      authenticated: true,
+      picture: null,
+      name: 'Marina',
+      username: null,
+    })
 
     renderHome()
 
@@ -120,8 +127,7 @@ describe('HomePage', () => {
   })
 
   it('keeps Entrar while the Identity Provider session is loading', () => {
-    mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
-    mocks.isLoading = true
+    mocks.fetchBffSession.mockImplementation(() => new Promise(() => {}))
 
     renderHome()
 

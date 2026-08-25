@@ -18,5 +18,9 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     allowedHosts: ['web.domus.dev','domus-front-preprod.up.railway.app','domus-front-prod.up.railway.app'],
+    proxy: {
+      '/bff': 'http://127.0.0.1:5000',
+      '/users': 'http://127.0.0.1:5000',
+    },
   },
 })

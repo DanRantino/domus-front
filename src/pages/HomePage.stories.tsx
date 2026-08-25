@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { MemoryRouter } from 'react-router'
 
+import { AuthProvider } from '#/auth/AuthProvider'
 import { HomePage } from '#/pages/HomePage'
 
 const meta = {
@@ -9,7 +10,9 @@ const meta = {
   decorators: [
     (Story) => (
       <MemoryRouter>
-        <Story />
+        <AuthProvider>
+          <Story />
+        </AuthProvider>
       </MemoryRouter>
     ),
   ],

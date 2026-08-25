@@ -1,12 +1,11 @@
-import { useLogto } from '@logto/react'
 import PersonOutline from '@mui/icons-material/PersonOutline'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link as RouterLink } from 'react-router'
 
-import { getLogtoConfig } from '#/auth/logtoConfig'
+import { useSession } from '#/auth/AuthProvider'
+import { getLoginHref } from '#/auth/bff'
 
 import { landing } from './landing'
 
@@ -32,48 +31,14 @@ function displayInitial(name?: string, username?: string): string | undefined {
 }
 
 export function HomeSessionActions({ variant, onNavigate }: HomeSessionActionsProps) {
-  const config = getLogtoConfig()
+  const { status, session } = useSession()
 
-  if (!config) {
-    return <GuestLogin variant={variant} onNavigate={onNavigate} />
-  }
-
-  return <SessionAwareLogin variant={variant} onNavigate={onNavigate} />
-}
-
-function SessionAwareLogin({ variant, onNavigate }: HomeSessionActionsProps) {
-  const { isAuthenticated, isLoading, getIdTokenClaims } = useLogto()
-  const [identity, setIdentity] = useState<Identity>({})
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setIdentity({})
-      return
-    }
-
-    let cancelled = false
-    void getIdTokenClaims().then((claims) => {
-      if (cancelled) {
-        return
-      }
-
-      setIdentity({
-        picture: claims?.picture ?? undefined,
-        initial: displayInitial(claims?.name ?? undefined, claims?.username ?? undefined),
-      })
-    })
-
-    return () => {
-      cancelled = true
-    }
-  }, [isAuthenticated, getIdTokenClaims])
-
-  if (isAuthenticated && !isLoading) {
+  if (status === 'authenticated' && session) {
     return (
       <AccountAvatar
         variant={variant}
-        picture={identity.picture}
-        initial={identity.initial}
+        picture={session.picture ?? undefined}
+        initial={displayInitial(session.name ?? undefined, session.username ?? undefined)}
         onNavigate={onNavigate}
       />
     )
@@ -87,8 +52,8 @@ function GuestLogin({ variant, onNavigate }: HomeSessionActionsProps) {
 
   return (
     <Button
-      component={RouterLink}
-      to="/dashboard"
+      component="a"
+      href={getLoginHref('/dashboard')}
       variant="text"
       onClick={onNavigate}
       sx={

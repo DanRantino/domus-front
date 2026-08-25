@@ -11,6 +11,14 @@
 		respond "ok" 200
 	}
 
+	handle /bff* {
+		reverse_proxy {$API_UPSTREAM}
+	}
+
+	handle /users* {
+		reverse_proxy {$API_UPSTREAM}
+	}
+
 	handle {
 		try_files {path} /index.html
 		file_server

@@ -58,38 +58,37 @@ The system MUST expose a current-user operation (`GET /me` or equivalent) that r
 - **WHEN** a caller invokes the current-user operation without a valid access token
 - **THEN** the system MUST respond with an authentication failure (HTTP 401 or equivalent)
 
-### Requirement: Frontend authenticates through the Identity Provider
-The Domus frontend MUST authenticate end users through the external OIDC Identity Provider using the configured tenant and application, obtain access tokens for the Domus API resource when configured, and use those tokens when calling the Domus API.
+### Requirement: Frontend authenticates through a BFF
+The Domus frontend MUST start end-user login by navigating to the backend-for-frontend (`/bff/login`). The BFF MUST complete the OIDC authorization code flow with PKCE against the configured Identity Provider using a confidential client. Identity Provider tokens MUST remain on the server in an HTTP-only session cookie and MUST NOT be readable by frontend JavaScript.
 
 #### Scenario: End-user login
 - **WHEN** an unauthenticated user initiates login in the frontend
-- **THEN** the frontend MUST complete the OIDC authorization code flow with PKCE against the configured Identity Provider
-- **AND** the frontend MUST obtain tokens issued by that Identity Provider
+- **THEN** the browser MUST navigate to the BFF login endpoint
+- **AND** the BFF MUST complete the OIDC authorization code flow with PKCE against the configured Identity Provider
+- **AND** the BFF MUST set an HTTP-only session cookie and MUST NOT return access, ID, or refresh tokens to frontend script
 
-#### Scenario: Authenticated API call
-- **WHEN** the frontend calls a Domus API operation that requires authentication
-- **THEN** the frontend MUST send the Identity Provider access token as a Bearer token
+#### Scenario: Authenticated API call from the SPA
+- **WHEN** the frontend calls a Domus API operation that requires authentication on the SPA origin
+- **THEN** the browser MUST send the BFF session cookie
+- **AND** the frontend MUST NOT attach an Identity Provider access token from browser storage
 
 #### Scenario: Unprovisioned user experience
 - **WHEN** the frontend is authenticated at the Identity Provider and the current-user operation reports the caller as unprovisioned
 - **THEN** the frontend MUST present a clear no-access / not-provisioned state rather than treating the user as a normal Domus User
 
-### Requirement: Frontend does not persist Identity Provider tokens in localStorage
-The frontend MUST NOT store Identity Provider access, ID, or refresh tokens in `localStorage`. Tab-scoped session storage MAY be used so the authorization-code redirect can complete and so a refresh in the same tab can restore the session.
+### Requirement: Frontend does not store Identity Provider tokens in the browser
+The frontend MUST NOT store Identity Provider access, ID, or refresh tokens in `localStorage`, `sessionStorage`, or other script-readable browser storage.
 
-#### Scenario: Login does not write tokens to localStorage
-- **WHEN** the frontend completes login at the Identity Provider
-- **THEN** the frontend MUST NOT persist access, ID, or refresh tokens in `localStorage`
+#### Scenario: Login does not leave tokens in browser storage
+- **WHEN** the frontend completes login at the Identity Provider via the BFF
+- **THEN** the frontend MUST NOT persist access, ID, or refresh tokens in `localStorage` or `sessionStorage`
 
-#### Scenario: Leftover localStorage tokens are discarded
-- **WHEN** the frontend starts with Identity Provider tokens already present in `localStorage`
-- **THEN** the frontend MUST remove those Logto keys from `localStorage`
 ### Requirement: Dashboard is a private frontend route
 The frontend MUST keep `/` as a public landing surface. The `/dashboard` route MUST require an Identity Provider session. Unauthenticated access MUST initiate the OIDC authorization code flow with PKCE. Authenticated access MAY present a placeholder until product dashboard content exists.
 
 #### Scenario: Unauthenticated dashboard visit
 - **WHEN** an unauthenticated user opens `/dashboard`
-- **THEN** the frontend MUST start the Identity Provider authorization code flow with PKCE
+- **THEN** the frontend MUST start login through the BFF authorization code flow with PKCE
 
 #### Scenario: Authenticated dashboard visit
 - **WHEN** an authenticated user opens `/dashboard`

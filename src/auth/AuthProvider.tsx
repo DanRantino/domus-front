@@ -1,22 +1,48 @@
-import { LogtoProvider } from '@logto/react'
-import type { ReactNode } from 'react'
-import { useMemo } from 'react'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 
-import { getLogtoConfig } from './logtoConfig'
-import { SessionLogtoClient, clearLogtoLocalStorage } from './logtoSession'
+import { fetchBffSession, type BffSession } from './bff'
+
+export type SessionStatus = 'loading' | 'anonymous' | 'authenticated'
+
+type SessionContextValue = {
+  status: SessionStatus
+  session: BffSession | null
+}
+
+const SessionContext = createContext<SessionContextValue>({
+  status: 'loading',
+  session: null,
+})
+
+export function useSession() {
+  return useContext(SessionContext)
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const config = useMemo(() => getLogtoConfig(), [])
+  const [value, setValue] = useState<SessionContextValue>({
+    status: 'loading',
+    session: null,
+  })
 
-  if (!config) {
-    return children
-  }
+  useEffect(() => {
+    let cancelled = false
 
-  clearLogtoLocalStorage()
+    void fetchBffSession().then((session) => {
+      if (cancelled) {
+        return
+      }
 
-  return (
-    <LogtoProvider config={config} LogtoClientClass={SessionLogtoClient}>
-      {children}
-    </LogtoProvider>
-  )
+      setValue(
+        session?.authenticated
+          ? { status: 'authenticated', session }
+          : { status: 'anonymous', session: null },
+      )
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
 }

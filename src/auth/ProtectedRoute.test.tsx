@@ -3,79 +3,81 @@ import type { ReactNode } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import '#/i18n'
+import { AuthProvider } from './AuthProvider'
 import { AppThemeProvider } from '#/theme/AppThemeProvider'
 
 const mocks = vi.hoisted(() => ({
-  signIn: vi.fn(),
-  isAuthenticated: false,
-  isLoading: false,
-  config: { endpoint: 'https://auth.test', appId: 'app' } as
-    | { endpoint: string; appId: string }
-    | undefined,
+  fetchBffSession: vi.fn(async () => null as
+    | {
+        authenticated: boolean
+        picture: string | null
+        name: string | null
+        username: string | null
+      }
+    | null),
 }))
 
-vi.mock('@logto/react', () => ({
-  useLogto: () => ({
-    isAuthenticated: mocks.isAuthenticated,
-    isLoading: mocks.isLoading,
-    signIn: mocks.signIn,
-  }),
-}))
-
-vi.mock('#/auth/logtoConfig', () => ({
-  getLogtoConfig: () => mocks.config,
-  getSignInRedirectUri: () => 'http://localhost:3000/callback',
-}))
+vi.mock('#/auth/bff', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('#/auth/bff')>()
+  return {
+    ...actual,
+    fetchBffSession: mocks.fetchBffSession,
+  }
+})
 
 import { ProtectedRoute } from './ProtectedRoute'
 
 function renderProtected(child: ReactNode = <p>Private content</p>) {
   return render(
     <AppThemeProvider>
-      <ProtectedRoute>{child}</ProtectedRoute>
+      <AuthProvider>
+        <ProtectedRoute>{child}</ProtectedRoute>
+      </AuthProvider>
     </AppThemeProvider>,
   )
 }
 
 describe('ProtectedRoute', () => {
+  const assign = vi.fn()
+
   beforeEach(() => {
-    mocks.signIn.mockReset()
-    mocks.isAuthenticated = false
-    mocks.isLoading = false
-    mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
+    mocks.fetchBffSession.mockReset()
+    mocks.fetchBffSession.mockResolvedValue(null)
+    assign.mockReset()
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: { assign, pathname: '/dashboard', search: '' },
+    })
   })
 
-  it('renders children when the caller is authenticated', () => {
-    mocks.isAuthenticated = true
+  it('renders children when the caller is authenticated', async () => {
+    mocks.fetchBffSession.mockResolvedValue({
+      authenticated: true,
+      picture: null,
+      name: null,
+      username: null,
+    })
     renderProtected()
 
-    expect(screen.getByText('Private content')).toBeInTheDocument()
-    expect(mocks.signIn).not.toHaveBeenCalled()
+    expect(await screen.findByText('Private content')).toBeInTheDocument()
+    expect(assign).not.toHaveBeenCalled()
   })
 
-  it('starts sign-in when the caller is not authenticated', async () => {
+  it('starts BFF login when the caller is not authenticated', async () => {
     renderProtected()
 
     expect(screen.getByText('Conectando...')).toBeInTheDocument()
     await waitFor(() => {
-      expect(mocks.signIn).toHaveBeenCalledWith('http://localhost:3000/callback')
+      expect(assign).toHaveBeenCalledWith('/bff/login?returnUrl=%2Fdashboard')
     })
   })
 
   it('waits while the Identity Provider session is loading', () => {
-    mocks.isLoading = true
+    mocks.fetchBffSession.mockImplementation(() => new Promise(() => {}))
     renderProtected()
 
     expect(screen.getByText('Conectando...')).toBeInTheDocument()
     expect(screen.queryByText('Private content')).not.toBeInTheDocument()
-    expect(mocks.signIn).not.toHaveBeenCalled()
-  })
-
-  it('shows a config-missing state when Logto is not configured', () => {
-    mocks.config = undefined
-    renderProtected()
-
-    expect(screen.getByText('Autenticação não configurada.')).toBeInTheDocument()
-    expect(mocks.signIn).not.toHaveBeenCalled()
+    expect(assign).not.toHaveBeenCalled()
   })
 })
