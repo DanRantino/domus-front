@@ -19,20 +19,23 @@ const features: {
   Icon: SvgIconComponent
   iconBg: string
   iconColor: string
+  iconColorDark: string
 }[] = [
   {
     titleKey: 'home.features.organization.title',
     bodyKey: 'home.features.organization.body',
     Icon: ChecklistOutlined,
-    iconBg: `${paletteKeys.terracottaTint}80`,
-    iconColor: paletteKeys.terracotta,
+    iconBg: `${paletteKeys.mauveTint}80`,
+    iconColor: paletteKeys.mauve,
+    iconColorDark: paletteKeys.mauveBright,
   },
   {
     titleKey: 'home.features.finances.title',
     bodyKey: 'home.features.finances.body',
     Icon: PaymentsOutlined,
     iconBg: `${paletteKeys.forestTint}80`,
-    iconColor: paletteKeys.forestDeep,
+    iconColor: paletteKeys.forest,
+    iconColorDark: paletteKeys.forestBright,
   },
   {
     titleKey: 'home.features.memories.title',
@@ -40,6 +43,7 @@ const features: {
     Icon: PhotoLibraryOutlined,
     iconBg: `${paletteKeys.surfaceVariant}80`,
     iconColor: paletteKeys.mutedInk,
+    iconColorDark: paletteKeys.mistMuted,
   },
 ]
 
@@ -60,6 +64,8 @@ export function HomePage() {
           justifyContent: 'space-between',
           py: 2,
           bgcolor: 'background.default',
+          borderBottom: '1px solid',
+          borderColor: 'divider',
         }}
       >
         <DomusLockup size="sm" />
@@ -87,7 +93,7 @@ export function HomePage() {
           component="section"
           sx={{
             ...pageGutter,
-            py: { xs: 10, md: 16 },
+            py: { xs: 8, md: 16 },
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -119,7 +125,7 @@ export function HomePage() {
         <Box
           component="section"
           sx={[
-            { ...pageGutter, py: 10, bgcolor: paletteKeys.surfaceLow },
+            { ...pageGutter, py: { xs: 6, md: 10 }, bgcolor: paletteKeys.surfaceLow },
             (theme) => theme.applyStyles('dark', { bgcolor: paletteKeys.inkElevated }),
           ]}
         >
@@ -145,22 +151,30 @@ export function HomePage() {
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 1.5,
-                  transition: 'transform 300ms ease',
-                  '&:hover': { transform: 'translateY(-4px)' },
+                  '@media (hover: hover)': {
+                    transition: 'transform 300ms ease',
+                    '&:hover': { transform: 'translateY(-4px)' },
+                  },
                 }}
               >
                 <Box
-                  sx={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: '50%',
-                    bgcolor: feature.iconBg,
-                    color: feature.iconColor,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    mb: 1.5,
-                  }}
+                  sx={[
+                    {
+                      width: 48,
+                      height: 48,
+                      borderRadius: '50%',
+                      bgcolor: feature.iconBg,
+                      color: feature.iconColor,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      mb: 1.5,
+                    },
+                    (theme) =>
+                      theme.applyStyles('dark', {
+                        color: feature.iconColorDark,
+                      }),
+                  ]}
                 >
                   <feature.Icon />
                 </Box>
@@ -173,7 +187,7 @@ export function HomePage() {
           </Box>
         </Box>
 
-        <Box component="section" sx={{ ...pageGutter, py: 10 }}>
+        <Box component="section" sx={{ ...pageGutter, py: { xs: 6, md: 10 } }}>
           <Typography component="h2" variant="h1" sx={{ textAlign: 'center', mb: 6 }}>
             {t('home.preview.title')}
           </Typography>
@@ -203,7 +217,7 @@ export function HomePage() {
           sx={[
             {
               ...pageGutter,
-              py: 10,
+              py: { xs: 6, md: 10 },
               bgcolor: `${paletteKeys.forestTint}33`,
               borderTop: '1px solid',
               borderColor: `${paletteKeys.forestBright}4D`,
