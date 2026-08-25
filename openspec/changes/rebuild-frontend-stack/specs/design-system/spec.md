@@ -5,11 +5,11 @@ The frontend MUST expose a centralized set of design tokens through the shared M
 
 #### Scenario: Tokenized brand colors in light scheme
 - **WHEN** Home renders brand colors and the active color scheme is light
-- **THEN** primary MUST resolve to `#4A6741`, secondary to `#C67B5C`, warm surface to `#EFEBE3`, and neutral text to `#2D2D2D` via the shared tokens
+- **THEN** primary MUST resolve to `#4A6741`, warm surface to `#EFEBE3`, tertiary accent to `#815166`, and neutral text to `#2D2D2D` via the shared tokens
 
 #### Scenario: Tokenized typography
 - **WHEN** Home renders heading or body text
-- **THEN** headings MUST use Newsreader and UI/body text MUST use Manrope via the shared tokens
+- **THEN** headings MUST use Source Serif 4 and UI/body text MUST use Hanken Grotesk via the shared tokens
 
 ## ADDED Requirements
 

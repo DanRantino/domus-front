@@ -2,6 +2,8 @@
 
 Frontend da Domus: React + Vite + TypeScript, React Router, Redux Toolkit / RTK Query, MUI, React Hook Form, i18n, Zod, Vitest e Storybook.
 
+Identidade visual: [`docs/design.md`](docs/design.md). Visão de produto: [`docs/product/domus-overview.md`](docs/product/domus-overview.md).
+
 ## Setup
 
 ```bash

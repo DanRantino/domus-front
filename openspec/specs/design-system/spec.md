@@ -11,17 +11,17 @@ The frontend MUST expose a centralized set of design tokens for the approved pal
 
 #### Scenario: Tokenized brand colors in light scheme
 - **WHEN** a design-system surface renders brand colors and the system color scheme is light
-- **THEN** primary actions MUST resolve to `#4A6741`, secondary accent to `#C67B5C`, warm surface to `#EFEBE3`, and neutral text/chrome to `#2D2D2D` via the shared tokens
+- **THEN** primary actions MUST resolve to `#4A6741`, warm surface to `#EFEBE3`, tertiary accent to `#815166`, and neutral text/chrome to `#2D2D2D` via the shared tokens
 
 #### Scenario: Tokenized brand colors in dark scheme
 - **WHEN** a design-system surface renders brand colors and the system color scheme is dark
-- **THEN** surfaces and text MUST resolve through the dark semantic token set
-- **AND** primary and secondary MUST resolve to the bright palette keys (not the light-scheme hex anchors)
+- **THEN** surfaces MUST use Neutral `#2D2D2D` and text MUST use Secondary `#EFEBE3` via the dark semantic token set
+- **AND** primary actions MUST still resolve to `#4A6741`
 - **AND** product UI MUST still consume only semantic tokens (not hard-coded hex)
 
 #### Scenario: Tokenized typography
 - **WHEN** a design-system surface renders heading or body text
-- **THEN** headings MUST use Newsreader and UI/body text MUST use Manrope via the shared tokens
+- **THEN** headings MUST use Source Serif 4 and UI/body text MUST use Hanken Grotesk via the shared tokens
 
 ### Requirement: Color scheme follows the system setting
 The frontend MUST apply light or dark semantic tokens according to the user's system color scheme (`prefers-color-scheme`). This delivery MUST NOT require a manual theme toggle or persisted theme preference.
