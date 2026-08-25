@@ -1,74 +1,65 @@
-import { DomusLogo } from '#/components/brand/DomusLogo'
-import { cn } from '@/lib/utils'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 
-const markSizeClass = {
-  sm: 'h-8 w-auto',
-  md: 'h-10 w-auto',
-  lg: 'h-16 w-auto',
+import { DomusLogo } from './DomusLogo'
+
+const markSize = {
+  sm: 32,
+  md: 40,
+  lg: 64,
 } as const
 
 export function DomusMark({
-  className,
   size = 'md',
   decorative = true,
 }: {
-  className?: string
-  size?: keyof typeof markSizeClass
-  /** When true, hides from assistive tech (pair with visible wordmark). */
+  size?: keyof typeof markSize
   decorative?: boolean
 }) {
   return (
-    <DomusLogo
-      className={cn(markSizeClass[size], className)}
+    <Box
+      component={DomusLogo}
       title={decorative ? undefined : 'Domus'}
+      sx={{ height: markSize[size], width: 'auto', flexShrink: 0 }}
     />
   )
 }
 
 export function DomusWordmark({
-  className,
-  as: Comp = 'span',
+  as = 'span',
+  variant = 'h5',
 }: {
-  className?: string
   as?: 'span' | 'h1' | 'p'
+  variant?: 'h4' | 'h5' | 'h6'
 }) {
   return (
-    <Comp
-      className={cn(
-        'font-sans text-3xl font-semibold tracking-tight text-foreground',
-        className,
-      )}
+    <Typography
+      component={as}
+      variant={variant}
+      sx={{ fontWeight: 600, letterSpacing: '-0.02em', lineHeight: 1 }}
     >
       Domus
-    </Comp>
+    </Typography>
   )
 }
 
-const lockupMarkSize = {
-  sm: 'sm',
-  md: 'md',
-  lg: 'lg',
-} as const satisfies Record<string, keyof typeof markSizeClass>
-
-const lockupTextClass = {
-  sm: 'text-xl',
-  md: 'text-2xl',
-  lg: 'text-4xl',
-} as const
+const lockupTextVariant = {
+  sm: 'h6',
+  md: 'h5',
+  lg: 'h4',
+} as const satisfies Record<string, 'h4' | 'h5' | 'h6'>
 
 export function DomusLockup({
-  className,
   size = 'md',
   as = 'span',
 }: {
-  className?: string
-  size?: keyof typeof lockupMarkSize
+  size?: keyof typeof lockupTextVariant
   as?: 'span' | 'h1' | 'p'
 }) {
   return (
-    <span className={cn('inline-flex items-center gap-3', className)}>
-      <DomusMark size={lockupMarkSize[size]} decorative />
-      <DomusWordmark as={as} className={cn('leading-none', lockupTextClass[size])} />
-    </span>
+    <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1.5 }}>
+      <DomusMark size={size} decorative />
+      <DomusWordmark as={as} variant={lockupTextVariant[size]} />
+    </Box>
   )
 }
