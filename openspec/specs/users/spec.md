@@ -73,3 +73,37 @@ The Domus frontend MUST authenticate end users through the external OIDC Identit
 #### Scenario: Unprovisioned user experience
 - **WHEN** the frontend is authenticated at the Identity Provider and the current-user operation reports the caller as unprovisioned
 - **THEN** the frontend MUST present a clear no-access / not-provisioned state rather than treating the user as a normal Domus User
+
+### Requirement: Frontend does not persist Identity Provider tokens in localStorage
+The frontend MUST NOT store Identity Provider access, ID, or refresh tokens in `localStorage`. Tab-scoped session storage MAY be used so the authorization-code redirect can complete and so a refresh in the same tab can restore the session.
+
+#### Scenario: Login does not write tokens to localStorage
+- **WHEN** the frontend completes login at the Identity Provider
+- **THEN** the frontend MUST NOT persist access, ID, or refresh tokens in `localStorage`
+
+#### Scenario: Leftover localStorage tokens are discarded
+- **WHEN** the frontend starts with Identity Provider tokens already present in `localStorage`
+- **THEN** the frontend MUST remove those Logto keys from `localStorage`
+### Requirement: Dashboard is a private frontend route
+The frontend MUST keep `/` as a public landing surface. The `/dashboard` route MUST require an Identity Provider session. Unauthenticated access MUST initiate the OIDC authorization code flow with PKCE. Authenticated access MAY present a placeholder until product dashboard content exists.
+
+#### Scenario: Unauthenticated dashboard visit
+- **WHEN** an unauthenticated user opens `/dashboard`
+- **THEN** the frontend MUST start the Identity Provider authorization code flow with PKCE
+
+#### Scenario: Authenticated dashboard visit
+- **WHEN** an authenticated user opens `/dashboard`
+- **THEN** the frontend MUST render the dashboard surface
+- **AND** that surface MAY be a placeholder greeting until product content exists
+
+#### Scenario: Public home remains reachable
+- **WHEN** a user opens `/` without an Identity Provider session
+- **THEN** the frontend MUST render the public landing without requiring login
+
+#### Scenario: Authenticated visitor on public home
+- **WHEN** a user with an Identity Provider session opens `/`
+- **THEN** the frontend MUST still render the public landing
+- **AND** MUST NOT switch `/` to the authenticated dashboard shell
+- **AND** MUST show an avatar in the header representing the IdP identity (`picture` claim when present, otherwise a fallback)
+- **AND** MUST NOT show the login action while that session is present
+- **AND** the avatar MUST link to `/dashboard`

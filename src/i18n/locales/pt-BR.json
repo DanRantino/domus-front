@@ -9,6 +9,7 @@
       "menu": "Abrir menu",
       "close": "Fechar menu",
       "login": "Entrar",
+      "account": "Ir para o dashboard",
       "createSpace": "Criar seu espaço"
     },
     "hero": {
@@ -90,5 +91,10 @@
       "press": "Press kit",
       "copyright": "© 2026 Domus Household. Feito para durar."
     }
+  },
+  "dashboard": {
+    "hello": "Olá",
+    "configMissing": "Autenticação não configurada.",
+    "redirecting": "Conectando..."
   }
 }

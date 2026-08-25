@@ -9,6 +9,7 @@
       "menu": "Open menu",
       "close": "Close menu",
       "login": "Log in",
+      "account": "Go to dashboard",
       "createSpace": "Create your space"
     },
     "hero": {
@@ -90,5 +91,10 @@
       "press": "Press Kit",
       "copyright": "© 2026 Domus Household. Built for permanence."
     }
+  },
+  "dashboard": {
+    "hello": "Hello",
+    "configMissing": "Authentication is not configured.",
+    "redirecting": "Connecting..."
   }
 }

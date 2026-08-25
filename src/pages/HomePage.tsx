@@ -15,9 +15,11 @@ import Typography from '@mui/material/Typography'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { DomusMarkIcon } from '#/components/brand/DomusMarkIcon'
 import { fonts } from '#/theme/tokens'
 
 import { DashboardPreview } from './home/DashboardPreview'
+import { HomeSessionActions } from './home/HomeSessionActions'
 import { landing, landingCtaSx } from './home/landing'
 
 const navItems = [
@@ -70,13 +72,12 @@ const sectionSx = {
   scrollMarginTop: '88px',
 } as const
 
-function BrandMark({ size = 32 }: { size?: number }) {
+function BrandMark({ size = 36 }: { size?: number }) {
   return (
-    <Box
-      component="img"
-      src="/domus-mark.svg"
-      alt=""
-      sx={{ width: size, height: size, display: 'block', borderRadius: '6px' }}
+    <DomusMarkIcon
+      width={size}
+      height={Math.round(size * (179 / 211))}
+      style={{ display: 'block', flexShrink: 0, color: landing.cream, overflow: 'visible' }}
     />
   )
 }
@@ -122,7 +123,7 @@ export function HomePage() {
           borderColor: landing.line,
         }}
       >
-        <Link href="#topo" underline="none" aria-label={t('home.brand')} sx={{ justifySelf: 'start' }}>
+        <Link href="#topo" underline="none" aria-label={t('home.brand')} sx={{ justifySelf: 'start', color: landing.cream, lineHeight: 0 }}>
           <BrandMark />
         </Link>
 
@@ -137,17 +138,7 @@ export function HomePage() {
         </Stack>
 
         <Stack direction="row" spacing={1.5} alignItems="center" sx={{ justifySelf: 'end' }}>
-          <Button
-            variant="text"
-            sx={{
-              display: { xs: 'none', sm: 'inline-flex' },
-              color: landing.cream,
-              px: 1.5,
-              minWidth: 0,
-            }}
-          >
-            {t('home.nav.login')}
-          </Button>
+          <HomeSessionActions variant="header" />
           <Button variant="contained" sx={{ ...landingCtaSx, display: { xs: 'none', sm: 'inline-flex' } }}>
             {t('home.nav.createSpace')}
           </Button>
@@ -194,9 +185,7 @@ export function HomePage() {
               {t(item.key)}
             </Link>
           ))}
-          <Button variant="text" sx={{ color: landing.cream, justifyContent: 'flex-start', px: 0 }}>
-            {t('home.nav.login')}
-          </Button>
+          <HomeSessionActions variant="drawer" onNavigate={() => setMenuOpen(false)} />
           <Button variant="contained" sx={landingCtaSx}>
             {t('home.nav.createSpace')}
           </Button>
