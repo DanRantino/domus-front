@@ -16,15 +16,23 @@ describe('HomePage', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: 'A alma digital da sua casa.' }),
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument()
-    expect(screen.getAllByRole('button', { name: 'Começar' })).toHaveLength(2)
-    expect(screen.getByRole('heading', { name: 'Organização Compartilhada' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Calma. Ordem. Conexão.' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Entrar' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Começar' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Criar seu espaço' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Uma casa, um lugar para tudo.' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Organização compartilhada' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Sua casa continua sendo sua.' }),
+    ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Criar minha Domus' })).toBeInTheDocument()
-
-    const mark = document.querySelector('header svg')
-    expect(mark).toBeInTheDocument()
-    expect(mark).toHaveAttribute('aria-label', 'DOMUS')
-    expect(mark?.querySelector('path[fill-rule="evenodd"]')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'DOMUS' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Nossa visão' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Crie sua Domus' })).toBeInTheDocument()
+    expect(screen.getByText('Boa tarde, família.')).toBeInTheDocument()
+    expect(screen.getByText('© 2026 Domus Household. Feito para durar.')).toBeInTheDocument()
   })
 })
