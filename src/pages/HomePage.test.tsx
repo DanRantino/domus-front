@@ -6,14 +6,20 @@ import { AppThemeProvider } from '#/theme/AppThemeProvider'
 import { HomePage } from './HomePage'
 
 describe('HomePage', () => {
-  it('renders the Domus home', () => {
+  it('renders the Domus landing', () => {
     render(
       <AppThemeProvider>
         <HomePage />
       </AppThemeProvider>,
     )
 
-    expect(screen.getByRole('heading', { name: 'Domus' })).toBeInTheDocument()
-    expect(screen.getByText('Um lugar calmo para organizar a casa.')).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'A alma digital da sua casa.' }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: 'Começar' })).toHaveLength(2)
+    expect(screen.getByRole('heading', { name: 'Organização Compartilhada' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Calma. Ordem. Conexão.' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Criar minha Domus' })).toBeInTheDocument()
   })
 })

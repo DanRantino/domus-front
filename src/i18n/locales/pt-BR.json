@@ -1,5 +1,36 @@
 {
   "home": {
-    "tagline": "Um lugar calmo para organizar a casa."
+    "nav": {
+      "login": "Login",
+      "start": "Começar"
+    },
+    "hero": {
+      "title": "A alma digital da sua casa.",
+      "subtitle": "Gerencie tarefas, finanças e preserve memórias em um espaço intencional e compartilhado. Reduza a carga mental e encontre a calma no dia a dia da sua família.",
+      "cta": "Começar"
+    },
+    "features": {
+      "organization": {
+        "title": "Organização Compartilhada",
+        "body": "Atribua tarefas, crie listas de compras colaborativas e mantenha todos na mesma página sem esforço."
+      },
+      "finances": {
+        "title": "Finanças Transparentes",
+        "body": "Acompanhe despesas comuns, divida contas e planeje o orçamento familiar com clareza e sem atritos."
+      },
+      "memories": {
+        "title": "Memórias Preservadas",
+        "body": "Um cofre digital seguro para os momentos importantes da família, organizado e acessível apenas para vocês."
+      }
+    },
+    "preview": {
+      "title": "Calma. Ordem. Conexão.",
+      "imageAlt": "Prévia do painel Domus em um tablet, com organização da casa em um ambiente calmo."
+    },
+    "cta": {
+      "title": "Comece sua jornada com uma Casa.",
+      "subtitle": "Junte-se a famílias que encontraram tranquilidade na organização compartilhada.",
+      "button": "Criar minha Domus"
+    }
   }
 }

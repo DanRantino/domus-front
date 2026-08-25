@@ -1,5 +1,36 @@
 {
   "home": {
-    "tagline": "A calm place to organize your household."
+    "nav": {
+      "login": "Log in",
+      "start": "Get started"
+    },
+    "hero": {
+      "title": "The digital soul of your home.",
+      "subtitle": "Manage tasks, finances, and memories in an intentional, shared space. Reduce mental load and find calm in your family's daily life.",
+      "cta": "Get started"
+    },
+    "features": {
+      "organization": {
+        "title": "Shared organization",
+        "body": "Assign tasks, create collaborative shopping lists, and keep everyone on the same page without extra effort."
+      },
+      "finances": {
+        "title": "Transparent finances",
+        "body": "Track shared expenses, split bills, and plan the family budget with clarity and without friction."
+      },
+      "memories": {
+        "title": "Preserved memories",
+        "body": "A secure digital vault for the family's important moments, organized and accessible only to you."
+      }
+    },
+    "preview": {
+      "title": "Calm. Order. Connection.",
+      "imageAlt": "Preview of the Domus dashboard on a tablet, showing household organization in a calm setting."
+    },
+    "cta": {
+      "title": "Start your journey with a Home.",
+      "subtitle": "Join families who found peace in shared organization.",
+      "button": "Create my Domus"
+    }
   }
 }
