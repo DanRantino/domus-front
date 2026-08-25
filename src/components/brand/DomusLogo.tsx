@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react'
 
-const CHARCOAL = '#2D2D2D'
+const CHARCOAL = '#1B1C1C'
 const FOREST = '#4A6741'
 
 export function DomusLogo({
