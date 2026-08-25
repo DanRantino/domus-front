@@ -17,7 +17,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
-    allowedHosts: ['web.domus.dev'],
+    allowedHosts: ['web.domus.dev','domus-front-preprod.up.railway.app','domus-front-prod.up.railway.app'],
   },
   preview: {
     host: '0.0.0.0',
