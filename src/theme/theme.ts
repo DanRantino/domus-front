@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles'
 
-import { elevation, fonts, paletteKeys } from './tokens'
+import { elevation, fonts, palette, paletteKeys } from './tokens'
 
 export const appTheme = createTheme({
   cssVariables: true,
@@ -8,94 +8,96 @@ export const appTheme = createTheme({
     light: {
       palette: {
         primary: {
-          main: paletteKeys.forestDeep,
-          dark: paletteKeys.forest,
-          contrastText: paletteKeys.white,
+          main: palette.primary[600],
+          dark: palette.primary[700],
+          light: palette.primary[400],
+          contrastText: palette.secondary[200],
         },
         secondary: {
-          main: paletteKeys.terracotta,
-          contrastText: paletteKeys.white,
+          main: palette.tertiary[500],
+          contrastText: palette.secondary[200],
         },
         error: {
           main: paletteKeys.danger,
           contrastText: paletteKeys.white,
         },
         background: {
-          default: paletteKeys.cream,
+          default: palette.secondary[200],
           paper: paletteKeys.white,
         },
         text: {
-          primary: paletteKeys.charcoal,
-          secondary: paletteKeys.mutedInk,
+          primary: palette.neutral[700],
+          secondary: palette.neutral[500],
         },
-        divider: paletteKeys.borderLight,
+        divider: palette.secondary[300],
       },
     },
     dark: {
       palette: {
         primary: {
-          main: paletteKeys.forestBright,
-          contrastText: paletteKeys.ink,
+          main: palette.primary[600],
+          light: palette.primary[400],
+          contrastText: palette.secondary[200],
         },
         secondary: {
-          main: paletteKeys.terracottaBright,
-          contrastText: paletteKeys.ink,
+          main: palette.tertiary[400],
+          contrastText: palette.neutral[900],
         },
         error: {
           main: paletteKeys.dangerBright,
-          contrastText: paletteKeys.ink,
+          contrastText: palette.neutral[900],
         },
         background: {
-          default: paletteKeys.ink,
+          default: palette.neutral[700],
           paper: paletteKeys.inkElevated,
         },
         text: {
-          primary: paletteKeys.mist,
-          secondary: paletteKeys.mistMuted,
+          primary: palette.secondary[200],
+          secondary: palette.neutral[300],
         },
         divider: paletteKeys.borderDark,
       },
     },
   },
   typography: {
-    fontFamily: fonts.manrope,
+    fontFamily: fonts.body,
     h1: {
-      fontFamily: fonts.newsreader,
+      fontFamily: fonts.headline,
       fontWeight: 500,
       fontSize: 28,
       lineHeight: '36px',
       letterSpacing: '-0.02em',
     },
     h2: {
-      fontFamily: fonts.newsreader,
+      fontFamily: fonts.headline,
       fontWeight: 500,
       fontSize: 28,
       lineHeight: '36px',
       letterSpacing: '-0.02em',
     },
     h3: {
-      fontFamily: fonts.newsreader,
+      fontFamily: fonts.headline,
       fontWeight: 500,
       fontSize: 24,
       lineHeight: '32px',
     },
-    h4: { fontFamily: fonts.newsreader, fontWeight: 500 },
-    h5: { fontFamily: fonts.newsreader, fontWeight: 500 },
-    h6: { fontFamily: fonts.newsreader, fontWeight: 500 },
+    h4: { fontFamily: fonts.headline, fontWeight: 500 },
+    h5: { fontFamily: fonts.headline, fontWeight: 500 },
+    h6: { fontFamily: fonts.headline, fontWeight: 500 },
     subtitle1: {
-      fontFamily: fonts.manrope,
+      fontFamily: fonts.body,
       fontSize: 18,
       lineHeight: '28px',
       fontWeight: 400,
     },
     body1: {
-      fontFamily: fonts.manrope,
+      fontFamily: fonts.body,
       fontSize: 16,
       lineHeight: '24px',
       fontWeight: 400,
     },
     button: {
-      fontFamily: fonts.manrope,
+      fontFamily: fonts.body,
       fontWeight: 600,
       fontSize: 14,
       lineHeight: '20px',
@@ -112,11 +114,17 @@ export const appTheme = createTheme({
         disableElevation: true,
       },
       styleOverrides: {
+        root: {
+          borderRadius: 10,
+        },
         containedPrimary: {
           boxShadow: elevation.forest,
           '&:hover': {
             boxShadow: elevation.forest,
           },
+        },
+        outlined: {
+          borderWidth: 1.5,
         },
       },
     },
