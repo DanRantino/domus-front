@@ -1,12 +1,9 @@
 import type { SVGProps } from 'react'
 
-import { cn } from '@/lib/utils'
-
 const CHARCOAL = '#2D2D2D'
 const FOREST = '#4A6741'
 
 export function DomusLogo({
-  className,
   title,
   ...props
 }: SVGProps<SVGSVGElement> & { title?: string }) {
@@ -17,7 +14,6 @@ export function DomusLogo({
       xmlns="http://www.w3.org/2000/svg"
       role={title ? 'img' : undefined}
       aria-hidden={title ? undefined : true}
-      className={cn('shrink-0', className)}
       {...props}
     >
       {title ? <title>{title}</title> : null}

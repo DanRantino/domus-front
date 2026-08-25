@@ -1,6 +1,6 @@
 ---
 description: Frontend engineering conventions
-globs: **/*.{ts,tsx}
+globs: "**/*.{ts,tsx}"
 alwaysApply: false
 ---
 
@@ -10,27 +10,32 @@ The frontend uses React and TypeScript.
 
 Current preferred stack:
 
-* TanStack Start
-* TanStack Query
-* TanStack Form
+* React + Vite + TypeScript
+* React Router
+* Redux Toolkit
+* RTK Query
+* MUI
+* React Hook Form
+* i18next
 * Zod
-* shadcn/ui
+* Vitest
+* Storybook
 
 Use these tools according to their intended responsibilities.
 
-## TanStack Start
+## Vite and React Router
 
-TanStack Start owns application routing and framework-level concerns.
+Vite owns bundling and the SPA bootstrap (`index.html`, `src/main.tsx`).
 
-Prefer its native primitives before introducing parallel routing or application-framework abstractions.
+React Router owns application routing.
 
-Keep route definitions focused on routing, loading boundaries, and composition.
+Keep route definitions focused on routing and composition.
 
 Business rules should not live in route components.
 
 ## Server State
 
-TanStack Query is the default mechanism for asynchronous server state.
+RTK Query is the default mechanism for asynchronous server state.
 
 Use it for:
 
@@ -40,21 +45,23 @@ Use it for:
 * invalidation
 * asynchronous request state
 
-Do not duplicate server state into local React state or another state manager without a concrete reason.
+Do not duplicate server state into local React state or another Redux slice without a concrete reason.
 
-Query keys must be predictable and consistent.
+Keep endpoint definitions close to the capability they belong to.
 
-Keep query definitions close to the capability they belong to rather than creating one global collection of unrelated queries.
+Do not use effects to manually synchronize data that RTK Query can own.
 
-Do not use effects to manually synchronize data that TanStack Query can own.
+## Client State
+
+Redux Toolkit is the application store. Prefer RTK Query reducers over new slices until client state is truly global and not server state, route state, form state, or component state.
 
 ## Forms
 
-TanStack Form is the default mechanism for non-trivial forms.
+React Hook Form is the default mechanism for non-trivial forms.
+
+Validate form values with Zod resolvers at submit boundaries.
 
 Form state, validation state, and submission state should normally belong to the form abstraction rather than being manually duplicated through React state.
-
-Avoid custom form abstractions until recurring patterns justify them.
 
 ## Validation
 
@@ -66,15 +73,23 @@ Do not create validation schemas merely to duplicate TypeScript types that never
 
 When possible, avoid defining the same contract independently in multiple places.
 
+## i18n
+
+User-facing product copy belongs in i18n catalogs.
+
+Default language is `pt-BR`, with `en` as fallback.
+
+Do not hardcode product strings in components once a catalog key exists.
+
 ## UI
 
-shadcn/ui provides the base UI primitives.
+MUI provides the base UI primitives, themed from Domus design tokens.
 
-Prefer composition of existing primitives before creating new foundational components.
+Prefer composition of themed MUI components before creating new foundational components.
 
 Application-specific components should represent product concepts or reusable interaction patterns.
 
-Do not wrap every shadcn component merely to hide the dependency.
+Do not wrap every MUI component merely to hide the dependency.
 
 Avoid premature design-system abstractions.
 
@@ -85,8 +100,6 @@ Components should primarily express UI and interaction.
 Keep business decisions outside presentation components.
 
 Prefer local state for genuinely local UI state.
-
-Do not introduce global state when server state, route state, form state, or component state already owns the problem.
 
 Do not add memoization (`useMemo`, `useCallback`, `memo`) by default.
 
@@ -103,6 +116,3 @@ Before introducing a new frontend pattern:
 * introduce a different pattern only when there is a clear advantage.
 
 Prefer one obvious way of solving common problems across the application.
----
-alwaysApply: true
----
