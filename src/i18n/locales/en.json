@@ -1,36 +1,94 @@
 {
   "home": {
+    "brand": "DOMUS",
     "nav": {
+      "vision": "Our Vision",
+      "features": "Features",
+      "privacy": "Privacy",
+      "faq": "FAQ",
+      "menu": "Open menu",
+      "close": "Close menu",
       "login": "Log in",
-      "start": "Get started"
+      "createSpace": "Create your space"
     },
     "hero": {
       "title": "The digital soul of your home.",
-      "subtitle": "Manage tasks, finances, and memories in an intentional, shared space. Reduce mental load and find calm in your family's daily life.",
+      "subtitle": "A calm, intentional space to organize tasks, align finances, and preserve the memories of those who live with you. No noise, only the essential.",
       "cta": "Get started"
+    },
+    "showcase": {
+      "title": "One home, a place for everything.",
+      "subtitle": "Tasks, bills, and what matters — in one place, without noise.",
+      "tasks": {
+        "greeting": "Good afternoon, family.",
+        "date": "Tuesday, 24 October.",
+        "item1": { "label": "Buy food for Apollo", "tag": "Today" },
+        "item2": { "label": "Call the plumber", "tag": "Yesterday" },
+        "item3": { "label": "Marina's birthday tomorrow", "tag": "Soon" }
+      },
+      "bills": {
+        "title": "Bills this month",
+        "amount": "R$ 1,450",
+        "remaining": "R$ 800 left to settle"
+      }
     },
     "features": {
       "organization": {
         "title": "Shared organization",
-        "body": "Assign tasks, create collaborative shopping lists, and keep everyone on the same page without extra effort."
+        "body": "Shopping lists, chores, and household routines that everyone can follow without extra effort."
       },
       "finances": {
         "title": "Transparent finances",
-        "body": "Track shared expenses, split bills, and plan the family budget with clarity and without friction."
+        "body": "Track joint expenses and plan the household budget with clarity."
       },
       "memories": {
         "title": "Preserved memories",
-        "body": "A secure digital vault for the family's important moments, organized and accessible only to you."
+        "body": "A secure digital vault for important documents and family photos."
       }
     },
-    "preview": {
-      "title": "Calm. Order. Connection.",
-      "imageAlt": "Preview of the Domus dashboard on a tablet, showing household organization in a calm setting."
+    "steps": {
+      "one": {
+        "title": "Create your Domus",
+        "body": "Set up the space in less than a minute."
+      },
+      "two": {
+        "title": "Invite who belongs",
+        "body": "Add partners, children, or housemates with secure access."
+      },
+      "three": {
+        "title": "Look after the home together",
+        "body": "Share the daily routine for a more organized house."
+      }
+    },
+    "privacy": {
+      "title": "Your home remains yours.",
+      "body": "We do not sell data, we do not show ads, and we use end-to-end encryption. What happens in your Domus stays in your Domus."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "one": {
+        "question": "Who can join our Domus?",
+        "answer": "Only people you invite. Access belongs to the household, not to an open network."
+      },
+      "two": {
+        "question": "Do you sell or advertise with our data?",
+        "answer": "No. We do not sell data and we do not show ads."
+      },
+      "three": {
+        "question": "Do we need an app?",
+        "answer": "No. Domus works in the browser, on a computer and on a phone."
+      }
     },
     "cta": {
-      "title": "Start your journey with a Home.",
-      "subtitle": "Join families who found peace in shared organization.",
+      "title": "Fewer things to remember. More room to live.",
       "button": "Create my Domus"
+    },
+    "footer": {
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy",
+      "contact": "Contact",
+      "press": "Press Kit",
+      "copyright": "© 2026 Domus Household. Built for permanence."
     }
   }
 }

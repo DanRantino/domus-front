@@ -1,259 +1,464 @@
 import type { SvgIconComponent } from '@mui/icons-material'
 import ChecklistOutlined from '@mui/icons-material/ChecklistOutlined'
+import Close from '@mui/icons-material/Close'
+import LockOutlined from '@mui/icons-material/LockOutlined'
+import MenuIcon from '@mui/icons-material/Menu'
 import PaymentsOutlined from '@mui/icons-material/PaymentsOutlined'
 import PhotoLibraryOutlined from '@mui/icons-material/PhotoLibraryOutlined'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Drawer from '@mui/material/Drawer'
+import IconButton from '@mui/material/IconButton'
+import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { DomusLockup } from '#/components/brand/DomusMark'
-import { elevation, paletteKeys } from '#/theme/tokens'
+import { fonts } from '#/theme/tokens'
 
-const pageGutter = { px: { xs: '20px', md: '64px' } } as const
+import { DashboardPreview } from './home/DashboardPreview'
+import { landing, landingCtaSx } from './home/landing'
 
-const features: {
-  titleKey: string
-  bodyKey: string
-  Icon: SvgIconComponent
-  iconBg: string
-  iconColor: string
-  iconColorDark: string
-}[] = [
+const navItems = [
+  { href: '#visao', key: 'home.nav.vision' },
+  { href: '#recursos', key: 'home.nav.features' },
+  { href: '#privacidade', key: 'home.nav.privacy' },
+  { href: '#faq', key: 'home.nav.faq' },
+] as const
+
+const features: { titleKey: string; bodyKey: string; Icon: SvgIconComponent }[] = [
   {
     titleKey: 'home.features.organization.title',
     bodyKey: 'home.features.organization.body',
     Icon: ChecklistOutlined,
-    iconBg: `${paletteKeys.mauveTint}80`,
-    iconColor: paletteKeys.mauve,
-    iconColorDark: paletteKeys.mauveBright,
   },
   {
     titleKey: 'home.features.finances.title',
     bodyKey: 'home.features.finances.body',
     Icon: PaymentsOutlined,
-    iconBg: `${paletteKeys.forestTint}80`,
-    iconColor: paletteKeys.forest,
-    iconColorDark: paletteKeys.forestBright,
   },
   {
     titleKey: 'home.features.memories.title',
     bodyKey: 'home.features.memories.body',
     Icon: PhotoLibraryOutlined,
-    iconBg: `${paletteKeys.surfaceVariant}80`,
-    iconColor: paletteKeys.mutedInk,
-    iconColorDark: paletteKeys.mistMuted,
   },
 ]
 
+const steps = [
+  { n: '01', titleKey: 'home.steps.one.title', bodyKey: 'home.steps.one.body' },
+  { n: '02', titleKey: 'home.steps.two.title', bodyKey: 'home.steps.two.body' },
+  { n: '03', titleKey: 'home.steps.three.title', bodyKey: 'home.steps.three.body' },
+] as const
+
+const faqs = [
+  { q: 'home.faq.one.question', a: 'home.faq.one.answer' },
+  { q: 'home.faq.two.question', a: 'home.faq.two.answer' },
+  { q: 'home.faq.three.question', a: 'home.faq.three.answer' },
+] as const
+
+const footerLinks = [
+  { href: '#privacidade', key: 'home.footer.terms' },
+  { href: '#privacidade', key: 'home.footer.privacy' },
+  { href: '#faq', key: 'home.footer.contact' },
+  { href: '#visao', key: 'home.footer.press' },
+] as const
+
+const sectionSx = {
+  ...landing.gutter,
+  py: { xs: 8, md: 14 },
+  scrollMarginTop: '88px',
+} as const
+
+function BrandMark({ size = 32 }: { size?: number }) {
+  return (
+    <Box
+      component="img"
+      src="/domus-mark.svg"
+      alt=""
+      sx={{ width: size, height: size, display: 'block', borderRadius: '6px' }}
+    />
+  )
+}
+
+function NavLink({ href, label }: { href: string; label: string }) {
+  return (
+    <Link
+      href={href}
+      underline="none"
+      sx={{
+        color: landing.muted,
+        fontSize: 14,
+        fontWeight: 500,
+        letterSpacing: '0.02em',
+        '&:hover': { color: landing.cream },
+      }}
+    >
+      {label}
+    </Link>
+  )
+}
+
 export function HomePage() {
   const { t } = useTranslation()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <Box sx={{ bgcolor: 'background.default', minHeight: '100svh' }}>
+    <Box sx={{ bgcolor: landing.canvas, color: landing.cream, minHeight: '100svh' }}>
       <Box
         component="header"
         sx={{
-          ...pageGutter,
+          ...landing.gutter,
           position: 'sticky',
           top: 0,
           zIndex: 8,
-          display: 'flex',
+          display: 'grid',
+          gridTemplateColumns: { xs: 'auto 1fr', md: '1fr auto 1fr' },
           alignItems: 'center',
-          justifyContent: 'space-between',
+          gap: 2,
           py: 2,
-          bgcolor: 'background.default',
+          bgcolor: landing.canvas,
           borderBottom: '1px solid',
-          borderColor: 'divider',
+          borderColor: landing.line,
         }}
       >
-        <DomusLockup size="sm" />
-        <Stack direction="row" spacing={3} alignItems="center">
+        <Link href="#topo" underline="none" aria-label={t('home.brand')} sx={{ justifySelf: 'start' }}>
+          <BrandMark />
+        </Link>
+
+        <Stack
+          direction="row"
+          spacing={4}
+          sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}
+        >
+          {navItems.map((item) => (
+            <NavLink key={item.key} href={item.href} label={t(item.key)} />
+          ))}
+        </Stack>
+
+        <Stack direction="row" spacing={1.5} alignItems="center" sx={{ justifySelf: 'end' }}>
           <Button
             variant="text"
-            color="inherit"
             sx={{
-              display: { xs: 'none', md: 'inline-flex' },
-              color: 'text.secondary',
-              px: 2,
-              py: 1,
+              display: { xs: 'none', sm: 'inline-flex' },
+              color: landing.cream,
+              px: 1.5,
+              minWidth: 0,
             }}
           >
             {t('home.nav.login')}
           </Button>
-          <Button variant="contained" sx={{ px: 2, py: 1 }}>
-            {t('home.nav.start')}
+          <Button variant="contained" sx={{ ...landingCtaSx, display: { xs: 'none', sm: 'inline-flex' } }}>
+            {t('home.nav.createSpace')}
           </Button>
+          <IconButton
+            aria-label={t('home.nav.menu')}
+            onClick={() => setMenuOpen(true)}
+            sx={{ display: { md: 'none' }, color: landing.cream }}
+          >
+            <MenuIcon />
+          </IconButton>
         </Stack>
       </Box>
 
-      <Box component="main">
+      <Drawer
+        anchor="right"
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        slotProps={{
+          paper: {
+            sx: {
+              width: 280,
+              bgcolor: landing.canvas,
+              color: landing.cream,
+              px: 3,
+              py: 2,
+            },
+          },
+        }}
+      >
+        <Stack direction="row" justifyContent="flex-end">
+          <IconButton aria-label={t('home.nav.close')} onClick={() => setMenuOpen(false)} sx={{ color: landing.cream }}>
+            <Close />
+          </IconButton>
+        </Stack>
+        <Stack spacing={3} sx={{ mt: 2 }}>
+          {navItems.map((item) => (
+            <Link
+              key={item.key}
+              href={item.href}
+              underline="none"
+              onClick={() => setMenuOpen(false)}
+              sx={{ color: landing.cream, fontSize: 18 }}
+            >
+              {t(item.key)}
+            </Link>
+          ))}
+          <Button variant="text" sx={{ color: landing.cream, justifyContent: 'flex-start', px: 0 }}>
+            {t('home.nav.login')}
+          </Button>
+          <Button variant="contained" sx={landingCtaSx}>
+            {t('home.nav.createSpace')}
+          </Button>
+        </Stack>
+      </Drawer>
+
+      <Box component="main" id="topo">
         <Box
           component="section"
+          id="visao"
           sx={{
-            ...pageGutter,
-            py: { xs: 8, md: 16 },
+            ...sectionSx,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             textAlign: 'center',
-            maxWidth: 896,
-            mx: 'auto',
+            pt: { xs: 10, md: 16 },
           }}
         >
-          <Typography component="h1" variant="h1" sx={{ mb: 3, color: 'text.primary' }}>
-            {t('home.hero.title')}
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 6, maxWidth: 672 }}>
-            {t('home.hero.subtitle')}
-          </Typography>
-          <Button
-            variant="contained"
-            size="large"
+          <Typography
+            component="h1"
             sx={{
-              px: 3,
-              py: 1.5,
-              transition: 'transform 150ms ease',
-              '&:hover': { transform: 'translateY(-2px)' },
+              fontFamily: fonts.headline,
+              fontWeight: 500,
+              fontSize: { xs: 36, md: 64 },
+              lineHeight: 1.15,
+              letterSpacing: '-0.02em',
+              maxWidth: 720,
+              mb: 3,
             }}
           >
+            {t('home.hero.title')}
+          </Typography>
+          <Typography
+            sx={{
+              color: landing.muted,
+              fontSize: { xs: 16, md: 18 },
+              lineHeight: 1.7,
+              maxWidth: 560,
+              mb: 5,
+            }}
+          >
+            {t('home.hero.subtitle')}
+          </Typography>
+          <Button variant="contained" size="large" sx={{ ...landingCtaSx, px: 3.5, py: 1.5 }}>
             {t('home.hero.cta')}
           </Button>
         </Box>
 
-        <Box
-          component="section"
-          sx={[
-            { ...pageGutter, py: { xs: 6, md: 10 }, bgcolor: paletteKeys.surfaceLow },
-            (theme) => theme.applyStyles('dark', { bgcolor: paletteKeys.inkElevated }),
-          ]}
-        >
+        <Box component="section" sx={{ ...sectionSx, pt: { xs: 4, md: 6 } }}>
+          <Typography
+            component="h2"
+            sx={{
+              fontFamily: fonts.headline,
+              fontWeight: 500,
+              fontSize: { xs: 28, md: 40 },
+              textAlign: 'center',
+              mb: 1.5,
+            }}
+          >
+            {t('home.showcase.title')}
+          </Typography>
+          <Typography
+            sx={{
+              color: landing.muted,
+              textAlign: 'center',
+              maxWidth: 480,
+              mx: 'auto',
+              mb: 6,
+            }}
+          >
+            {t('home.showcase.subtitle')}
+          </Typography>
+          <Box sx={{ maxWidth: 960, mx: 'auto' }}>
+            <DashboardPreview />
+          </Box>
+        </Box>
+
+        <Box component="section" id="recursos" sx={sectionSx}>
           <Box
             sx={{
-              maxWidth: 1440,
+              maxWidth: 1080,
               mx: 'auto',
               display: 'grid',
               gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
-              gap: 3,
+              gap: { xs: 6, md: 8 },
             }}
           >
             {features.map((feature) => (
-              <Box
-                key={feature.titleKey}
-                sx={{
-                  bgcolor: 'background.paper',
-                  borderRadius: '12px',
-                  p: 3,
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  boxShadow: elevation.forest,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 1.5,
-                  '@media (hover: hover)': {
-                    transition: 'transform 300ms ease',
-                    '&:hover': { transform: 'translateY(-4px)' },
-                  },
-                }}
-              >
-                <Box
-                  sx={[
-                    {
-                      width: 48,
-                      height: 48,
-                      borderRadius: '50%',
-                      bgcolor: feature.iconBg,
-                      color: feature.iconColor,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      mb: 1.5,
-                    },
-                    (theme) =>
-                      theme.applyStyles('dark', {
-                        color: feature.iconColorDark,
-                      }),
-                  ]}
+              <Box key={feature.titleKey} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <feature.Icon sx={{ color: landing.cream, fontSize: 28 }} />
+                <Typography
+                  component="h2"
+                  sx={{
+                    fontFamily: fonts.headline,
+                    fontWeight: 500,
+                    fontSize: 24,
+                    lineHeight: 1.3,
+                  }}
                 >
-                  <feature.Icon />
-                </Box>
-                <Typography component="h2" variant="h3">
                   {t(feature.titleKey)}
                 </Typography>
-                <Typography color="text.secondary">{t(feature.bodyKey)}</Typography>
+                <Typography sx={{ color: landing.muted, lineHeight: 1.7 }}>{t(feature.bodyKey)}</Typography>
               </Box>
             ))}
           </Box>
         </Box>
 
-        <Box component="section" sx={{ ...pageGutter, py: { xs: 6, md: 10 } }}>
-          <Typography component="h2" variant="h1" sx={{ textAlign: 'center', mb: 6 }}>
-            {t('home.preview.title')}
+        <Box component="section" sx={sectionSx}>
+          <Box
+            sx={{
+              maxWidth: 1080,
+              mx: 'auto',
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+              gap: { xs: 6, md: 8 },
+            }}
+          >
+            {steps.map((step) => (
+              <Box key={step.n}>
+                <Typography
+                  sx={{
+                    fontFamily: fonts.headline,
+                    color: landing.muted,
+                    fontSize: 20,
+                    mb: 1,
+                  }}
+                >
+                  {step.n}
+                </Typography>
+                <Typography
+                  component="h2"
+                  sx={{
+                    fontFamily: fonts.headline,
+                    fontWeight: 500,
+                    fontSize: 24,
+                    mb: 2,
+                  }}
+                >
+                  {t(step.titleKey)}
+                </Typography>
+                <Box sx={{ borderTop: '1px solid', borderColor: landing.line, mb: 2 }} />
+                <Typography sx={{ color: landing.muted, lineHeight: 1.7 }}>{t(step.bodyKey)}</Typography>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+
+        <Box component="section" id="privacidade" sx={{ ...sectionSx, textAlign: 'center' }}>
+          <Box sx={{ maxWidth: 720, mx: 'auto' }}>
+            <LockOutlined sx={{ fontSize: 32, color: landing.cream, mb: 3 }} />
+            <Typography
+              component="h2"
+              sx={{
+                fontFamily: fonts.headline,
+                fontWeight: 500,
+                fontSize: { xs: 28, md: 40 },
+                mb: 2,
+              }}
+            >
+              {t('home.privacy.title')}
+            </Typography>
+            <Typography sx={{ color: landing.muted, fontSize: { xs: 16, md: 18 }, lineHeight: 1.7 }}>
+              {t('home.privacy.body')}
+            </Typography>
+          </Box>
+        </Box>
+
+        <Box component="section" id="faq" sx={sectionSx}>
+          <Typography
+            component="h2"
+            sx={{
+              fontFamily: fonts.headline,
+              fontWeight: 500,
+              fontSize: { xs: 28, md: 40 },
+              textAlign: 'center',
+              mb: 8,
+            }}
+          >
+            {t('home.faq.title')}
           </Typography>
           <Box
             sx={{
-              maxWidth: 1024,
+              maxWidth: 1080,
               mx: 'auto',
-              borderRadius: '12px',
-              overflow: 'hidden',
-              boxShadow: elevation.forestStrong,
-              border: '1px solid',
-              borderColor: 'divider',
-              lineHeight: 0,
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+              gap: { xs: 5, md: 8 },
             }}
           >
-            <Box
-              component="img"
-              src="/images/landing-calm.jpg"
-              alt={t('home.preview.imageAlt')}
-              sx={{ width: '100%', height: 'auto', display: 'block' }}
-            />
+            {faqs.map((item) => (
+              <Box key={item.q}>
+                <Typography
+                  component="h3"
+                  sx={{
+                    fontFamily: fonts.headline,
+                    fontWeight: 500,
+                    fontSize: 20,
+                    mb: 1.5,
+                  }}
+                >
+                  {t(item.q)}
+                </Typography>
+                <Typography sx={{ color: landing.muted, lineHeight: 1.7 }}>{t(item.a)}</Typography>
+              </Box>
+            ))}
           </Box>
         </Box>
 
         <Box
           component="section"
-          sx={[
-            {
-              ...pageGutter,
-              py: { xs: 6, md: 10 },
-              bgcolor: `${paletteKeys.forestTint}33`,
-              borderTop: '1px solid',
-              borderColor: `${paletteKeys.forestBright}4D`,
-            },
-            (theme) =>
-              theme.applyStyles('dark', {
-                bgcolor: paletteKeys.inkMuted,
-                borderColor: paletteKeys.borderDark,
-              }),
-          ]}
+          sx={{
+            ...sectionSx,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            pb: { xs: 10, md: 16 },
+          }}
         >
-          <Stack
-            spacing={3}
-            alignItems="center"
-            sx={{ maxWidth: 768, mx: 'auto', textAlign: 'center' }}
+          <Typography
+            component="h2"
+            sx={{
+              fontFamily: fonts.headline,
+              fontWeight: 500,
+              fontSize: { xs: 32, md: 48 },
+              lineHeight: 1.2,
+              maxWidth: 640,
+              mb: 5,
+            }}
           >
-            <Typography component="h2" variant="h1">
-              {t('home.cta.title')}
-            </Typography>
-            <Typography variant="subtitle1" color="text.secondary">
-              {t('home.cta.subtitle')}
-            </Typography>
-            <Button
-              variant="contained"
-              size="large"
-              sx={{
-                px: 4,
-                py: 2,
-                transition: 'transform 150ms ease',
-                '&:hover': { transform: 'translateY(-2px)' },
-              }}
-            >
-              {t('home.cta.button')}
-            </Button>
-          </Stack>
+            {t('home.cta.title')}
+          </Typography>
+          <Button variant="contained" size="large" sx={{ ...landingCtaSx, px: 4, py: 1.75 }}>
+            {t('home.cta.button')}
+          </Button>
         </Box>
+      </Box>
+
+      <Box
+        component="footer"
+        sx={{
+          ...landing.gutter,
+          py: 3,
+          borderTop: '1px solid',
+          borderColor: landing.line,
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          alignItems: { xs: 'flex-start', md: 'center' },
+          justifyContent: 'space-between',
+          gap: 3,
+        }}
+      >
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 2, sm: 3 }} alignItems={{ sm: 'center' }}>
+          <BrandMark size={28} />
+          <Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap>
+            {footerLinks.map((item) => (
+              <NavLink key={item.key} href={item.href} label={t(item.key)} />
+            ))}
+          </Stack>
+        </Stack>
+        <Typography sx={{ color: landing.muted, fontSize: 13 }}>{t('home.footer.copyright')}</Typography>
       </Box>
     </Box>
   )

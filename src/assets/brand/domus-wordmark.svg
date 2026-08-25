@@ -1,41 +1,31 @@
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 458 148"
+  viewBox="-10 -8 546.5 116"
   fill="currentColor"
   role="img"
   aria-label="DOMUS"
 >
   <title>DOMUS</title>
-  <!-- D -->
-  <path
-    fill-rule="evenodd"
-    d="M20 24h30c36 0 50 22 50 50s-14 50-50 50H20V24Zm16 14h12c22 0 33 16 33 36s-11 36-33 36H36V38Z"
-  />
-  <path d="M12 24h15v3.2H12V24Zm0 96.8h15V124H12v-3.2Z" />
-  <!-- O -->
-  <path
-    fill-rule="evenodd"
-    d="M157 24c22.64 0 41 22.39 41 50s-18.36 50-41 50-41-22.39-41-50 18.36-50 41-50Zm0 13.5c-13.81 0-25 16.34-25 36.5s11.19 36.5 25 36.5 25-16.34 25-36.5-11.19-36.5-25-36.5Z"
-  />
-  <!-- M (stems + crossed diagonals + diamond) -->
-  <path d="M214 24h16v100h-16V24Zm-8 0h26v3.2h-26V24Zm0 96.8h26V124h-26v-3.2Z" />
-  <path d="M280 24h16v100h-16V24Zm-2 0h20v3.2h-20V24Z" />
-  <path d="M226.89 37 276.89 115 283.11 111 233.11 33Z" />
-  <path d="M276.89 33 226.89 111 233.11 115 283.11 37Z" />
-  <path d="M255 67.6 261.4 74 255 80.4 248.6 74Z" />
-  <!-- U (shares M's right stem; thin center line) -->
-  <path d="M340 24h16v80h-16V24Zm-2 0h26v3.2h-26V24Z" />
-  <path
-    d="M280 86a38 38 0 0 0 76 0h-16a22 22 0 0 0-44 0h-16Z"
-  />
-  <path d="M316.4 28.2h3.2V106h-3.2V28.2ZM313 24h10v3.2h-10V24Z" />
-  <!-- S -->
-  <path
-    fill="none"
-    stroke="currentColor"
-    stroke-width="15.5"
-    stroke-linecap="butt"
-    stroke-linejoin="round"
-    d="M390 50c0-14 8-18 16-18s24 6 24 18-12 18-24 22c-16 8-24 16-24 28s10 16 24 16 24-6 24-16"
-  />
+  <g>
+    <g transform="translate(0 0)">
+<path d="M6 0h20.5v100H6V0ZM0 0h28.5v3.2H0V0ZM0 96.8h28.5V100H0v-3.2Z"/>
+<path fill-rule="evenodd" d="M24 1.6C64 1.6 88 20 88 50s-24 48.4-64 48.4V1.6ZM26 5.8C58 5.8 70 24 70 50s-12 44.2-44 44.2V5.8Z"/>
+    </g>
+    <g transform="translate(106 0)">
+<path fill-rule="evenodd" d="M50-2.2a52.2 52.2 0 1 1 0 104.4A52.2 52.2 0 1 1 50-2.2ZM50 6.2a31.2 43.8 0 1 0 0 87.6 31.2 43.8 0 1 0 0-87.6Z"/>
+    </g>
+    <g transform="translate(222 0)">
+<path d="M6 0h20.5v100H6V0ZM0 0h29v3.2H0V0ZM0 96.8h29V100H0v-3.2Z"/>
+<path d="M95.5 0H116v100H95.5V0ZM93 0h29v3.2H93V0ZM93 96.8h29V100h-29v-3.2Z"/>
+<path fill="none" stroke="currentColor" stroke-width="6.2" stroke-linejoin="miter" stroke-miterlimit="10" d="M26.2 22.2 61 3.4 95.8 22.2 61 82.5Z"/>
+    </g>
+    <g transform="translate(360 0)">
+<path d="M6 0h20.5v68H6V0ZM0 0h28.5v3.2H0V0Z"/>
+<path d="M67.8 0h6.4v68h-6.4V0Zm-3.2 0h13.2v3.2H64.6V0Z"/>
+<path d="M6 62C6 90 20.5 100 40.1 100S74.2 90 74.2 62H67.8C67.8 84.5 55 89.5 40.1 89.5S26.5 84.5 26.5 62H6Z"/>
+    </g>
+    <g transform="translate(456.5 0)">
+<path fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="butt" stroke-linejoin="round" d="M53 23.5C53 13.5 44.5 8.5 34.5 8.5 21.5 8.5 13.5 17 13.5 28.5 13.5 41 24.5 48.5 39.5 55.5 54.5 62.5 62.5 71.5 62.5 83.5 62.5 93.5 53.5 98.5 39.5 98.5 26.5 98.5 17.5 91 15.5 82"/>
+    </g>
+  </g>
 </svg>
