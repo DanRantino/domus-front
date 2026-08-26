@@ -115,6 +115,8 @@
     "submitError": "We could not create your Domus.",
     "switcherLabel": "Your homes",
     "selected": "Selected home",
-    "gateLoading": "Loading..."
+    "gateLoading": "Loading...",
+    "notProvisionedTitle": "No access to Domus",
+    "notProvisioned": "Your account has not been provisioned for this space yet."
   }
 }

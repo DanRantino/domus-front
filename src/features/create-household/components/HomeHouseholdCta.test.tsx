@@ -3,11 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import '#/i18n'
-import { saveHouseholds } from '#/features/create-household/persistence'
-import {
-  configureHouseholdsApiMock,
-  resetHouseholdsApiMock,
-} from '#/features/create-household/api/householdsApi'
+import { stubDomusApi } from '#/test/domusApi'
 
 import { createHouseholdsWrapper } from '../test/renderWithHouseholds'
 import { HomeHouseholdCta } from './HomeHouseholdCta'
@@ -32,8 +28,6 @@ vi.mock('#/auth/logtoConfig', () => ({
 describe('HomeHouseholdCta', () => {
   beforeEach(() => {
     sessionStorage.clear()
-    resetHouseholdsApiMock()
-    configureHouseholdsApiMock({ delayMs: 0 })
     mocks.isAuthenticated = false
     mocks.isLoading = false
     mocks.config = undefined
@@ -55,7 +49,7 @@ describe('HomeHouseholdCta', () => {
   it('shows a skeleton while the list is loading', () => {
     mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
     mocks.isAuthenticated = true
-    configureHouseholdsApiMock({ delayMs: 10_000 })
+    stubDomusApi({ hangGet: true })
     const { wrapper } = createHouseholdsWrapper()
     render(<HomeHouseholdCta variant="header" />, { wrapper })
     expect(screen.getByLabelText('Carregando suas casas...')).toBeInTheDocument()
@@ -64,7 +58,7 @@ describe('HomeHouseholdCta', () => {
   it('shows a retry fallback when the list fails', async () => {
     mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
     mocks.isAuthenticated = true
-    configureHouseholdsApiMock({ failNextGet: true, delayMs: 0 })
+    stubDomusApi({ failGet: true })
     const { wrapper } = createHouseholdsWrapper()
     render(<HomeHouseholdCta variant="drawer" />, { wrapper })
 
@@ -76,10 +70,23 @@ describe('HomeHouseholdCta', () => {
     })
   })
 
+  it('shows not-provisioned copy without retry', async () => {
+    mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
+    mocks.isAuthenticated = true
+    stubDomusApi({ notProvisioned: true })
+    const { wrapper } = createHouseholdsWrapper()
+    render(<HomeHouseholdCta variant="header" />, { wrapper })
+
+    expect(
+      await screen.findByText('Sua conta ainda não foi liberada neste espaço.'),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Tentar de novo' })).not.toBeInTheDocument()
+  })
+
   it('shows the switcher when the visitor has households', async () => {
     mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
     mocks.isAuthenticated = true
-    saveHouseholds([{ id: 'h1', name: 'Casa Furst', role: 'admin' }])
+    stubDomusApi({ houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }] })
     const { wrapper } = createHouseholdsWrapper()
     render(<HomeHouseholdCta variant="header" />, { wrapper })
     expect(await screen.findByRole('button', { name: 'Suas casas' })).toHaveTextContent(

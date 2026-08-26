@@ -1,44 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
-  HOUSEHOLDS_STORAGE_KEY,
   SESSION_STORAGE_KEY,
   clearHouseholdPersistence,
   defaultHouseholdSession,
   loadHouseholdSession,
-  loadHouseholds,
   saveHouseholdSession,
-  saveHouseholds,
 } from './persistence'
-import type { Household } from './types'
-
-const sample: Household = { id: 'h1', name: 'Casa Furst', role: 'admin' }
 
 describe('household persistence', () => {
   beforeEach(() => {
     sessionStorage.clear()
-  })
-
-  it('returns an empty list when nothing is stored', () => {
-    expect(loadHouseholds()).toEqual([])
-  })
-
-  it('round-trips households', () => {
-    saveHouseholds([sample])
-    expect(loadHouseholds()).toEqual([sample])
-  })
-
-  it('ignores invalid household payloads', () => {
-    sessionStorage.setItem(
-      HOUSEHOLDS_STORAGE_KEY,
-      JSON.stringify([{ nope: true }, null, 'x', sample]),
-    )
-    expect(loadHouseholds()).toEqual([sample])
-  })
-
-  it('returns an empty list when stored JSON is not an array', () => {
-    sessionStorage.setItem(HOUSEHOLDS_STORAGE_KEY, JSON.stringify({ id: 'h1' }))
-    expect(loadHouseholds()).toEqual([])
   })
 
   it('returns defaults when session is missing', () => {
@@ -60,11 +32,9 @@ describe('household persistence', () => {
     expect(loadHouseholdSession()).toEqual(defaultHouseholdSession())
   })
 
-  it('clears both keys', () => {
-    saveHouseholds([sample])
+  it('clears the session key', () => {
     saveHouseholdSession({ selectedId: 'h1', skippedCreate: true })
     clearHouseholdPersistence()
-    expect(sessionStorage.getItem(HOUSEHOLDS_STORAGE_KEY)).toBeNull()
     expect(sessionStorage.getItem(SESSION_STORAGE_KEY)).toBeNull()
   })
 
@@ -72,7 +42,7 @@ describe('household persistence', () => {
     const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
       throw new Error('quota')
     })
-    expect(() => saveHouseholds([sample])).not.toThrow()
+    expect(() => saveHouseholdSession({ selectedId: 'h1', skippedCreate: false })).not.toThrow()
     spy.mockRestore()
   })
 
@@ -80,7 +50,7 @@ describe('household persistence', () => {
     const spy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
       throw new Error('blocked')
     })
-    expect(loadHouseholds()).toEqual([])
+    expect(loadHouseholdSession()).toEqual(defaultHouseholdSession())
     spy.mockRestore()
   })
 

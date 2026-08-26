@@ -2,11 +2,7 @@ import { act, renderHook } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 
 import { setupStore } from '#/app/store'
-import {
-  configureHouseholdsApiMock,
-  householdsApi,
-  resetHouseholdsApiMock,
-} from '#/features/create-household/api/householdsApi'
+import { stubDomusApi } from '#/test/domusApi'
 
 import { createHouseholdsWrapper } from '../test/renderWithHouseholds'
 import { useCreateHousehold } from './useCreateHousehold'
@@ -14,13 +10,10 @@ import { useCreateHousehold } from './useCreateHousehold'
 describe('useCreateHousehold', () => {
   beforeEach(() => {
     sessionStorage.clear()
-    resetHouseholdsApiMock()
-    configureHouseholdsApiMock({ delayMs: 0 })
   })
 
   it('creates a household and selects it', async () => {
     const store = setupStore()
-    await store.dispatch(householdsApi.endpoints.getMyHouseholds.initiate())
     const { wrapper } = createHouseholdsWrapper({ store })
     const { result } = renderHook(() => useCreateHousehold(), { wrapper })
 
@@ -30,12 +23,12 @@ describe('useCreateHousehold', () => {
       createdId = household.id
     })
 
-    expect(createdId).not.toBe('')
+    expect(createdId).toBe('created-house')
     expect(store.getState().householdSession.selectedId).toBe(createdId)
   })
 
   it('surfaces a create error', async () => {
-    configureHouseholdsApiMock({ failNextCreate: true, delayMs: 0 })
+    stubDomusApi({ failCreate: true })
     const store = setupStore()
     const { wrapper } = createHouseholdsWrapper({ store })
     const { result } = renderHook(() => useCreateHousehold(), { wrapper })

@@ -19,7 +19,7 @@ import { HouseholdFeedback } from '../components/HouseholdFeedback'
 export function CreateHouseholdPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { isLoading, isError, refetch } = useMyHouseholds()
+  const { isLoading, isError, isNotProvisioned, refetch } = useMyHouseholds()
   const { skipCreate } = useHouseholdSession()
   const { createHousehold, isSubmitting, isError: isSubmitError, reset } = useCreateHousehold()
 
@@ -61,7 +61,12 @@ export function CreateHouseholdPage() {
       </IconButton>
 
       <Stack alignItems="center" spacing={2} sx={{ maxWidth: 640, mx: 'auto', pt: { xs: 2, md: 6 } }}>
-        {isError ? (
+        {isNotProvisioned ? (
+          <HouseholdFeedback
+            title={t('createHousehold.notProvisionedTitle')}
+            message={t('createHousehold.notProvisioned')}
+          />
+        ) : isError ? (
           <HouseholdFeedback onRetry={() => void refetch()} />
         ) : (
           <>
