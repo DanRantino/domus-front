@@ -16,6 +16,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { DomusMarkIcon } from '#/components/brand/DomusMarkIcon'
+import { HomeHouseholdCta } from '#/features/create-household/components/HomeHouseholdCta'
 import { fonts } from '#/theme/tokens'
 
 import { DashboardPreview } from './home/DashboardPreview'
@@ -139,9 +140,7 @@ export function HomePage() {
 
         <Stack direction="row" spacing={1.5} alignItems="center" sx={{ justifySelf: 'end' }}>
           <HomeSessionActions variant="header" />
-          <Button variant="contained" sx={{ ...landingCtaSx, display: { xs: 'none', sm: 'inline-flex' } }}>
-            {t('home.nav.createSpace')}
-          </Button>
+          <HomeHouseholdCta variant="header" />
           <IconButton
             aria-label={t('home.nav.menu')}
             onClick={() => setMenuOpen(true)}
@@ -186,9 +185,7 @@ export function HomePage() {
             </Link>
           ))}
           <HomeSessionActions variant="drawer" onNavigate={() => setMenuOpen(false)} />
-          <Button variant="contained" sx={landingCtaSx}>
-            {t('home.nav.createSpace')}
-          </Button>
+          <HomeHouseholdCta variant="drawer" onNavigate={() => setMenuOpen(false)} />
         </Stack>
       </Drawer>
 

@@ -1,5 +1,8 @@
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { configureStore } from '@reduxjs/toolkit'
+
+import { householdsApi } from '#/features/create-household/api/householdsApi'
+import { householdSessionReducer } from '#/features/create-household/slice/householdSessionSlice'
 
 export const api = createApi({
   reducerPath: 'api',
@@ -7,12 +10,23 @@ export const api = createApi({
   endpoints: () => ({}),
 })
 
-export const store = configureStore({
-  reducer: {
-    [api.reducerPath]: api.reducer,
-  },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
+const rootReducer = combineReducers({
+  [api.reducerPath]: api.reducer,
+  [householdsApi.reducerPath]: householdsApi.reducer,
+  householdSession: householdSessionReducer,
 })
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export function setupStore(preloadedState?: Partial<RootState>) {
+  return configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(api.middleware, householdsApi.middleware),
+    preloadedState,
+  })
+}
+
+export const store = setupStore()
+
+export type RootState = ReturnType<typeof rootReducer>
+export type AppStore = ReturnType<typeof setupStore>
+export type AppDispatch = AppStore['dispatch']
