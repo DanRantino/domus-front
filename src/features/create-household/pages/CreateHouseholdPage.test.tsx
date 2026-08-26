@@ -3,11 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import '#/i18n'
-import {
-  configureHouseholdsApiMock,
-  resetHouseholdsApiMock,
-} from '#/features/create-household/api/householdsApi'
-import { loadHouseholds } from '#/features/create-household/persistence'
+import { stubDomusApi } from '#/test/domusApi'
 
 import { createHouseholdsWrapper } from '../test/renderWithHouseholds'
 import { CreateHouseholdPage } from '../pages/CreateHouseholdPage'
@@ -27,21 +23,19 @@ vi.mock('@logto/react', () => ({
 describe('CreateHouseholdPage', () => {
   beforeEach(() => {
     sessionStorage.clear()
-    resetHouseholdsApiMock()
-    configureHouseholdsApiMock({ delayMs: 0 })
     mocks.isAuthenticated = true
     mocks.isLoading = false
   })
 
   it('shows a skeleton while loading', () => {
-    configureHouseholdsApiMock({ delayMs: 10_000 })
+    stubDomusApi({ hangGet: true })
     const { wrapper } = createHouseholdsWrapper()
     render(<CreateHouseholdPage />, { wrapper })
     expect(screen.getByLabelText('Carregando suas casas...')).toBeInTheDocument()
   })
 
   it('shows an error fallback and retries', async () => {
-    configureHouseholdsApiMock({ failNextGet: true, delayMs: 0 })
+    stubDomusApi({ failGet: true })
     const { wrapper } = createHouseholdsWrapper()
     render(<CreateHouseholdPage />, { wrapper })
 
@@ -51,8 +45,17 @@ describe('CreateHouseholdPage', () => {
     expect(await screen.findByRole('heading', { name: 'Como chamamos sua Domus?' })).toBeInTheDocument()
   })
 
-  it('creates a household and persists it', async () => {
+  it('shows a not-provisioned state', async () => {
+    stubDomusApi({ notProvisioned: true })
     const { wrapper } = createHouseholdsWrapper()
+    render(<CreateHouseholdPage />, { wrapper })
+
+    expect(await screen.findByRole('heading', { name: 'Sem acesso à Domus' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Tentar de novo' })).not.toBeInTheDocument()
+  })
+
+  it('creates a household and selects it', async () => {
+    const { wrapper, store } = createHouseholdsWrapper()
     render(<CreateHouseholdPage />, { wrapper })
 
     expect(await screen.findByRole('heading', { name: 'Como chamamos sua Domus?' })).toBeInTheDocument()
@@ -61,7 +64,7 @@ describe('CreateHouseholdPage', () => {
     await user.click(screen.getByRole('button', { name: 'Criar minha Domus →' }))
 
     await waitFor(() => {
-      expect(loadHouseholds().map((item) => item.name)).toEqual(['Casa Furst'])
+      expect(store.getState().householdSession.selectedId).toBe('created-house')
     })
   })
 
@@ -76,7 +79,7 @@ describe('CreateHouseholdPage', () => {
   })
 
   it('shows a mutation error', async () => {
-    configureHouseholdsApiMock({ failNextCreate: true, delayMs: 0 })
+    stubDomusApi({ failCreate: true })
     const { wrapper } = createHouseholdsWrapper()
     render(<CreateHouseholdPage />, { wrapper })
 

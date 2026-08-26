@@ -1,11 +1,11 @@
 import { useAppDispatch } from '#/app/hooks'
 
-import { useCreateHouseholdMutation } from '../api/householdsApi'
+import { useCreateHouseMutation } from '../api/housesApi'
 import { selectHousehold } from '../slice/householdSessionSlice'
 
 export function useCreateHousehold() {
   const dispatch = useAppDispatch()
-  const [create, result] = useCreateHouseholdMutation()
+  const [create, result] = useCreateHouseMutation()
 
   async function createHousehold(name: string) {
     const household = await create({ name }).unwrap()

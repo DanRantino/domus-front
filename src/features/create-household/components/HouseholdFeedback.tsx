@@ -10,7 +10,7 @@ type HouseholdFeedbackProps = {
   compact?: boolean
   title?: string
   message?: string
-  onRetry: () => void
+  onRetry?: () => void
 }
 
 export function HouseholdFeedback({
@@ -35,14 +35,16 @@ export function HouseholdFeedback({
         <Typography variant="caption" sx={{ color: landing.muted, lineHeight: 1.3 }}>
           {resolvedMessage}
         </Typography>
-        <Button
-          variant="text"
-          size="small"
-          onClick={onRetry}
-          sx={{ color: landing.cream, flexShrink: 0, minWidth: 0, px: 1 }}
-        >
-          {t('createHousehold.retry')}
-        </Button>
+        {onRetry ? (
+          <Button
+            variant="text"
+            size="small"
+            onClick={onRetry}
+            sx={{ color: landing.cream, flexShrink: 0, minWidth: 0, px: 1 }}
+          >
+            {t('createHousehold.retry')}
+          </Button>
+        ) : null}
       </Stack>
     )
   }
@@ -63,9 +65,11 @@ export function HouseholdFeedback({
       >
         {resolvedMessage}
       </Alert>
-      <Button variant="contained" onClick={onRetry} sx={landingCtaSx}>
-        {t('createHousehold.retry')}
-      </Button>
+      {onRetry ? (
+        <Button variant="contained" onClick={onRetry} sx={landingCtaSx}>
+          {t('createHousehold.retry')}
+        </Button>
+      ) : null}
     </Stack>
   )
 }

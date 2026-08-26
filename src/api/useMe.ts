@@ -1,19 +1,18 @@
 import { useLogto } from '@logto/react'
 
 import { isNotProvisionedError } from '#/api/baseQuery'
+import { useGetMeQuery } from '#/api/me'
 
-import { useGetHousesQuery } from '../api/housesApi'
-
-export function useMyHouseholds() {
+export function useMe() {
   const { isAuthenticated, isLoading: isAuthLoading } = useLogto()
-  const query = useGetHousesQuery(undefined, {
+  const query = useGetMeQuery(undefined, {
     skip: !isAuthenticated,
   })
 
   const isQueryLoading = isAuthenticated && (query.isUninitialized || query.isLoading)
 
   return {
-    households: query.data ?? [],
+    me: query.data,
     isAuthLoading,
     isLoading: isAuthLoading || isQueryLoading,
     isError: query.isError,

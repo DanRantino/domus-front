@@ -22,10 +22,11 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
-      include: ['src/features/create-household/**'],
+      include: ['src/features/create-household/**', 'src/api/**'],
       exclude: [
         'src/features/create-household/**/*.{test,spec}.{ts,tsx}',
         'src/features/create-household/test/**',
+        'src/api/**/*.{test,spec}.{ts,tsx}',
       ],
       thresholds: {
         lines: 90,

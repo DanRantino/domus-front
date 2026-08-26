@@ -6,11 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import '#/i18n'
 import { setupStore } from '#/app/store'
-import {
-  configureHouseholdsApiMock,
-  resetHouseholdsApiMock,
-} from '#/features/create-household/api/householdsApi'
-import { saveHouseholds } from '#/features/create-household/persistence'
+import { stubDomusApi } from '#/test/domusApi'
 import { AppThemeProvider } from '#/theme/AppThemeProvider'
 
 import { HomePage } from './HomePage'
@@ -51,8 +47,6 @@ function renderHome() {
 describe('HomePage', () => {
   beforeEach(() => {
     sessionStorage.clear()
-    resetHouseholdsApiMock()
-    configureHouseholdsApiMock({ delayMs: 0 })
     mocks.isAuthenticated = false
     mocks.isLoading = false
     mocks.config = undefined
@@ -148,7 +142,7 @@ describe('HomePage', () => {
   it('shows a household skeleton while memberships are loading', () => {
     mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
     mocks.isAuthenticated = true
-    configureHouseholdsApiMock({ delayMs: 10_000 })
+    stubDomusApi({ hangGet: true })
 
     renderHome()
 
@@ -158,7 +152,7 @@ describe('HomePage', () => {
   it('shows a household dropdown when the visitor already has a Domus', async () => {
     mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
     mocks.isAuthenticated = true
-    saveHouseholds([{ id: 'h1', name: 'Casa Furst', role: 'admin' }])
+    stubDomusApi({ houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }] })
 
     renderHome()
 

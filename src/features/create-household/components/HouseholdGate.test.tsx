@@ -4,13 +4,9 @@ import { Routes, Route } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import '#/i18n'
-import { saveHouseholds } from '#/features/create-household/persistence'
-import {
-  configureHouseholdsApiMock,
-  resetHouseholdsApiMock,
-} from '#/features/create-household/api/householdsApi'
 import { skipCreate } from '#/features/create-household/slice/householdSessionSlice'
 import { setupStore } from '#/app/store'
+import { stubDomusApi } from '#/test/domusApi'
 
 import { createHouseholdsWrapper } from '../test/renderWithHouseholds'
 import { HouseholdGate } from './HouseholdGate'
@@ -48,21 +44,19 @@ function renderGate(store = setupStore()) {
 describe('HouseholdGate', () => {
   beforeEach(() => {
     sessionStorage.clear()
-    resetHouseholdsApiMock()
-    configureHouseholdsApiMock({ delayMs: 0 })
     mocks.isAuthenticated = true
     mocks.isLoading = false
   })
 
   it('shows a skeleton while loading', () => {
-    configureHouseholdsApiMock({ delayMs: 10_000 })
+    stubDomusApi({ hangGet: true })
     renderGate()
     expect(screen.getByLabelText('Carregando...')).toBeInTheDocument()
     expect(screen.queryByText('Create page')).not.toBeInTheDocument()
   })
 
   it('shows an error fallback instead of redirecting', async () => {
-    configureHouseholdsApiMock({ failNextGet: true, delayMs: 0 })
+    stubDomusApi({ failGet: true })
     renderGate()
     expect(await screen.findByRole('heading', { name: 'Algo deu errado' })).toBeInTheDocument()
     expect(screen.queryByText('Create page')).not.toBeInTheDocument()
@@ -71,13 +65,20 @@ describe('HouseholdGate', () => {
     expect(await screen.findByText('Create page')).toBeInTheDocument()
   })
 
+  it('shows a not-provisioned state without retry', async () => {
+    stubDomusApi({ notProvisioned: true })
+    renderGate()
+    expect(await screen.findByRole('heading', { name: 'Sem acesso à Domus' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Tentar de novo' })).not.toBeInTheDocument()
+  })
+
   it('redirects to create when there are no households', async () => {
     renderGate()
     expect(await screen.findByText('Create page')).toBeInTheDocument()
   })
 
   it('renders children when the visitor already has a household', async () => {
-    saveHouseholds([{ id: 'h1', name: 'Casa Furst', role: 'admin' }])
+    stubDomusApi({ houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }] })
     renderGate()
     expect(await screen.findByText('Dashboard ok')).toBeInTheDocument()
   })

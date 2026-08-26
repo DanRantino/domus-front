@@ -36,4 +36,15 @@ describe('HouseholdFeedback', () => {
     await user.click(screen.getByRole('button', { name: 'Tentar de novo' }))
     expect(onRetry).toHaveBeenCalled()
   })
+
+  it('renders compact copy without retry', () => {
+    render(
+      <AppThemeProvider>
+        <HouseholdFeedback compact message="Sem acesso" />
+      </AppThemeProvider>,
+    )
+
+    expect(screen.getByText('Sem acesso')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Tentar de novo' })).not.toBeInTheDocument()
+  })
 })

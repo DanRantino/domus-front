@@ -1,11 +1,7 @@
 import { renderHook } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { saveHouseholds } from '#/features/create-household/persistence'
-import {
-  configureHouseholdsApiMock,
-  resetHouseholdsApiMock,
-} from '#/features/create-household/api/householdsApi'
+import { stubDomusApi } from '#/test/domusApi'
 
 import { createHouseholdsWrapper } from '../test/renderWithHouseholds'
 import { useMyHouseholds } from './useMyHouseholds'
@@ -25,8 +21,6 @@ vi.mock('@logto/react', () => ({
 describe('useMyHouseholds', () => {
   beforeEach(() => {
     sessionStorage.clear()
-    resetHouseholdsApiMock()
-    configureHouseholdsApiMock({ delayMs: 0 })
     mocks.isAuthenticated = false
     mocks.isLoading = false
   })
@@ -47,7 +41,7 @@ describe('useMyHouseholds', () => {
 
   it('loads households when authenticated', async () => {
     mocks.isAuthenticated = true
-    saveHouseholds([{ id: 'h1', name: 'Casa Furst', role: 'admin' }])
+    stubDomusApi({ houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }] })
     const { wrapper } = createHouseholdsWrapper()
     const { result } = renderHook(() => useMyHouseholds(), { wrapper })
 
@@ -55,5 +49,16 @@ describe('useMyHouseholds', () => {
       expect(result.current.isSuccess).toBe(true)
     })
     expect(result.current.households).toEqual([{ id: 'h1', name: 'Casa Furst', role: 'admin' }])
+  })
+
+  it('flags not_provisioned', async () => {
+    mocks.isAuthenticated = true
+    stubDomusApi({ notProvisioned: true })
+    const { wrapper } = createHouseholdsWrapper()
+    const { result } = renderHook(() => useMyHouseholds(), { wrapper })
+
+    await vi.waitFor(() => {
+      expect(result.current.isNotProvisioned).toBe(true)
+    })
   })
 })
