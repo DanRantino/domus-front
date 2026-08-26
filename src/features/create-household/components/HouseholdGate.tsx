@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import { Navigate } from 'react-router'
-import { useTranslation } from 'react-i18next'
 
 import { useHouseholdSession } from '../hooks/useHouseholdSession'
 import { useMyHouseholds } from '../hooks/useMyHouseholds'
@@ -12,28 +11,19 @@ type HouseholdGateProps = {
 }
 
 export function HouseholdGate({ children }: HouseholdGateProps) {
-  const { t } = useTranslation()
   const { households, isLoading, isError, isNotProvisioned, refetch } = useMyHouseholds()
   const { skippedCreate } = useHouseholdSession()
+  const hasNoHouseholds = isNotProvisioned || households.length === 0
 
   if (isLoading) {
     return <HouseholdGateSkeleton />
   }
 
-  if (isNotProvisioned) {
-    return (
-      <HouseholdFeedback
-        title={t('createHousehold.notProvisionedTitle')}
-        message={t('createHousehold.notProvisioned')}
-      />
-    )
-  }
-
-  if (isError) {
+  if (isError && !isNotProvisioned) {
     return <HouseholdFeedback onRetry={() => void refetch()} />
   }
 
-  if (households.length === 0 && !skippedCreate) {
+  if (hasNoHouseholds && !skippedCreate) {
     return <Navigate to="/houses/new" replace />
   }
 

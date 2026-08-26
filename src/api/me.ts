@@ -18,7 +18,14 @@ export const meApi = api.injectEndpoints({
       query: () => '/users/me',
       providesTags: ['Me'],
     }),
+    provisionMe: build.mutation<Me, void>({
+      query: () => ({
+        url: '/users/me',
+        method: 'POST',
+      }),
+      invalidatesTags: ['Me'],
+    }),
   }),
 })
 
-export const { useGetMeQuery } = meApi
+export const { useGetMeQuery, useProvisionMeMutation } = meApi

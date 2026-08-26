@@ -65,11 +65,10 @@ describe('HouseholdGate', () => {
     expect(await screen.findByText('Create page')).toBeInTheDocument()
   })
 
-  it('shows a not-provisioned state without retry', async () => {
+  it('redirects to create when the caller is not provisioned', async () => {
     stubDomusApi({ notProvisioned: true })
     renderGate()
-    expect(await screen.findByRole('heading', { name: 'Sem acesso à Domus' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Tentar de novo' })).not.toBeInTheDocument()
+    expect(await screen.findByText('Create page')).toBeInTheDocument()
   })
 
   it('redirects to create when there are no households', async () => {

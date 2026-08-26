@@ -31,4 +31,16 @@ describe('getMe', () => {
       data: { code: 'not_provisioned' },
     })
   })
+
+  it('provisions the current user', async () => {
+    stubDomusApi({ notProvisioned: true })
+    const store = setupStore()
+    const result = await store.dispatch(meApi.endpoints.provisionMe.initiate())
+
+    expect('data' in result && result.data).toMatchObject({
+      id: 'user-1',
+      theme: 'system',
+      houses: [],
+    })
+  })
 })

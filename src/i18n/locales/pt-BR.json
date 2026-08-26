@@ -115,8 +115,6 @@
     "submitError": "Não foi possível criar sua Domus.",
     "switcherLabel": "Suas casas",
     "selected": "Casa selecionada",
-    "gateLoading": "Carregando...",
-    "notProvisionedTitle": "Sem acesso à Domus",
-    "notProvisioned": "Sua conta ainda não foi liberada neste espaço."
+    "gateLoading": "Carregando..."
   }
 }

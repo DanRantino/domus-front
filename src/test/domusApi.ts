@@ -33,6 +33,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
   const houses = [...(options.houses ?? [])]
   let failGet = options.failGet ?? false
   let failCreate = options.failCreate ?? false
+  let notProvisioned = options.notProvisioned ?? false
 
   if (options.hangGet) {
     vi.stubGlobal('fetch', () => new Promise(() => {}))
@@ -51,7 +52,27 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
       input instanceof Request ? input.method : (init?.method ?? 'GET')
     ).toUpperCase()
 
-    if (options.notProvisioned) {
+    if (method === 'POST' && pathname === '/users/me') {
+      if (!notProvisioned) {
+        return failEnvelope(409, 'already_exists', 'User already exists')
+      }
+
+      notProvisioned = false
+      return okEnvelope(
+        {
+          id: 'user-1',
+          full_name: null,
+          notify_daily_tasks: true,
+          notify_expenses: true,
+          notify_family_chat: true,
+          theme: 'system',
+          houses,
+        },
+        201,
+      )
+    }
+
+    if (notProvisioned) {
       return failEnvelope(403, 'not_provisioned', 'User is not provisioned')
     }
 
