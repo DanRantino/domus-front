@@ -96,5 +96,25 @@
     "hello": "Hello",
     "configMissing": "Authentication is not configured.",
     "redirecting": "Connecting..."
+  },
+  "createHousehold": {
+    "eyebrow": "Your Domus",
+    "title": "What do we call your Domus?",
+    "description": "It can be the family name, the address, or how you usually call home.",
+    "nameLabel": "Domus name",
+    "namePlaceholder": "Casa Furst",
+    "nameRequired": "Enter a name for your Domus.",
+    "nameTooLong": "Use 80 characters or fewer.",
+    "submit": "Create my Domus →",
+    "decideLater": "Decide later",
+    "back": "Back",
+    "loading": "Loading your homes...",
+    "error": "We could not load your homes.",
+    "errorTitle": "Something went wrong",
+    "retry": "Try again",
+    "submitError": "We could not create your Domus.",
+    "switcherLabel": "Your homes",
+    "selected": "Selected home",
+    "gateLoading": "Loading..."
   }
 }

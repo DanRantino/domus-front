@@ -1,10 +1,19 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
+import { Provider } from 'react-redux'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import '#/i18n'
+import { setupStore } from '#/app/store'
+import {
+  configureHouseholdsApiMock,
+  resetHouseholdsApiMock,
+} from '#/features/create-household/api/householdsApi'
+import { saveHouseholds } from '#/features/create-household/persistence'
 import { AppThemeProvider } from '#/theme/AppThemeProvider'
+
+import { HomePage } from './HomePage'
 
 const mocks = vi.hoisted(() => ({
   isAuthenticated: false,
@@ -27,13 +36,13 @@ vi.mock('#/auth/logtoConfig', () => ({
   getLogtoConfig: () => mocks.config,
 }))
 
-import { HomePage } from './HomePage'
-
 function renderHome() {
   return render(
     <MemoryRouter>
       <AppThemeProvider>
-        <HomePage />
+        <Provider store={setupStore()}>
+          <HomePage />
+        </Provider>
       </AppThemeProvider>
     </MemoryRouter>,
   )
@@ -41,6 +50,9 @@ function renderHome() {
 
 describe('HomePage', () => {
   beforeEach(() => {
+    sessionStorage.clear()
+    resetHouseholdsApiMock()
+    configureHouseholdsApiMock({ delayMs: 0 })
     mocks.isAuthenticated = false
     mocks.isLoading = false
     mocks.config = undefined
@@ -56,7 +68,10 @@ describe('HomePage', () => {
     ).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Entrar' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Começar' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Criar seu espaço' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Criar seu espaço' })).toHaveAttribute(
+      'href',
+      '/houses/new',
+    )
     expect(
       screen.getByRole('heading', { name: 'Uma casa, um lugar para tudo.' }),
     ).toBeInTheDocument()
@@ -101,6 +116,7 @@ describe('HomePage', () => {
       expect(account.querySelector('img')).toHaveAttribute('src', 'https://idp.test/photo.png')
     })
     expect(screen.queryByRole('link', { name: 'Entrar' })).not.toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: 'Criar seu espaço' })).toBeInTheDocument()
   })
 
   it('falls back to an initial when the IdP session has no picture', async () => {
@@ -127,5 +143,27 @@ describe('HomePage', () => {
 
     expect(screen.getByRole('link', { name: 'Entrar' })).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'Ir para o dashboard' })).not.toBeInTheDocument()
+  })
+
+  it('shows a household skeleton while memberships are loading', () => {
+    mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
+    mocks.isAuthenticated = true
+    configureHouseholdsApiMock({ delayMs: 10_000 })
+
+    renderHome()
+
+    expect(screen.getByLabelText('Carregando suas casas...')).toBeInTheDocument()
+  })
+
+  it('shows a household dropdown when the visitor already has a Domus', async () => {
+    mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
+    mocks.isAuthenticated = true
+    saveHouseholds([{ id: 'h1', name: 'Casa Furst', role: 'admin' }])
+
+    renderHome()
+
+    expect(await screen.findByRole('button', { name: 'Suas casas' })).toHaveTextContent(
+      'Casa Furst',
+    )
   })
 })
