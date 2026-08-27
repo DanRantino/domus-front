@@ -9,6 +9,7 @@
       "menu": "Abrir menu",
       "close": "Fechar menu",
       "login": "Entrar",
+      "account": "Ir para o dashboard",
       "createSpace": "Criar seu espaço"
     },
     "hero": {
@@ -90,5 +91,32 @@
       "press": "Press kit",
       "copyright": "© 2026 Domus Household. Feito para durar."
     }
+  },
+  "dashboard": {
+    "hello": "Olá",
+    "configMissing": "Autenticação não configurada.",
+    "redirecting": "Conectando..."
+  },
+  "createHousehold": {
+    "eyebrow": "Sua Domus",
+    "title": "Como chamamos sua Domus?",
+    "description": "Pode ser o nome da família, o endereço, ou como vocês costumam chamar o lar.",
+    "nameLabel": "Nome da Domus",
+    "namePlaceholder": "Casa Furst",
+    "nameRequired": "Informe o nome da Domus.",
+    "nameTooLong": "Use no máximo 80 caracteres.",
+    "submit": "Criar minha Domus →",
+    "decideLater": "Decidir mais tarde",
+    "back": "Voltar",
+    "loading": "Carregando suas casas...",
+    "error": "Não foi possível carregar suas casas.",
+    "errorTitle": "Algo deu errado",
+    "retry": "Tentar de novo",
+    "submitError": "Não foi possível criar sua Domus.",
+    "switcherLabel": "Suas casas",
+    "selected": "Casa selecionada",
+    "gateLoading": "Carregando...",
+    "notProvisionedTitle": "Sem acesso à Domus",
+    "notProvisioned": "Sua conta ainda não foi liberada neste espaço."
   }
 }

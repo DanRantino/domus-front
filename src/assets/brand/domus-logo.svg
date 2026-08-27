@@ -7,26 +7,52 @@
 >
   <title>DOMUS</title>
   <rect width="512" height="512" fill="#EFEBE3" />
-  <g fill="#2D2D2D" transform="translate(92.78 226.00) scale(0.62)">
-    <g transform="translate(0 0)">
-<path d="M6 0h20.5v100H6V0ZM0 0h28.5v3.2H0V0ZM0 96.8h28.5V100H0v-3.2Z"/>
-<path fill-rule="evenodd" d="M24 1.6C64 1.6 88 20 88 50s-24 48.4-64 48.4V1.6ZM26 5.8C58 5.8 70 24 70 50s-12 44.2-44 44.2V5.8Z"/>
+  <g fill="#2D2D2D" transform="translate(87.21 227.00) scale(0.62)">
+    <g transform="translate(0.00)">
+      <path d="M6 0h20.5v100H6V0ZM0 0h28.5v3.2H0V0ZM0 96.8h28.5V100H0v-3.2Z" />
+      <path fill-rule="evenodd" d="M24 1.6C64 1.6 88 20 88 50s-24 48.4-64 48.4V1.6ZM26 5.8C58 5.8 70 24 70 50s-12 44.2-44 44.2V5.8Z" />
     </g>
-    <g transform="translate(106 0)">
-<path fill-rule="evenodd" d="M50-2.2a52.2 52.2 0 1 1 0 104.4A52.2 52.2 0 1 1 50-2.2ZM50 6.2a31.2 43.8 0 1 0 0 87.6 31.2 43.8 0 1 0 0-87.6Z"/>
+    <g transform="translate(106.00)">
+      <path fill-rule="evenodd" d="M50-2.2a52.2 52.2 0 1 1 0 104.4A52.2 52.2 0 1 1 50-2.2ZM50 6.2a31.2 43.8 0 1 0 0 87.6 31.2 43.8 0 1 0 0-87.6Z" />
     </g>
-    <g transform="translate(222 0)">
-<path d="M6 0h20.5v100H6V0ZM0 0h29v3.2H0V0ZM0 96.8h29V100H0v-3.2Z"/>
-<path d="M95.5 0H116v100H95.5V0ZM93 0h29v3.2H93V0ZM93 96.8h29V100h-29v-3.2Z"/>
-<path fill="none" stroke="#2D2D2D" stroke-width="6.2" stroke-linejoin="miter" stroke-miterlimit="10" d="M26.2 22.2 61 3.4 95.8 22.2 61 82.5Z"/>
+    <g transform="translate(222.00 -10.00) scale(0.5)">
+        <defs>
+          <mask id="domusRoofGapLogo" maskUnits="userSpaceOnUse">
+            <rect x="0" y="0" width="280" height="240" fill="#fff" />
+            <polyline
+              points="14,128 140,28 266,128"
+              fill="none"
+              stroke="#000"
+              stroke-width="22.0"
+              stroke-linejoin="miter"
+              stroke-miterlimit="8"
+              stroke-linecap="butt"
+            />
+          </mask>
+        </defs>
+        <g fill="#2D2D2D">
+          <g mask="url(#domusRoofGapLogo)">
+            <path d="M52.00,20.00h24.00v200.00h-24.00Z M42.00,20.00h38.00v7.50h-38.00Z M42.00,212.50h42.00v7.50h-42.00Z M204.00,20.00h24.00v200.00h-24.00Z M200.00,20.00h38.00v7.50h-38.00Z M196.00,212.50h42.00v7.50h-42.00Z" />
+          </g>
+          <polyline
+            points="14,128 140,28 266,128"
+            fill="none"
+            stroke="#2D2D2D"
+            stroke-width="13"
+            stroke-linejoin="miter"
+            stroke-miterlimit="8"
+            stroke-linecap="butt"
+          />
+          <path d="M67.90,30.92 L132.90,221.42 L147.10,216.58 L82.10,26.08 Z M197.90,26.08 L132.90,216.58 L147.10,221.42 L212.10,30.92 Z" />
+        </g>
     </g>
-    <g transform="translate(360 0)">
-<path d="M6 0h20.5v68H6V0ZM0 0h28.5v3.2H0V0Z"/>
-<path d="M67.8 0h6.4v68h-6.4V0Zm-3.2 0h13.2v3.2H64.6V0Z"/>
-<path d="M6 62C6 90 20.5 100 40.1 100S74.2 90 74.2 62H67.8C67.8 84.5 55 89.5 40.1 89.5S26.5 84.5 26.5 62H6Z"/>
+    <g transform="translate(378.00)">
+      <path d="M6 0h20.5v68H6V0ZM0 0h28.5v3.2H0V0Z" />
+      <path d="M67.8 0h6.4v68h-6.4V0Zm-3.2 0h13.2v3.2H64.6V0Z" />
+      <path d="M6 62C6 90 20.5 100 40.1 100S74.2 90 74.2 62H67.8C67.8 84.5 55 89.5 40.1 89.5S26.5 84.5 26.5 62H6Z" />
     </g>
-    <g transform="translate(456.5 0)">
-<path fill="none" stroke="#2D2D2D" stroke-width="11" stroke-linecap="butt" stroke-linejoin="round" d="M53 23.5C53 13.5 44.5 8.5 34.5 8.5 21.5 8.5 13.5 17 13.5 28.5 13.5 41 24.5 48.5 39.5 55.5 54.5 62.5 62.5 71.5 62.5 83.5 62.5 93.5 53.5 98.5 39.5 98.5 26.5 98.5 17.5 91 15.5 82"/>
+    <g transform="translate(474.50)">
+      <path fill="none" stroke="#2D2D2D" stroke-width="11" stroke-linecap="butt" stroke-linejoin="round" d="M53 22C53 12.5 44.5 6.2 34.5 6.2 21.5 6.2 13.5 16 13.5 28 13.5 41 24.5 48.5 39.5 55.5 54.5 62.5 62.5 71.5 62.5 83 62.5 92.8 53.5 94.8 39.5 94.8 26.5 94.8 17.5 88 15.5 80" />
     </g>
   </g>
 </svg>
