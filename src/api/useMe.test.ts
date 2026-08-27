@@ -6,34 +6,23 @@ import { useMe } from '#/api/useMe'
 
 import { createHouseholdsWrapper } from '#/features/create-household/test/renderWithHouseholds'
 
-const mocks = vi.hoisted(() => ({
-  isAuthenticated: false,
-  isLoading: false,
-}))
-
-vi.mock('@logto/react', () => ({
-  useLogto: () => ({
-    isAuthenticated: mocks.isAuthenticated,
-    isLoading: mocks.isLoading,
-  }),
-}))
-
 describe('useMe', () => {
   beforeEach(() => {
-    mocks.isAuthenticated = false
-    mocks.isLoading = false
+    stubDomusApi({ authenticated: false })
   })
 
-  it('skips the query for guests', () => {
+  it('skips the query for guests', async () => {
     const { wrapper } = createHouseholdsWrapper()
     const { result } = renderHook(() => useMe(), { wrapper })
+    await vi.waitFor(() => {
+      expect(result.current.isAuthLoading).toBe(false)
+    })
     expect(result.current.me).toBeUndefined()
     expect(result.current.isLoading).toBe(false)
   })
 
   it('loads me when authenticated', async () => {
-    mocks.isAuthenticated = true
-    stubDomusApi()
+    stubDomusApi({ authenticated: true })
     const { wrapper } = createHouseholdsWrapper()
     const { result } = renderHook(() => useMe(), { wrapper })
 

@@ -1,7 +1,6 @@
-import { useLogto } from '@logto/react'
 import { useTranslation } from 'react-i18next'
 
-import { getLogtoConfig } from '#/auth/logtoConfig'
+import { useAuthSession } from '#/auth/useAuthSession'
 
 import { useMyHouseholds } from '../hooks/useMyHouseholds'
 import { CreateSpaceButton } from './CreateSpaceButton'
@@ -17,9 +16,13 @@ type HomeHouseholdCtaProps = {
 }
 
 export function HomeHouseholdCta({ variant, onNavigate }: HomeHouseholdCtaProps) {
-  const config = getLogtoConfig()
+  const { isAuthenticated, isLoading } = useAuthSession()
 
-  if (!config) {
+  if (isLoading) {
+    return <HouseholdCtaSkeleton variant={variant} />
+  }
+
+  if (!isAuthenticated) {
     return <CreateSpaceButton variant={variant} onNavigate={onNavigate} />
   }
 
@@ -27,13 +30,8 @@ export function HomeHouseholdCta({ variant, onNavigate }: HomeHouseholdCtaProps)
 }
 
 function AuthenticatedHouseholdCta({ variant, onNavigate }: HomeHouseholdCtaProps) {
-  const { isAuthenticated } = useLogto()
   const { t } = useTranslation()
   const { households, isLoading, isError, isNotProvisioned, refetch } = useMyHouseholds()
-
-  if (!isAuthenticated) {
-    return <CreateSpaceButton variant={variant} onNavigate={onNavigate} />
-  }
 
   if (isLoading) {
     return <HouseholdCtaSkeleton variant={variant} />

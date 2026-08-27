@@ -1,10 +1,9 @@
-import { useLogto } from '@logto/react'
-
 import { isNotProvisionedError } from '#/api/baseQuery'
 import { useGetMeQuery } from '#/api/me'
+import { useAuthSession } from '#/auth/useAuthSession'
 
 export function useMe() {
-  const { isAuthenticated, isLoading: isAuthLoading } = useLogto()
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuthSession()
   const query = useGetMeQuery(undefined, {
     skip: !isAuthenticated,
   })

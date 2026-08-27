@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 
 import '#/i18n'
 import { stubDomusApi } from '#/test/domusApi'
@@ -8,34 +8,21 @@ import { stubDomusApi } from '#/test/domusApi'
 import { createHouseholdsWrapper } from '../test/renderWithHouseholds'
 import { CreateHouseholdPage } from '../pages/CreateHouseholdPage'
 
-const mocks = vi.hoisted(() => ({
-  isAuthenticated: true,
-  isLoading: false,
-}))
-
-vi.mock('@logto/react', () => ({
-  useLogto: () => ({
-    isAuthenticated: mocks.isAuthenticated,
-    isLoading: mocks.isLoading,
-  }),
-}))
-
 describe('CreateHouseholdPage', () => {
   beforeEach(() => {
     sessionStorage.clear()
-    mocks.isAuthenticated = true
-    mocks.isLoading = false
+    stubDomusApi({ authenticated: true })
   })
 
   it('shows a skeleton while loading', () => {
-    stubDomusApi({ hangGet: true })
+    stubDomusApi({ authenticated: true, hangGet: true })
     const { wrapper } = createHouseholdsWrapper()
     render(<CreateHouseholdPage />, { wrapper })
     expect(screen.getByLabelText('Carregando suas casas...')).toBeInTheDocument()
   })
 
   it('shows an error fallback and retries', async () => {
-    stubDomusApi({ failGet: true })
+    stubDomusApi({ authenticated: true, failGet: true })
     const { wrapper } = createHouseholdsWrapper()
     render(<CreateHouseholdPage />, { wrapper })
 
@@ -46,7 +33,7 @@ describe('CreateHouseholdPage', () => {
   })
 
   it('shows a not-provisioned state', async () => {
-    stubDomusApi({ notProvisioned: true })
+    stubDomusApi({ authenticated: true, notProvisioned: true })
     const { wrapper } = createHouseholdsWrapper()
     render(<CreateHouseholdPage />, { wrapper })
 
@@ -79,7 +66,7 @@ describe('CreateHouseholdPage', () => {
   })
 
   it('shows a mutation error', async () => {
-    stubDomusApi({ failCreate: true })
+    stubDomusApi({ authenticated: true, failCreate: true })
     const { wrapper } = createHouseholdsWrapper()
     render(<CreateHouseholdPage />, { wrapper })
 
