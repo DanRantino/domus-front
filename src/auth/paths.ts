@@ -1,10 +1,14 @@
 export function apiBaseUrl(): string {
-  const url = import.meta.env.VITE_DOMUS_API_BASE_URL
-  if (!url) {
+  return resolveApiBaseUrl(import.meta.env.VITE_DOMUS_API_BASE_URL)
+}
+
+export function resolveApiBaseUrl(url?: string): string {
+  const trimmed = url?.trim()
+  if (!trimmed || /^https?:\/\//i.test(trimmed)) {
     return '/api'
   }
 
-  return url.endsWith('/') ? url.slice(0, -1) : url
+  return trimmed.endsWith('/') ? trimmed.slice(0, -1) : trimmed
 }
 
 export function authLoginPath(returnUrl = '/dashboard'): string {

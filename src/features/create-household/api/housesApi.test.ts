@@ -42,6 +42,8 @@ describe('housesApi', () => {
     const store = setupStore()
     await store.dispatch(housesApi.endpoints.getHouses.initiate())
     expect(fetchMock).toHaveBeenCalled()
+    const requested = fetchMock.mock.calls[0]?.[0]
+    expect(String(requested)).toBe('/api/houses')
   })
 
   it('unwraps a 403 not_provisioned envelope', async () => {
