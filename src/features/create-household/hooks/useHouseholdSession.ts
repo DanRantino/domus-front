@@ -1,9 +1,6 @@
 import { useAppDispatch, useAppSelector } from '#/app/hooks'
 
-import {
-  selectHousehold,
-  skipCreate,
-} from '../slice/householdSessionSlice'
+import { selectHousehold, skipCreate } from '../slice/householdSessionSlice'
 
 export function useHouseholdSession() {
   const dispatch = useAppDispatch()

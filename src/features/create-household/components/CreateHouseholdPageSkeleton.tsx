@@ -33,11 +33,20 @@ export function CreateHouseholdPageSkeleton() {
         <ArrowBack />
       </IconButton>
 
-      <Stack alignItems="center" spacing={2} sx={{ maxWidth: 560, mx: 'auto', pt: { xs: 2, md: 6 } }}>
+      <Stack
+        alignItems="center"
+        spacing={2}
+        sx={{ maxWidth: 560, mx: 'auto', pt: { xs: 2, md: 6 } }}
+      >
         <Skeleton variant="text" width={96} height={20} sx={{ bgcolor: landing.line }} />
         <Skeleton variant="text" width="80%" height={56} sx={{ bgcolor: landing.line }} />
         <Skeleton variant="text" width="90%" height={48} sx={{ bgcolor: landing.line }} />
-        <Skeleton variant="rectangular" width="100%" height={48} sx={{ bgcolor: landing.line, mt: 4 }} />
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height={48}
+          sx={{ bgcolor: landing.line, mt: 4 }}
+        />
         <Skeleton variant="rounded" width="70%" height={52} sx={{ bgcolor: landing.line, mt: 4 }} />
         <Skeleton variant="text" width={140} height={24} sx={{ bgcolor: landing.line }} />
       </Stack>

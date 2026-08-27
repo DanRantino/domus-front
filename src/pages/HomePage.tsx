@@ -124,7 +124,12 @@ export function HomePage() {
           borderColor: landing.line,
         }}
       >
-        <Link href="#topo" underline="none" aria-label={t('home.brand')} sx={{ justifySelf: 'start', color: landing.cream, lineHeight: 0 }}>
+        <Link
+          href="#topo"
+          underline="none"
+          aria-label={t('home.brand')}
+          sx={{ justifySelf: 'start', color: landing.cream, lineHeight: 0 }}
+        >
           <BrandMark />
         </Link>
 
@@ -168,7 +173,11 @@ export function HomePage() {
         }}
       >
         <Stack direction="row" justifyContent="flex-end">
-          <IconButton aria-label={t('home.nav.close')} onClick={() => setMenuOpen(false)} sx={{ color: landing.cream }}>
+          <IconButton
+            aria-label={t('home.nav.close')}
+            onClick={() => setMenuOpen(false)}
+            sx={{ color: landing.cream }}
+          >
             <Close />
           </IconButton>
         </Stack>
@@ -285,7 +294,9 @@ export function HomePage() {
                 >
                   {t(feature.titleKey)}
                 </Typography>
-                <Typography sx={{ color: landing.muted, lineHeight: 1.7 }}>{t(feature.bodyKey)}</Typography>
+                <Typography sx={{ color: landing.muted, lineHeight: 1.7 }}>
+                  {t(feature.bodyKey)}
+                </Typography>
               </Box>
             ))}
           </Box>
@@ -325,7 +336,9 @@ export function HomePage() {
                   {t(step.titleKey)}
                 </Typography>
                 <Box sx={{ borderTop: '1px solid', borderColor: landing.line, mb: 2 }} />
-                <Typography sx={{ color: landing.muted, lineHeight: 1.7 }}>{t(step.bodyKey)}</Typography>
+                <Typography sx={{ color: landing.muted, lineHeight: 1.7 }}>
+                  {t(step.bodyKey)}
+                </Typography>
               </Box>
             ))}
           </Box>
@@ -345,7 +358,9 @@ export function HomePage() {
             >
               {t('home.privacy.title')}
             </Typography>
-            <Typography sx={{ color: landing.muted, fontSize: { xs: 16, md: 18 }, lineHeight: 1.7 }}>
+            <Typography
+              sx={{ color: landing.muted, fontSize: { xs: 16, md: 18 }, lineHeight: 1.7 }}
+            >
               {t('home.privacy.body')}
             </Typography>
           </Box>
@@ -436,7 +451,11 @@ export function HomePage() {
           gap: 3,
         }}
       >
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 2, sm: 3 }} alignItems={{ sm: 'center' }}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={{ xs: 2, sm: 3 }}
+          alignItems={{ sm: 'center' }}
+        >
           <BrandMark size={28} />
           <Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap>
             {footerLinks.map((item) => (
@@ -444,7 +463,9 @@ export function HomePage() {
             ))}
           </Stack>
         </Stack>
-        <Typography sx={{ color: landing.muted, fontSize: 13 }}>{t('home.footer.copyright')}</Typography>
+        <Typography sx={{ color: landing.muted, fontSize: 13 }}>
+          {t('home.footer.copyright')}
+        </Typography>
       </Box>
     </Box>
   )
