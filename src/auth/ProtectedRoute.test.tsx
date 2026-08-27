@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import type { ReactNode } from 'react'
 import { Provider } from 'react-redux'
+import { createMemoryRouter, RouterProvider } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import '#/i18n'
@@ -12,11 +12,24 @@ import { ProtectedRoute } from './ProtectedRoute'
 
 const assign = vi.fn()
 
-function renderProtected(child: ReactNode = <p>Private content</p>) {
+function renderAt(pathname: string) {
+  const router = createMemoryRouter(
+    [
+      {
+        element: <ProtectedRoute publicPaths={['/']} />,
+        children: [
+          { path: '/', element: <p>Public content</p> },
+          { path: '/dashboard', element: <p>Private content</p> },
+        ],
+      },
+    ],
+    { initialEntries: [pathname] },
+  )
+
   return render(
     <AppThemeProvider>
       <Provider store={setupStore()}>
-        <ProtectedRoute>{child}</ProtectedRoute>
+        <RouterProvider router={router} />
       </Provider>
     </AppThemeProvider>,
   )
@@ -32,9 +45,17 @@ describe('ProtectedRoute', () => {
     })
   })
 
-  it('renders children when the caller is authenticated', async () => {
+  it('renders a public path without waiting for the session', () => {
+    stubDomusApi({ authenticated: false })
+    renderAt('/')
+
+    expect(screen.getByText('Public content')).toBeInTheDocument()
+    expect(assign).not.toHaveBeenCalled()
+  })
+
+  it('renders the outlet when the caller is authenticated', async () => {
     stubDomusApi({ authenticated: true })
-    renderProtected()
+    renderAt('/dashboard')
 
     expect(await screen.findByText('Private content')).toBeInTheDocument()
     expect(assign).not.toHaveBeenCalled()
@@ -42,7 +63,7 @@ describe('ProtectedRoute', () => {
 
   it('starts sign-in when the caller is not authenticated', async () => {
     stubDomusApi({ authenticated: false })
-    renderProtected()
+    renderAt('/dashboard')
 
     expect(screen.getByText('Conectando...')).toBeInTheDocument()
     await waitFor(() => {
@@ -52,7 +73,7 @@ describe('ProtectedRoute', () => {
 
   it('waits while the Identity Provider session is loading', () => {
     vi.stubGlobal('fetch', () => new Promise(() => {}))
-    renderProtected()
+    renderAt('/dashboard')
 
     expect(screen.getByText('Conectando...')).toBeInTheDocument()
     expect(screen.queryByText('Private content')).not.toBeInTheDocument()

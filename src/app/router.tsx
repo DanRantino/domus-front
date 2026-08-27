@@ -7,23 +7,19 @@ import { DashboardPage } from '#/pages/DashboardPage'
 import { HomePage } from '#/pages/HomePage'
 
 export const router = createBrowserRouter([
-  { path: '/', element: <HomePage /> },
   {
-    path: '/houses/new',
-    element: (
-      <ProtectedRoute>
-        <CreateHouseholdPage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/dashboard',
-    element: (
-      <ProtectedRoute>
-        <HouseholdGate>
-          <DashboardPage />
-        </HouseholdGate>
-      </ProtectedRoute>
-    ),
+    element: <ProtectedRoute publicPaths={['/']} />,
+    children: [
+      { path: '/', element: <HomePage /> },
+      { path: '/houses/new', element: <CreateHouseholdPage /> },
+      {
+        path: '/dashboard',
+        element: (
+          <HouseholdGate>
+            <DashboardPage />
+          </HouseholdGate>
+        ),
+      },
+    ],
   },
 ])
