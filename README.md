@@ -12,9 +12,11 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Abra `http://localhost:5173` (ou `https://web.domus.dev`). O Caddy local faz proxy de `web.domus.dev` para o Vite; por isso o `server.allowedHosts` inclui só esse hostname. `npm run preview` é só para inspecionar `dist/` em localhost — não é o servidor de preprod/prod.
+Abra `https://web.domus.dev` (Caddy local). O Caddy encaminha `/Callback`, `/SignedOutCallback`, `/auth/*` e `/api/*` para a API e o resto para o Vite. `http://localhost:5173` também faz proxy desses caminhos, mas o login OIDC usa a origem `https://web.domus.dev`. `npm run preview` é só para inspecionar `dist/` em localhost — não é o servidor de preprod/prod.
 
-As `VITE_*` entram no bundle no build. Localmente use `.env.local` (não é copiado para a imagem). No Railway as mesmas chaves são variáveis de **build** do serviço `domus-front`.
+As `VITE_*` entram no bundle no build. Localmente use `.env.local` (não é copiado para a imagem). No Railway, `VITE_DOMUS_API_BASE_URL` é variável de **build**; `DOMUS_API_UPSTREAM` é variável de **runtime** do Caddy.
+
+O frontend **não** obtém tokens do Logto. Login é navegação top-level para `/auth/login`; as chamadas de produto usam `fetch('/api/...', { credentials: 'include' })`.
 
 ## Scripts
 
@@ -32,18 +34,26 @@ O runtime é Caddy a servir `dist/`. Build e deploy: [`Dockerfile`](Dockerfile) 
 
 | Variável | Quando | Valor |
 | --- | --- | --- |
-| `VITE_LOGTO_ENDPOINT` | build | tenant Logto desse ambiente |
-| `VITE_LOGTO_APP_ID` | build | SPA application id |
-| `VITE_LOGTO_API_RESOURCE` | build | igual ao `Authentication__Audience` da API |
-| `VITE_LOGTO_PASSWORD_URL` | build | Account API do Logto |
-| `VITE_DOMUS_API_BASE_URL` | build | URL **pública** da API, p.ex. `https://${{domus-back.RAILWAY_PUBLIC_DOMAIN}}` |
+| `VITE_DOMUS_API_BASE_URL` | build | `/api` (same-origin; o Caddy remove o prefixo `/api` antes da API) |
+| `DOMUS_API_UPSTREAM` | runtime | URL **privada** da API, p.ex. `http://${{Domus.Api.RAILWAY_PRIVATE_DOMAIN}}:${{Domus.Api.PORT}}` |
 
-Não definir `HOST`. Não apontar `VITE_DOMUS_API_BASE_URL` para `*.railway.internal` — o browser não resolve a rede privada.
+Não definir `HOST`. Não apontar `VITE_DOMUS_API_BASE_URL` para `*.railway.internal` — o browser não resolve a rede privada. O Caddy do front é que alcança a API na rede interna.
 
-Na API do mesmo ambiente, a origem CORS deve ser a URL **pública** deste serviço:
+Segredos Logto (`Logto__AppId`, `Logto__AppSecret`) ficam no serviço da **API**, não no bundle do front. Não há `VITE_LOGTO_*`.
+
+Na API do mesmo ambiente, a origem CORS continua a URL **pública** deste serviço (Swagger / clientes Bearer em `api.domus.dev`):
 
 ```text
 Cors__Origins__0=https://${{domus-front.RAILWAY_PUBLIC_DOMAIN}}
 ```
 
-Redirect URIs no Logto usam a mesma origem pública do SPA.
+### Console Logto (Traditional Web App)
+
+Crie um aplicativo **Traditional Web** (não SPA) por ambiente. Redirect URIs na **origem do front**, no formato do [tutorial MVC](https://docs.logto.io/pt-BR/quick-starts/dotnet-core/mvc):
+
+| Ambiente | Redirect URI | Post sign-out redirect URI |
+| --- | --- | --- |
+| Local | `https://web.domus.dev/Callback` | `https://web.domus.dev/SignedOutCallback` |
+| Railway | `https://<domínio-público-do-front>/Callback` | `https://<domínio-público-do-front>/SignedOutCallback` |
+
+Não use `/api/Callback`. O Caddy entrega `/Callback` e `/SignedOutCallback` à API.

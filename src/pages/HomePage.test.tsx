@@ -11,27 +11,6 @@ import { AppThemeProvider } from '#/theme/AppThemeProvider'
 
 import { HomePage } from './HomePage'
 
-const mocks = vi.hoisted(() => ({
-  isAuthenticated: false,
-  isLoading: false,
-  getIdTokenClaims: vi.fn(async () => undefined as
-    | { picture?: string; name?: string; username?: string }
-    | undefined),
-  config: undefined as { endpoint: string; appId: string } | undefined,
-}))
-
-vi.mock('@logto/react', () => ({
-  useLogto: () => ({
-    isAuthenticated: mocks.isAuthenticated,
-    isLoading: mocks.isLoading,
-    getIdTokenClaims: mocks.getIdTokenClaims,
-  }),
-}))
-
-vi.mock('#/auth/logtoConfig', () => ({
-  getLogtoConfig: () => mocks.config,
-}))
-
 function renderHome() {
   return render(
     <MemoryRouter>
@@ -47,22 +26,16 @@ function renderHome() {
 describe('HomePage', () => {
   beforeEach(() => {
     sessionStorage.clear()
-    mocks.isAuthenticated = false
-    mocks.isLoading = false
-    mocks.config = undefined
-    mocks.getIdTokenClaims.mockReset()
-    mocks.getIdTokenClaims.mockResolvedValue(undefined)
   })
 
-  it('renders the Domus landing', () => {
+  it('renders the Domus landing', async () => {
+    stubDomusApi({ authenticated: false })
     renderHome()
 
-    expect(
-      screen.getByRole('heading', { level: 1, name: 'A alma digital da sua casa.' }),
-    ).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'A alma digital da sua casa.' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Entrar' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Começar' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Criar seu espaço' })).toHaveAttribute(
+    expect(await screen.findByRole('link', { name: 'Criar seu espaço' })).toHaveAttribute(
       'href',
       '/houses/new',
     )
@@ -84,6 +57,7 @@ describe('HomePage', () => {
   })
 
   it('sends Entrar to /dashboard from the header and drawer', async () => {
+    stubDomusApi({ authenticated: false })
     const user = userEvent.setup()
     renderHome()
 
@@ -95,9 +69,8 @@ describe('HomePage', () => {
   })
 
   it('shows the IdP avatar instead of Entrar when the visitor has a session', async () => {
-    mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
-    mocks.isAuthenticated = true
-    mocks.getIdTokenClaims.mockResolvedValue({
+    stubDomusApi({
+      authenticated: true,
       picture: 'https://idp.test/photo.png',
       name: 'Marina',
     })
@@ -114,9 +87,7 @@ describe('HomePage', () => {
   })
 
   it('falls back to an initial when the IdP session has no picture', async () => {
-    mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
-    mocks.isAuthenticated = true
-    mocks.getIdTokenClaims.mockResolvedValue({ name: 'Marina' })
+    stubDomusApi({ authenticated: true, name: 'Marina' })
 
     renderHome()
 
@@ -130,8 +101,7 @@ describe('HomePage', () => {
   })
 
   it('keeps Entrar while the Identity Provider session is loading', () => {
-    mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
-    mocks.isLoading = true
+    vi.stubGlobal('fetch', () => new Promise(() => {}))
 
     renderHome()
 
@@ -139,20 +109,21 @@ describe('HomePage', () => {
     expect(screen.queryByRole('link', { name: 'Ir para o dashboard' })).not.toBeInTheDocument()
   })
 
-  it('shows a household skeleton while memberships are loading', () => {
-    mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
-    mocks.isAuthenticated = true
-    stubDomusApi({ hangGet: true })
+  it('shows a household skeleton while memberships are loading', async () => {
+    stubDomusApi({ authenticated: true, hangGet: true })
 
     renderHome()
 
-    expect(screen.getByLabelText('Carregando suas casas...')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(document.querySelector('[aria-label="Carregando suas casas..."]')).not.toBeNull()
+    })
   })
 
   it('shows a household dropdown when the visitor already has a Domus', async () => {
-    mocks.config = { endpoint: 'https://auth.test', appId: 'app' }
-    mocks.isAuthenticated = true
-    stubDomusApi({ houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }] })
+    stubDomusApi({
+      authenticated: true,
+      houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }],
+    })
 
     renderHome()
 
