@@ -97,9 +97,7 @@ describe('housesApi', () => {
 
   it('rejects an empty name on create', async () => {
     const store = setupStore()
-    const result = await store.dispatch(
-      housesApi.endpoints.createHouse.initiate({ name: '   ' }),
-    )
+    const result = await store.dispatch(housesApi.endpoints.createHouse.initiate({ name: '   ' }))
     expect('error' in result).toBe(true)
   })
 })

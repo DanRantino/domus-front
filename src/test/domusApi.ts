@@ -43,17 +43,10 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
   let failCreate = options.failCreate ?? false
 
   vi.stubGlobal('fetch', async (input: RequestInfo | URL, init?: RequestInit) => {
-    const url =
-      typeof input === 'string'
-        ? input
-        : input instanceof URL
-          ? input.href
-          : input.url
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
     const { pathname } = new URL(url, 'http://localhost')
     const path = apiPath(pathname)
-    const method = (
-      input instanceof Request ? input.method : (init?.method ?? 'GET')
-    ).toUpperCase()
+    const method = (input instanceof Request ? input.method : (init?.method ?? 'GET')).toUpperCase()
 
     if (method === 'GET' && path === '/auth/session') {
       return jsonResponse(200, {

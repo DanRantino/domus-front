@@ -7,9 +7,7 @@ import { AppThemeProvider } from '#/theme/AppThemeProvider'
 
 import { CreateHouseholdForm } from './CreateHouseholdForm'
 
-function renderForm(
-  props?: Partial<Parameters<typeof CreateHouseholdForm>[0]>,
-) {
+function renderForm(props?: Partial<Parameters<typeof CreateHouseholdForm>[0]>) {
   const onSubmit = props?.onSubmit ?? vi.fn(async () => undefined)
   const onSkip = props?.onSkip ?? vi.fn()
   render(

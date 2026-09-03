@@ -38,9 +38,7 @@ function AuthenticatedHouseholdCta({ variant, onNavigate }: HomeHouseholdCtaProp
   }
 
   if (isNotProvisioned) {
-    return (
-      <HouseholdFeedback compact message={t('createHousehold.notProvisioned')} />
-    )
+    return <HouseholdFeedback compact message={t('createHousehold.notProvisioned')} />
   }
 
   if (isError) {
@@ -51,7 +49,5 @@ function AuthenticatedHouseholdCta({ variant, onNavigate }: HomeHouseholdCtaProp
     return <CreateSpaceButton variant={variant} onNavigate={onNavigate} />
   }
 
-  return (
-    <HouseholdSwitcher households={households} variant={variant} onNavigate={onNavigate} />
-  )
+  return <HouseholdSwitcher households={households} variant={variant} onNavigate={onNavigate} />
 }

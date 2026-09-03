@@ -29,7 +29,9 @@ describe('CreateHouseholdPage', () => {
     expect(await screen.findByRole('heading', { name: 'Algo deu errado' })).toBeInTheDocument()
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: 'Tentar de novo' }))
-    expect(await screen.findByRole('heading', { name: 'Como chamamos sua Domus?' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Como chamamos sua Domus?' }),
+    ).toBeInTheDocument()
   })
 
   it('shows a not-provisioned state', async () => {
@@ -45,7 +47,9 @@ describe('CreateHouseholdPage', () => {
     const { wrapper, store } = createHouseholdsWrapper()
     render(<CreateHouseholdPage />, { wrapper })
 
-    expect(await screen.findByRole('heading', { name: 'Como chamamos sua Domus?' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Como chamamos sua Domus?' }),
+    ).toBeInTheDocument()
     const user = userEvent.setup()
     await user.type(screen.getByLabelText('Nome da Domus'), 'Casa Furst')
     await user.click(screen.getByRole('button', { name: 'Criar minha Domus →' }))
@@ -59,7 +63,9 @@ describe('CreateHouseholdPage', () => {
     const { wrapper, store } = createHouseholdsWrapper()
     render(<CreateHouseholdPage />, { wrapper })
 
-    expect(await screen.findByRole('heading', { name: 'Como chamamos sua Domus?' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Como chamamos sua Domus?' }),
+    ).toBeInTheDocument()
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: 'Decidir mais tarde' }))
     expect(store.getState().householdSession.skippedCreate).toBe(true)
@@ -70,7 +76,9 @@ describe('CreateHouseholdPage', () => {
     const { wrapper } = createHouseholdsWrapper()
     render(<CreateHouseholdPage />, { wrapper })
 
-    expect(await screen.findByRole('heading', { name: 'Como chamamos sua Domus?' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Como chamamos sua Domus?' }),
+    ).toBeInTheDocument()
     const user = userEvent.setup()
     await user.type(screen.getByLabelText('Nome da Domus'), 'Casa Furst')
     await user.click(screen.getByRole('button', { name: 'Criar minha Domus →' }))

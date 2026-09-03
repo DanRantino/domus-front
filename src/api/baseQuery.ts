@@ -1,8 +1,4 @@
-import type {
-  BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
-} from '@reduxjs/toolkit/query'
+import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 import { apiBaseUrl } from '#/auth/paths'
 import type { ApiEnvelope } from './types'
@@ -20,11 +16,9 @@ function isEnvelope(value: unknown): boolean {
   return typeof value === 'object' && value !== null && 'success' in value
 }
 
-export const domusBaseQuery: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args) => {
+export const domusBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+) => {
   const request = typeof args === 'string' ? { url: args } : args
   const method = request.method ?? 'GET'
   const headers = new Headers()
@@ -94,12 +88,7 @@ export function getDomusErrorCode(error: unknown): string | undefined {
   }
 
   const data = error.data
-  if (
-    data &&
-    typeof data === 'object' &&
-    'code' in data &&
-    typeof data.code === 'string'
-  ) {
+  if (data && typeof data === 'object' && 'code' in data && typeof data.code === 'string') {
     return data.code
   }
 
