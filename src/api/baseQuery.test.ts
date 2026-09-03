@@ -1,19 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { getAccessToken, setAccessTokenGetter } from './accessToken'
 import { getDomusErrorCode, isNotProvisionedError } from './baseQuery'
-
-describe('accessToken', () => {
-  it('returns undefined when no getter is registered', async () => {
-    setAccessTokenGetter(undefined)
-    await expect(getAccessToken()).resolves.toBeUndefined()
-  })
-
-  it('delegates to the registered getter', async () => {
-    setAccessTokenGetter(async () => 'token-1')
-    await expect(getAccessToken()).resolves.toBe('token-1')
-  })
-})
 
 describe('getDomusErrorCode', () => {
   it('reads the envelope code from an RTK error', () => {

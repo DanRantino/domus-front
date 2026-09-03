@@ -60,7 +60,11 @@ export function CreateHouseholdPage() {
         <ArrowBack />
       </IconButton>
 
-      <Stack alignItems="center" spacing={2} sx={{ maxWidth: 640, mx: 'auto', pt: { xs: 2, md: 6 } }}>
+      <Stack
+        alignItems="center"
+        spacing={2}
+        sx={{ maxWidth: 640, mx: 'auto', pt: { xs: 2, md: 6 } }}
+      >
         {isError && !isNotProvisioned ? (
           <HouseholdFeedback onRetry={() => void refetch()} />
         ) : (

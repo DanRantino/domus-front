@@ -1,20 +1,7 @@
-import type {
-  BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
-} from '@reduxjs/toolkit/query'
+import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
-import { getAccessToken } from './accessToken'
+import { apiBaseUrl } from '#/auth/paths'
 import type { ApiEnvelope } from './types'
-
-function apiBaseUrl(): string {
-  const url = import.meta.env.VITE_DOMUS_API_BASE_URL
-  if (!url) {
-    return ''
-  }
-
-  return url.endsWith('/') ? url.slice(0, -1) : url
-}
 
 function joinUrl(base: string, path: string): string {
   if (path.startsWith('http://') || path.startsWith('https://')) {
@@ -25,24 +12,17 @@ function joinUrl(base: string, path: string): string {
   return `${base}${normalized}`
 }
 
-function isEnvelope(value: unknown): value is ApiEnvelope<unknown> {
+function isEnvelope(value: unknown): boolean {
   return typeof value === 'object' && value !== null && 'success' in value
 }
 
-export const domusBaseQuery: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args) => {
+export const domusBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+) => {
   const request = typeof args === 'string' ? { url: args } : args
   const method = request.method ?? 'GET'
   const headers = new Headers()
   headers.set('Accept', 'application/json')
-
-  const token = await getAccessToken()
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`)
-  }
 
   let body: string | undefined
   if (request.body !== undefined && method.toUpperCase() !== 'GET') {
@@ -55,6 +35,7 @@ export const domusBaseQuery: BaseQueryFn<
       method,
       headers,
       body,
+      credentials: 'include',
     })
 
     const text = await response.text()
@@ -68,14 +49,15 @@ export const domusBaseQuery: BaseQueryFn<
     }
 
     if (isEnvelope(parsed)) {
-      if (parsed.success && response.ok) {
-        return { data: parsed.data }
+      const envelope = parsed as ApiEnvelope<unknown>
+      if (envelope.success && response.ok) {
+        return { data: envelope.data }
       }
 
       return {
         error: {
           status: response.status,
-          data: parsed.error,
+          data: envelope.error,
         },
       }
     }
@@ -137,10 +119,5 @@ export function isNotProvisionedError(error: unknown): boolean {
     return false
   }
 
-  return (
-    !!error &&
-    typeof error === 'object' &&
-    'status' in error &&
-    error.status === 403
-  )
+  return !!error && typeof error === 'object' && 'status' in error && error.status === 403
 }

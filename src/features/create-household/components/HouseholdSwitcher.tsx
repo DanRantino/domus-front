@@ -20,18 +20,13 @@ type HouseholdSwitcherProps = {
   onNavigate?: () => void
 }
 
-export function HouseholdSwitcher({
-  households,
-  variant,
-  onNavigate,
-}: HouseholdSwitcherProps) {
+export function HouseholdSwitcher({ households, variant, onNavigate }: HouseholdSwitcherProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { selectedId, selectHousehold } = useHouseholdSession()
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
-  const selected =
-    households.find((household) => household.id === selectedId) ?? households[0]
+  const selected = households.find((household) => household.id === selectedId) ?? households[0]
 
   function openMenu(event: MouseEvent<HTMLButtonElement>) {
     setAnchorEl(event.currentTarget)

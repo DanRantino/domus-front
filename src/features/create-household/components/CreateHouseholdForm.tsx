@@ -12,10 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { landing, landingCtaSx } from '#/pages/home/landing'
 import { fonts } from '#/theme/tokens'
 
-import {
-  createHouseholdSchema,
-  type CreateHouseholdValues,
-} from '../schema'
+import { createHouseholdSchema, type CreateHouseholdValues } from '../schema'
 
 type CreateHouseholdFormProps = {
   isSubmitting: boolean

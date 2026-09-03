@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { isNotProvisionedError } from '#/api/baseQuery'
+import { getDomusErrorCode, isNotProvisionedError } from '#/api/baseQuery'
 import { useProvisionMeMutation } from '#/api/me'
 import { useAppDispatch } from '#/app/hooks'
 
@@ -33,7 +33,14 @@ export function useCreateHousehold() {
         throw error
       }
 
-      await provision().unwrap()
+      try {
+        await provision().unwrap()
+      } catch (provisionError) {
+        if (getDomusErrorCode(provisionError) !== 'already_exists') {
+          throw provisionError
+        }
+      }
+
       return await create({ name }).unwrap()
     }
   }

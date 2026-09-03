@@ -8,6 +8,10 @@ type StubDomusApiOptions = {
   failGet?: boolean
   failCreate?: boolean
   notProvisioned?: boolean
+  provisionAlreadyExists?: boolean
+  authenticated?: boolean
+  picture?: string | null
+  name?: string | null
 }
 
 function jsonResponse(status: number, body: unknown): Response {
@@ -29,30 +33,41 @@ function failEnvelope(status: number, code: string, message: string): Response {
   })
 }
 
+function apiPath(pathname: string): string {
+  return pathname.startsWith('/api/') ? pathname.slice('/api'.length) : pathname
+}
+
 export function stubDomusApi(options: StubDomusApiOptions = {}): void {
   const houses = [...(options.houses ?? [])]
+  const authenticated = options.authenticated ?? false
   let failGet = options.failGet ?? false
   let failCreate = options.failCreate ?? false
   let notProvisioned = options.notProvisioned ?? false
 
-  if (options.hangGet) {
-    vi.stubGlobal('fetch', () => new Promise(() => {}))
-    return
-  }
-
   vi.stubGlobal('fetch', async (input: RequestInfo | URL, init?: RequestInit) => {
-    const url =
-      typeof input === 'string'
-        ? input
-        : input instanceof URL
-          ? input.href
-          : input.url
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
     const { pathname } = new URL(url, 'http://localhost')
-    const method = (
-      input instanceof Request ? input.method : (init?.method ?? 'GET')
-    ).toUpperCase()
+    const path = apiPath(pathname)
+    const method = (input instanceof Request ? input.method : (init?.method ?? 'GET')).toUpperCase()
 
-    if (method === 'POST' && pathname === '/users/me') {
+    if (method === 'GET' && path === '/auth/session') {
+      return jsonResponse(200, {
+        authenticated,
+        picture: options.picture ?? null,
+        name: options.name ?? null,
+      })
+    }
+
+    if (options.hangGet && method === 'GET' && path === '/houses') {
+      return new Promise(() => {})
+    }
+
+    if (method === 'POST' && (path === '/users/me' || pathname === '/users/me')) {
+      if (options.provisionAlreadyExists) {
+        notProvisioned = false
+        return failEnvelope(409, 'already_exists', 'User already exists')
+      }
+
       if (!notProvisioned) {
         return failEnvelope(409, 'already_exists', 'User already exists')
       }
@@ -76,7 +91,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
       return failEnvelope(403, 'not_provisioned', 'User is not provisioned')
     }
 
-    if (method === 'GET' && pathname === '/houses') {
+    if (method === 'GET' && path === '/houses') {
       if (failGet) {
         failGet = false
         return failEnvelope(500, 'internal_error', 'Failed to load households')
@@ -85,8 +100,8 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
       return okEnvelope(houses)
     }
 
-    if (method === 'GET' && pathname.startsWith('/houses/')) {
-      const id = pathname.slice('/houses/'.length)
+    if (method === 'GET' && path.startsWith('/houses/')) {
+      const id = path.slice('/houses/'.length)
       const house = houses.find((item) => item.id === id)
       if (!house) {
         return failEnvelope(404, 'not_found', 'House not found')
@@ -95,7 +110,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
       return okEnvelope(house)
     }
 
-    if (method === 'POST' && pathname === '/houses') {
+    if (method === 'POST' && path === '/houses') {
       if (failCreate) {
         failCreate = false
         return failEnvelope(500, 'internal_error', 'Failed to create household')
@@ -118,7 +133,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
       return okEnvelope(house, 201)
     }
 
-    if (method === 'GET' && pathname === '/users/me') {
+    if (method === 'GET' && path === '/users/me') {
       return okEnvelope({
         id: 'user-1',
         full_name: null,

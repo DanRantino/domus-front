@@ -26,11 +26,7 @@ describe('HouseholdSwitcher', () => {
     const { wrapper } = createHouseholdsWrapper({ store })
 
     render(
-      <HouseholdSwitcher
-        households={houses}
-        variant="header"
-        onNavigate={() => undefined}
-      />,
+      <HouseholdSwitcher households={houses} variant="header" onNavigate={() => undefined} />,
       { wrapper },
     )
 

@@ -11,6 +11,24 @@
 		respond "ok" 200
 	}
 
+	@logto path /Callback /Callback/* /SignedOutCallback /SignedOutCallback/* /auth /auth/*
+	handle @logto {
+		reverse_proxy {$DOMUS_API_UPSTREAM} {
+			header_up Host {host}
+			header_up X-Forwarded-Proto https
+			header_up X-Forwarded-Host {host}
+		}
+	}
+
+	handle_path /api/* {
+		reverse_proxy {$DOMUS_API_UPSTREAM} {
+			header_up Host {host}
+			header_up X-Forwarded-Prefix /api
+			header_up X-Forwarded-Proto https
+			header_up X-Forwarded-Host {host}
+		}
+	}
+
 	handle {
 		try_files {path} /index.html
 		file_server

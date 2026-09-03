@@ -6,42 +6,34 @@ import { stubDomusApi } from '#/test/domusApi'
 import { createHouseholdsWrapper } from '../test/renderWithHouseholds'
 import { useMyHouseholds } from './useMyHouseholds'
 
-const mocks = vi.hoisted(() => ({
-  isAuthenticated: false,
-  isLoading: false,
-}))
-
-vi.mock('@logto/react', () => ({
-  useLogto: () => ({
-    isAuthenticated: mocks.isAuthenticated,
-    isLoading: mocks.isLoading,
-  }),
-}))
-
 describe('useMyHouseholds', () => {
   beforeEach(() => {
     sessionStorage.clear()
-    mocks.isAuthenticated = false
-    mocks.isLoading = false
+    stubDomusApi({ authenticated: false })
   })
 
-  it('skips the query for guests', () => {
+  it('skips the query for guests', async () => {
     const { wrapper } = createHouseholdsWrapper()
     const { result } = renderHook(() => useMyHouseholds(), { wrapper })
+    await vi.waitFor(() => {
+      expect(result.current.isAuthLoading).toBe(false)
+    })
     expect(result.current.households).toEqual([])
     expect(result.current.isLoading).toBe(false)
   })
 
   it('treats auth loading as loading', () => {
-    mocks.isLoading = true
+    vi.stubGlobal('fetch', () => new Promise(() => {}))
     const { wrapper } = createHouseholdsWrapper()
     const { result } = renderHook(() => useMyHouseholds(), { wrapper })
     expect(result.current.isLoading).toBe(true)
   })
 
   it('loads households when authenticated', async () => {
-    mocks.isAuthenticated = true
-    stubDomusApi({ houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }] })
+    stubDomusApi({
+      authenticated: true,
+      houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }],
+    })
     const { wrapper } = createHouseholdsWrapper()
     const { result } = renderHook(() => useMyHouseholds(), { wrapper })
 
@@ -52,8 +44,7 @@ describe('useMyHouseholds', () => {
   })
 
   it('flags not_provisioned', async () => {
-    mocks.isAuthenticated = true
-    stubDomusApi({ notProvisioned: true })
+    stubDomusApi({ authenticated: true, notProvisioned: true })
     const { wrapper } = createHouseholdsWrapper()
     const { result } = renderHook(() => useMyHouseholds(), { wrapper })
 

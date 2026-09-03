@@ -1,11 +1,10 @@
-import { useLogto } from '@logto/react'
-
 import { isNotProvisionedError } from '#/api/baseQuery'
+import { useAuthSession } from '#/auth/useAuthSession'
 
 import { useGetHousesQuery } from '../api/housesApi'
 
 export function useMyHouseholds() {
-  const { isAuthenticated, isLoading: isAuthLoading } = useLogto()
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuthSession()
   const query = useGetHousesQuery(undefined, {
     skip: !isAuthenticated,
   })

@@ -3,12 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { setupStore } from '#/app/store'
 
 import { saveHouseholdSession } from '../persistence'
-import {
-  hydrateSession,
-  resetSession,
-  selectHousehold,
-  skipCreate,
-} from './householdSessionSlice'
+import { hydrateSession, resetSession, selectHousehold, skipCreate } from './householdSessionSlice'
 
 describe('householdSessionSlice', () => {
   beforeEach(() => {

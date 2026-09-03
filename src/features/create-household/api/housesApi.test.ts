@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { setAccessTokenGetter } from '#/api/accessToken'
 import { api } from '#/api/api'
 import { setupStore } from '#/app/store'
 import { housesApi } from '#/features/create-household/api/housesApi'
@@ -8,7 +7,7 @@ import { stubDomusApi } from '#/test/domusApi'
 
 describe('housesApi', () => {
   beforeEach(() => {
-    setAccessTokenGetter(async () => 'test-token')
+    stubDomusApi({ authenticated: true })
   })
 
   it('loads an empty list by default', async () => {
@@ -19,17 +18,20 @@ describe('housesApi', () => {
   })
 
   it('loads houses from the API', async () => {
-    stubDomusApi({ houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }] })
+    stubDomusApi({
+      authenticated: true,
+      houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }],
+    })
     const store = setupStore()
     const result = await store.dispatch(housesApi.endpoints.getHouses.initiate())
     expect(result.data).toEqual([{ id: 'h1', name: 'Casa Furst', role: 'admin' }])
   })
 
-  it('sends a Bearer token', async () => {
-    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
-      const headers =
-        input instanceof Request ? input.headers : new Headers(init?.headers)
-      expect(headers.get('Authorization')).toBe('Bearer test-token')
+  it('sends cookies and no Bearer token', async () => {
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      expect(init?.credentials).toBe('include')
+      const headers = new Headers(init?.headers)
+      expect(headers.get('Authorization')).toBeNull()
       return new Response(JSON.stringify({ success: true, data: [], error: null }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -40,10 +42,12 @@ describe('housesApi', () => {
     const store = setupStore()
     await store.dispatch(housesApi.endpoints.getHouses.initiate())
     expect(fetchMock).toHaveBeenCalled()
+    const requested = fetchMock.mock.calls[0]?.[0]
+    expect(String(requested)).toBe('/api/houses')
   })
 
   it('unwraps a 403 not_provisioned envelope', async () => {
-    stubDomusApi({ notProvisioned: true })
+    stubDomusApi({ authenticated: true, notProvisioned: true })
     const store = setupStore()
     const result = await store.dispatch(housesApi.endpoints.getHouses.initiate())
     expect(result.isError).toBe(true)
@@ -53,7 +57,10 @@ describe('housesApi', () => {
   })
 
   it('gets a house by id', async () => {
-    stubDomusApi({ houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }] })
+    stubDomusApi({
+      authenticated: true,
+      houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }],
+    })
     const store = setupStore()
     const result = await store.dispatch(housesApi.endpoints.getHouse.initiate('h1'))
     expect(result.data).toEqual({ id: 'h1', name: 'Casa Furst', role: 'admin' })
@@ -90,9 +97,7 @@ describe('housesApi', () => {
 
   it('rejects an empty name on create', async () => {
     const store = setupStore()
-    const result = await store.dispatch(
-      housesApi.endpoints.createHouse.initiate({ name: '   ' }),
-    )
+    const result = await store.dispatch(housesApi.endpoints.createHouse.initiate({ name: '   ' }))
     expect('error' in result).toBe(true)
   })
 })

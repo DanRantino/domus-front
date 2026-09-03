@@ -37,10 +37,6 @@ export function DomusMark({
   )
 }
 
-export function DomusLockup({
-  size = 'md',
-}: {
-  size?: keyof typeof wordmarkHeight
-}) {
+export function DomusLockup({ size = 'md' }: { size?: keyof typeof wordmarkHeight }) {
   return <DomusMark size={size} decorative={false} />
 }

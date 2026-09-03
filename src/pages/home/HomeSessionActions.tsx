@@ -1,12 +1,10 @@
-import { useLogto } from '@logto/react'
 import PersonOutline from '@mui/icons-material/PersonOutline'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link as RouterLink } from 'react-router'
 
-import { getLogtoConfig } from '#/auth/logtoConfig'
+import { useAuthSession } from '#/auth/useAuthSession'
 
 import { landing } from './landing'
 
@@ -17,13 +15,8 @@ type HomeSessionActionsProps = {
   onNavigate?: () => void
 }
 
-type Identity = {
-  picture?: string
-  initial?: string
-}
-
-function displayInitial(name?: string, username?: string): string | undefined {
-  const source = name?.trim() || username?.trim()
+function displayInitial(name?: string): string | undefined {
+  const source = name?.trim()
   if (!source) {
     return undefined
   }
@@ -32,48 +25,14 @@ function displayInitial(name?: string, username?: string): string | undefined {
 }
 
 export function HomeSessionActions({ variant, onNavigate }: HomeSessionActionsProps) {
-  const config = getLogtoConfig()
-
-  if (!config) {
-    return <GuestLogin variant={variant} onNavigate={onNavigate} />
-  }
-
-  return <SessionAwareLogin variant={variant} onNavigate={onNavigate} />
-}
-
-function SessionAwareLogin({ variant, onNavigate }: HomeSessionActionsProps) {
-  const { isAuthenticated, isLoading, getIdTokenClaims } = useLogto()
-  const [identity, setIdentity] = useState<Identity>({})
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setIdentity({})
-      return
-    }
-
-    let cancelled = false
-    void getIdTokenClaims().then((claims) => {
-      if (cancelled) {
-        return
-      }
-
-      setIdentity({
-        picture: claims?.picture ?? undefined,
-        initial: displayInitial(claims?.name ?? undefined, claims?.username ?? undefined),
-      })
-    })
-
-    return () => {
-      cancelled = true
-    }
-  }, [isAuthenticated, getIdTokenClaims])
+  const { isAuthenticated, isLoading, picture, name } = useAuthSession()
 
   if (isAuthenticated && !isLoading) {
     return (
       <AccountAvatar
         variant={variant}
-        picture={identity.picture}
-        initial={identity.initial}
+        picture={picture}
+        initial={displayInitial(name)}
         onNavigate={onNavigate}
       />
     )
@@ -112,7 +71,7 @@ function AccountAvatar({
   picture,
   initial,
   onNavigate,
-}: HomeSessionActionsProps & Identity) {
+}: HomeSessionActionsProps & { picture?: string; initial?: string }) {
   const { t } = useTranslation()
 
   return (

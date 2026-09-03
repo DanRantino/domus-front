@@ -1,10 +1,7 @@
 import type { SVGProps } from 'react'
 
 /** Stylized M mark from the brand SVG, tinted via `currentColor`. */
-export function DomusMarkIcon({
-  title,
-  ...props
-}: SVGProps<SVGSVGElement> & { title?: string }) {
+export function DomusMarkIcon({ title, ...props }: SVGProps<SVGSVGElement> & { title?: string }) {
   return (
     <svg
       viewBox="0 0 211 179"
