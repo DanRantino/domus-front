@@ -1,6 +1,6 @@
 import { useAppDispatch } from '#/app/hooks'
 
-import { useCreateHouseMutation } from '../api/housesApi'
+import { housesApi, useCreateHouseMutation } from '../api/housesApi'
 import { selectHousehold } from '../slice/householdSessionSlice'
 
 export function useCreateHousehold() {
@@ -10,6 +10,13 @@ export function useCreateHousehold() {
   async function createHousehold(name: string) {
     const household = await create({ name }).unwrap()
     dispatch(selectHousehold(household.id))
+    dispatch(
+      housesApi.util.updateQueryData('getHouses', undefined, (draft) => {
+        if (!draft.some((item) => item.id === household.id)) {
+          draft.push(household)
+        }
+      }),
+    )
     return household
   }
 

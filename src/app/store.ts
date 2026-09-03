@@ -3,6 +3,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { api } from '#/api/api'
 import '#/api/me'
 import '#/features/create-household/api/housesApi'
+import '#/features/house-invitations/api/invitationsApi'
 import { householdSessionReducer } from '#/features/create-household/slice/householdSessionSlice'
 
 const rootReducer = combineReducers({

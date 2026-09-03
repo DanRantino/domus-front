@@ -17,7 +17,7 @@ export function CreateSpaceButton({ variant, onNavigate }: CreateSpaceButtonProp
   return (
     <Button
       component={RouterLink}
-      to="/houses/new"
+      to="/start"
       variant="contained"
       onClick={onNavigate}
       sx={

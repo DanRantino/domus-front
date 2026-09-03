@@ -16,9 +16,46 @@ function isEnvelope(value: unknown): boolean {
   return typeof value === 'object' && value !== null && 'success' in value
 }
 
-export const domusBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
-  args,
-) => {
+function requestParts(args: string | FetchArgs): { url: string; method: string } {
+  const request = typeof args === 'string' ? { url: args } : args
+  return {
+    url: request.url,
+    method: (request.method ?? 'GET').toUpperCase(),
+  }
+}
+
+function isProvisionRequest(args: string | FetchArgs): boolean {
+  const { url, method } = requestParts(args)
+  return method === 'POST' && (url === '/users/me' || url.endsWith('/users/me'))
+}
+
+let provisionInFlight: Promise<boolean> | null = null
+
+async function provisionSelf(): Promise<boolean> {
+  if (provisionInFlight) {
+    return provisionInFlight
+  }
+
+  provisionInFlight = (async () => {
+    const response = await fetch(joinUrl(apiBaseUrl(), '/users/me'), {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      credentials: 'include',
+    })
+
+    return response.status === 201 || response.status === 409
+  })()
+
+  try {
+    return await provisionInFlight
+  } finally {
+    provisionInFlight = null
+  }
+}
+
+async function execute(
+  args: string | FetchArgs,
+): Promise<{ data: unknown } | { error: FetchBaseQueryError }> {
   const request = typeof args === 'string' ? { url: args } : args
   const method = request.method ?? 'GET'
   const headers = new Headers()
@@ -30,48 +67,62 @@ export const domusBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQ
     body = JSON.stringify(request.body)
   }
 
+  const response = await fetch(joinUrl(apiBaseUrl(), request.url), {
+    method,
+    headers,
+    body,
+    credentials: 'include',
+  })
+
+  const text = await response.text()
+  let parsed: unknown
+  if (text) {
+    try {
+      parsed = JSON.parse(text) as unknown
+    } catch {
+      parsed = text
+    }
+  }
+
+  if (isEnvelope(parsed)) {
+    const envelope = parsed as ApiEnvelope<unknown>
+    if (envelope.success && response.ok) {
+      return { data: envelope.data }
+    }
+
+    return {
+      error: {
+        status: response.status,
+        data: envelope.error,
+      },
+    }
+  }
+
+  if (!response.ok) {
+    return {
+      error: {
+        status: response.status,
+        data: parsed,
+      },
+    }
+  }
+
+  return { data: parsed }
+}
+
+export const domusBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+) => {
   try {
-    const response = await fetch(joinUrl(apiBaseUrl(), request.url), {
-      method,
-      headers,
-      body,
-      credentials: 'include',
-    })
-
-    const text = await response.text()
-    let parsed: unknown
-    if (text) {
-      try {
-        parsed = JSON.parse(text) as unknown
-      } catch {
-        parsed = text
+    const result = await execute(args)
+    if ('error' in result && isNotProvisionedError(result.error) && !isProvisionRequest(args)) {
+      const provisioned = await provisionSelf()
+      if (provisioned) {
+        return await execute(args)
       }
     }
 
-    if (isEnvelope(parsed)) {
-      const envelope = parsed as ApiEnvelope<unknown>
-      if (envelope.success && response.ok) {
-        return { data: envelope.data }
-      }
-
-      return {
-        error: {
-          status: response.status,
-          data: envelope.error,
-        },
-      }
-    }
-
-    if (!response.ok) {
-      return {
-        error: {
-          status: response.status,
-          data: parsed,
-        },
-      }
-    }
-
-    return { data: parsed }
+    return result
   } catch (error) {
     return {
       error: {

@@ -22,6 +22,19 @@ describe('getDomusErrorCode', () => {
 })
 
 describe('domusBaseQuery', () => {
+  it('silently provisions and retries on 403 not_provisioned', async () => {
+    const { stubDomusApi } = await import('#/test/domusApi')
+    stubDomusApi({ authenticated: true, provisionable: true })
+
+    const { setupStore } = await import('#/app/store')
+    const { housesApi } = await import('#/features/create-household/api/housesApi')
+    const store = setupStore()
+    const result = await store.dispatch(housesApi.endpoints.getHouses.initiate())
+
+    expect(result.isSuccess).toBe(true)
+    expect(result.data).toEqual([])
+  })
+
   it('passes through a 401 without an envelope', async () => {
     vi.stubGlobal(
       'fetch',
