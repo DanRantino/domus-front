@@ -55,14 +55,15 @@ describe('JoinHouseholdPage', () => {
     renderJoin('/start/invite?token=invite-token')
 
     expect(screen.getByRole('heading', { name: 'Entrar com convite' })).toBeInTheDocument()
-    expect(
-      screen.getByText(/O código é o token enviado no e-mail de convite/),
-    ).toBeInTheDocument()
+    expect(screen.getByText(/O código é o token enviado no e-mail de convite/)).toBeInTheDocument()
     expect(await screen.findByText('Entrar na Casa Furst')).toBeInTheDocument()
   })
 
   it('shows an invalid token state', async () => {
-    stubDomusApi({ authenticated: false, houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }] })
+    stubDomusApi({
+      authenticated: false,
+      houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }],
+    })
     renderJoin('/start/invite?token=unknown')
 
     expect(await screen.findByText('Este convite não é válido ou já expirou.')).toBeInTheDocument()
@@ -79,6 +80,25 @@ describe('JoinHouseholdPage', () => {
     expect(assign).toHaveBeenCalledWith(
       '/auth/login?returnUrl=%2Fstart%2Finvite%3Ftoken%3Dpasted-token',
     )
+  })
+
+  it('retries acceptance when the same token is submitted again', async () => {
+    stubDomusApi({
+      authenticated: true,
+      houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }],
+      invitations: [pendingInvite],
+      failAcceptOnce: true,
+    })
+    renderJoin('/start/invite?token=invite-token')
+
+    expect(await screen.findByText('Não foi possível aceitar o convite.')).toBeInTheDocument()
+
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: 'Entrar na casa' }))
+
+    await waitFor(() => {
+      expect(screen.queryByText('Não foi possível aceitar o convite.')).not.toBeInTheDocument()
+    })
   })
 
   it('accepts a token after the caller is provisioned', async () => {

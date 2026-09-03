@@ -44,7 +44,14 @@ export function HouseReadyPage() {
 
     for (const email of emails) {
       try {
-        await createInvitation({ houseId: selected.id, email, role: 'member' }).unwrap()
+        const invitation = await createInvitation({
+          houseId: selected.id,
+          email,
+          role: 'member',
+        }).unwrap()
+        if (invitation.email_sent === false) {
+          failed.push(email)
+        }
       } catch {
         failed.push(email)
       }

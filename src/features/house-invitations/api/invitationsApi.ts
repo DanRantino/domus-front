@@ -35,24 +35,26 @@ export const invitationsApi = api.injectEndpoints({
       }),
       invalidatesTags: (_result, _error, arg) => [{ type: 'Invitations', id: arg.houseId }],
     }),
-    revokeHouseInvitation: build.mutation<HouseInvitation, { houseId: string; invitationId: string }>(
-      {
-        query: ({ houseId, invitationId }) => ({
-          url: `/houses/${houseId}/invitations/${invitationId}`,
-          method: 'DELETE',
-        }),
-        invalidatesTags: (_result, _error, arg) => [{ type: 'Invitations', id: arg.houseId }],
-      },
-    ),
-    resendHouseInvitation: build.mutation<HouseInvitation, { houseId: string; invitationId: string }>(
-      {
-        query: ({ houseId, invitationId }) => ({
-          url: `/houses/${houseId}/invitations/${invitationId}/resend`,
-          method: 'POST',
-        }),
-        invalidatesTags: (_result, _error, arg) => [{ type: 'Invitations', id: arg.houseId }],
-      },
-    ),
+    revokeHouseInvitation: build.mutation<
+      HouseInvitation,
+      { houseId: string; invitationId: string }
+    >({
+      query: ({ houseId, invitationId }) => ({
+        url: `/houses/${houseId}/invitations/${invitationId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Invitations', id: arg.houseId }],
+    }),
+    resendHouseInvitation: build.mutation<
+      HouseInvitation,
+      { houseId: string; invitationId: string }
+    >({
+      query: ({ houseId, invitationId }) => ({
+        url: `/houses/${houseId}/invitations/${invitationId}/resend`,
+        method: 'POST',
+      }),
+      invalidatesTags: (_result, _error, arg) => [{ type: 'Invitations', id: arg.houseId }],
+    }),
   }),
 })
 

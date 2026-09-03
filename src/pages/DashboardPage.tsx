@@ -25,10 +25,7 @@ export function DashboardPage() {
         py: 6,
       }}
     >
-      <Typography
-        component="h1"
-        sx={{ fontFamily: fonts.headline, fontSize: { xs: 32, md: 44 } }}
-      >
+      <Typography component="h1" sx={{ fontFamily: fonts.headline, fontSize: { xs: 32, md: 44 } }}>
         {t('dashboard.hello')}
       </Typography>
       {selected ? (

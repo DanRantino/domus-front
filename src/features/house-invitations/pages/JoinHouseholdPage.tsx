@@ -72,8 +72,11 @@ export function JoinHouseholdPage() {
       return
     }
 
-    acceptStarted.current = false
-    setSearchParams({ token: values.token })
+    acceptStarted.current = true
+    if (values.token !== token) {
+      setSearchParams({ token: values.token })
+    }
+    void acceptInvitation({ token: values.token })
   }
 
   const previewHouse = preview.data?.house_name

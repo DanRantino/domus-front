@@ -29,21 +29,22 @@ function isProvisionRequest(args: string | FetchArgs): boolean {
   return method === 'POST' && (url === '/users/me' || url.endsWith('/users/me'))
 }
 
-let provisionInFlight: Promise<boolean> | null = null
+type ProvisionResult = { ok: true } | { ok: false; error: FetchBaseQueryError }
 
-async function provisionSelf(): Promise<boolean> {
+let provisionInFlight: Promise<ProvisionResult> | null = null
+
+async function provisionSelf(): Promise<ProvisionResult> {
   if (provisionInFlight) {
     return provisionInFlight
   }
 
   provisionInFlight = (async () => {
-    const response = await fetch(joinUrl(apiBaseUrl(), '/users/me'), {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      credentials: 'include',
-    })
+    const result = await execute({ url: '/users/me', method: 'POST' })
+    if ('data' in result || result.error.status === 409) {
+      return { ok: true }
+    }
 
-    return response.status === 201 || response.status === 409
+    return { ok: false, error: result.error }
   })()
 
   try {
@@ -117,9 +118,11 @@ export const domusBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQ
     const result = await execute(args)
     if ('error' in result && isNotProvisionedError(result.error) && !isProvisionRequest(args)) {
       const provisioned = await provisionSelf()
-      if (provisioned) {
+      if (provisioned.ok) {
         return await execute(args)
       }
+
+      return { error: provisioned.error }
     }
 
     return result

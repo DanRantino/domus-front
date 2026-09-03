@@ -27,7 +27,12 @@ type HouseInvitesPanelProps = {
 
 export function HouseInvitesPanel({ houseId }: HouseInvitesPanelProps) {
   const { t } = useTranslation()
-  const { data: invitations = [], isLoading, isError, refetch } = useGetHouseInvitationsQuery(houseId)
+  const {
+    data: invitations = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useGetHouseInvitationsQuery(houseId)
   const [createInvitation, createState] = useCreateHouseInvitationMutation()
   const [revokeInvitation] = useRevokeHouseInvitationMutation()
   const [resendInvitation] = useResendHouseInvitationMutation()
@@ -166,7 +171,8 @@ export function HouseInvitesPanel({ houseId }: HouseInvitesPanelProps) {
               }}
             >
               <Typography sx={{ color: landing.cream }}>
-                {invitation.email} · {t(`invites.role${invitation.role === 'admin' ? 'Admin' : 'Member'}`)}
+                {invitation.email} ·{' '}
+                {t(`invites.role${invitation.role === 'admin' ? 'Admin' : 'Member'}`)}
               </Typography>
               <Stack direction="row" spacing={1}>
                 <Button

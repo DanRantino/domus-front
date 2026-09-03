@@ -12,6 +12,8 @@ type StubDomusApiOptions = {
   failGet?: boolean
   failCreate?: boolean
   failInvite?: boolean
+  inviteEmailFailed?: boolean
+  failAcceptOnce?: boolean
   notProvisioned?: boolean
   provisionable?: boolean
   failProvision?: boolean
@@ -58,6 +60,8 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
   let failGet = options.failGet ?? false
   let failCreate = options.failCreate ?? false
   const failInvite = options.failInvite ?? false
+  const inviteEmailFailed = options.inviteEmailFailed ?? false
+  let failAcceptOnce = options.failAcceptOnce ?? false
   let provisioned = !(options.provisionable ?? false)
 
   function meBody() {
@@ -88,7 +92,9 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
 
     if (method === 'GET' && path === '/invitations/preview') {
       const token = parsed.searchParams.get('token') ?? ''
-      const invitation = invitations.find((item) => item.token === token && item.status === 'pending')
+      const invitation = invitations.find(
+        (item) => item.token === token && item.status === 'pending',
+      )
       const house = invitation ? houses.find((item) => item.id === invitation.house_id) : undefined
       if (!invitation || !house) {
         return failEnvelope(404, 'not_found', 'Invitation not found')
@@ -117,6 +123,11 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
     }
 
     if (method === 'POST' && path === '/invitations/accept') {
+      if (failAcceptOnce) {
+        failAcceptOnce = false
+        return failEnvelope(500, 'internal_error', 'Failed to accept')
+      }
+
       const rawBody = await requestBody(input, init)
       const body = rawBody ? (JSON.parse(rawBody) as { token?: string }) : {}
       const invitation = invitations.find(
@@ -139,14 +150,18 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
       })
     }
 
-    const invitationMatch = path.match(/^\/houses\/([^/]+)\/invitations(?:\/([^/]+))?(?:\/resend)?$/)
+    const invitationMatch = path.match(
+      /^\/houses\/([^/]+)\/invitations(?:\/([^/]+))?(?:\/resend)?$/,
+    )
     if (invitationMatch) {
       const houseId = invitationMatch[1] ?? ''
       const invitationId = invitationMatch[2]
       const isResend = path.endsWith('/resend')
 
       if (method === 'GET' && !invitationId) {
-        return okEnvelope(invitations.filter((item) => item.house_id === houseId && item.status === 'pending'))
+        return okEnvelope(
+          invitations.filter((item) => item.house_id === houseId && item.status === 'pending'),
+        )
       }
 
       if (method === 'POST' && !invitationId) {
@@ -170,13 +185,15 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
           expires_at: '2026-09-04T00:00:00Z',
           created_at: '2026-08-28T00:00:00Z',
           token: 'new-token',
-          email_sent: true,
+          email_sent: !inviteEmailFailed,
         }
         invitations.push(invitation)
         return okEnvelope(invitation, 201)
       }
 
-      const invitation = invitations.find((item) => item.id === invitationId && item.house_id === houseId)
+      const invitation = invitations.find(
+        (item) => item.id === invitationId && item.house_id === houseId,
+      )
       if (!invitation) {
         return failEnvelope(404, 'not_found', 'Invitation not found')
       }

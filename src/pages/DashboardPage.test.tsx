@@ -32,7 +32,9 @@ describe('DashboardPage', () => {
     })
     render(<DashboardPage />, { wrapper })
 
-    expect(await screen.findByRole('heading', { name: 'Convidar para esta casa' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Convidar para esta casa' }),
+    ).toBeInTheDocument()
     expect(screen.getByLabelText('E-mail')).toBeInTheDocument()
   })
 
@@ -47,6 +49,8 @@ describe('DashboardPage', () => {
     render(<DashboardPage />, { wrapper })
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Olá' })).toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: 'Convidar para esta casa' })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('heading', { name: 'Convidar para esta casa' }),
+    ).not.toBeInTheDocument()
   })
 })

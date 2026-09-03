@@ -82,7 +82,7 @@ describe('HouseReadyPage', () => {
     await user.click(screen.getByRole('button', { name: 'Fazer isso depois' }))
 
     expect(await screen.findByRole('heading', { name: 'Olá' })).toBeInTheDocument()
-    expect(screen.getByText('Nenhum convite pendente.')).toBeInTheDocument()
+    expect(await screen.findByText('Nenhum convite pendente.')).toBeInTheDocument()
     expect(
       screen.queryByRole('heading', { name: 'Sua Domus está pronta.' }),
     ).not.toBeInTheDocument()
@@ -108,6 +108,27 @@ describe('HouseReadyPage', () => {
 
     expect(screen.getAllByText('ana@email.com')).toHaveLength(1)
 
+    await user.click(screen.getByRole('button', { name: 'Enviar convites e continuar' }))
+
+    expect(await screen.findByText('Não foi possível enviar alguns convites.')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Sua Domus está pronta.' })).toBeInTheDocument()
+  })
+
+  it('stays on the ready step when the API persists but does not send the email', async () => {
+    stubDomusApi({
+      authenticated: true,
+      houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }],
+      inviteEmailFailed: true,
+    })
+    renderReady()
+    const user = userEvent.setup()
+
+    expect(
+      await screen.findByRole('heading', { name: 'Sua Domus está pronta.' }),
+    ).toBeInTheDocument()
+
+    await user.type(screen.getByLabelText('E-mail'), 'ana@email.com')
+    await user.click(screen.getByRole('button', { name: 'Adicionar' }))
     await user.click(screen.getByRole('button', { name: 'Enviar convites e continuar' }))
 
     expect(await screen.findByText('Não foi possível enviar alguns convites.')).toBeInTheDocument()
