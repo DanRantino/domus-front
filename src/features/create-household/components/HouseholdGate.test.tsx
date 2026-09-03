@@ -78,4 +78,13 @@ describe('HouseholdGate', () => {
     renderGate(store)
     expect(await screen.findByText('Dashboard ok')).toBeInTheDocument()
   })
+
+  it('keeps unprovisioned callers on create even after skip', async () => {
+    stubDomusApi({ authenticated: true, notProvisioned: true })
+    const store = setupStore()
+    store.dispatch(skipCreate())
+    renderGate(store)
+    expect(await screen.findByText('Create page')).toBeInTheDocument()
+    expect(screen.queryByText('Dashboard ok')).not.toBeInTheDocument()
+  })
 })

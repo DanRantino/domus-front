@@ -39,7 +39,9 @@ describe('CreateHouseholdPage', () => {
     const { wrapper, store } = createHouseholdsWrapper()
     render(<CreateHouseholdPage />, { wrapper })
 
-    expect(await screen.findByRole('heading', { name: 'Como chamamos sua Domus?' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Como chamamos sua Domus?' }),
+    ).toBeInTheDocument()
     const user = userEvent.setup()
     await user.type(screen.getByLabelText('Nome da Domus'), 'Casa Furst')
     await user.click(screen.getByRole('button', { name: 'Criar minha Domus →' }))

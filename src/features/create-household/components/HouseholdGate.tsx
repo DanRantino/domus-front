@@ -13,7 +13,6 @@ type HouseholdGateProps = {
 export function HouseholdGate({ children }: HouseholdGateProps) {
   const { households, isLoading, isError, isNotProvisioned, refetch } = useMyHouseholds()
   const { skippedCreate } = useHouseholdSession()
-  const hasNoHouseholds = isNotProvisioned || households.length === 0
 
   if (isLoading) {
     return <HouseholdGateSkeleton />
@@ -23,7 +22,11 @@ export function HouseholdGate({ children }: HouseholdGateProps) {
     return <HouseholdFeedback onRetry={() => void refetch()} />
   }
 
-  if (hasNoHouseholds && !skippedCreate) {
+  if (isNotProvisioned) {
+    return <Navigate to="/houses/new" replace />
+  }
+
+  if (households.length === 0 && !skippedCreate) {
     return <Navigate to="/houses/new" replace />
   }
 
