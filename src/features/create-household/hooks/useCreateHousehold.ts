@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { getDomusErrorCode, isNotProvisionedError } from '#/api/baseQuery'
-import { useProvisionMeMutation } from '#/api/me'
+import { meApi, useProvisionMeMutation } from '#/api/me'
 import { useAppDispatch } from '#/app/hooks'
 
 import { housesApi, useCreateHouseMutation } from '../api/housesApi'
@@ -22,6 +22,13 @@ export function useCreateHousehold() {
         housesApi.util.updateQueryData('getHouses', undefined, (draft) => {
           if (!draft.some((item) => item.id === household.id)) {
             draft.push(household)
+          }
+        }),
+      )
+      dispatch(
+        meApi.util.updateQueryData('getMe', undefined, (draft) => {
+          if (!draft.houses.some((item) => item.id === household.id)) {
+            draft.houses.push(household)
           }
         }),
       )

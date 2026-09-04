@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router'
 import { beforeEach, describe, expect, it } from 'vitest'
 
 import '#/i18n'
-import { housesApi } from '#/features/create-household/api/housesApi'
+import { meApi } from '#/api/me'
 import { skipCreate } from '#/features/create-household/slice/householdSessionSlice'
 import { setupStore } from '#/app/store'
 import { stubDomusApi } from '#/test/domusApi'
@@ -67,10 +67,10 @@ describe('HouseholdGate', () => {
   it('does not redirect while refetching an empty list', async () => {
     stubDomusApi({ authenticated: true })
     const store = setupStore()
-    await store.dispatch(housesApi.endpoints.getHouses.initiate())
+    await store.dispatch(meApi.endpoints.getMe.initiate())
 
     stubDomusApi({ authenticated: true, hangGet: true })
-    void store.dispatch(housesApi.endpoints.getHouses.initiate(undefined, { forceRefetch: true }))
+    void store.dispatch(meApi.endpoints.getMe.initiate(undefined, { forceRefetch: true }))
 
     renderGate(store)
     expect(await screen.findByLabelText('Carregando...')).toBeInTheDocument()

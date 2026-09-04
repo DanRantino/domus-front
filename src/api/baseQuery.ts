@@ -33,7 +33,7 @@ type ProvisionResult = { ok: true } | { ok: false; error: FetchBaseQueryError }
 
 let provisionInFlight: Promise<ProvisionResult> | null = null
 
-async function provisionSelf(): Promise<ProvisionResult> {
+export async function provisionSelf(): Promise<ProvisionResult> {
   if (provisionInFlight) {
     return provisionInFlight
   }
