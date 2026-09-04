@@ -15,8 +15,10 @@ type StubDomusApiOptions = {
   inviteEmailFailed?: boolean
   failAcceptOnce?: boolean
   notProvisioned?: boolean
+  provisionAlreadyExists?: boolean
   provisionable?: boolean
   failProvision?: boolean
+  refuseProvision?: boolean
   authenticated?: boolean
   picture?: string | null
   name?: string | null
@@ -62,7 +64,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
   const failInvite = options.failInvite ?? false
   const inviteEmailFailed = options.inviteEmailFailed ?? false
   let failAcceptOnce = options.failAcceptOnce ?? false
-  let provisioned = !(options.provisionable ?? false)
+  let blocked = Boolean(options.notProvisioned || options.provisionable)
 
   function meBody() {
     return {
@@ -108,17 +110,28 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
     }
 
     if (method === 'POST' && path === '/users/me') {
-      if (options.notProvisioned || options.failProvision) {
-        return options.failProvision
-          ? failEnvelope(500, 'internal_error', 'Failed to provision')
-          : failEnvelope(403, 'not_provisioned', 'User is not provisioned')
+      if (options.failProvision) {
+        return failEnvelope(500, 'internal_error', 'Failed to provision')
       }
 
-      provisioned = true
+      if (options.refuseProvision) {
+        return failEnvelope(403, 'not_provisioned', 'User is not provisioned')
+      }
+
+      if (options.provisionAlreadyExists) {
+        blocked = false
+        return failEnvelope(409, 'already_exists', 'User already exists')
+      }
+
+      if (!blocked) {
+        return failEnvelope(409, 'already_exists', 'User already exists')
+      }
+
+      blocked = false
       return okEnvelope(meBody(), 201)
     }
 
-    if (options.notProvisioned || !provisioned) {
+    if (blocked) {
       return failEnvelope(403, 'not_provisioned', 'User is not provisioned')
     }
 

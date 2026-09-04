@@ -47,5 +47,40 @@ describe('useCreateHousehold', () => {
     await act(async () => {
       await expect(result.current.createHousehold('Casa Nova')).rejects.toBeTruthy()
     })
+    expect(result.current.isError).toBe(true)
+  })
+
+  it('continues house creation when provisioning returns already_exists', async () => {
+    stubDomusApi({ notProvisioned: true, provisionAlreadyExists: true })
+    const store = setupStore()
+    const { wrapper } = createHouseholdsWrapper({ store })
+    const { result } = renderHook(() => useCreateHousehold(), { wrapper })
+
+    let createdId = ''
+    await act(async () => {
+      const household = await result.current.createHousehold('Casa Nova')
+      createdId = household.id
+    })
+
+    expect(createdId).toBe('created-house')
+    expect(store.getState().householdSession.selectedId).toBe(createdId)
+    expect(result.current.isError).toBe(false)
+  })
+
+  it('provisions then creates when the caller is not provisioned', async () => {
+    stubDomusApi({ notProvisioned: true })
+    const store = setupStore()
+    const { wrapper } = createHouseholdsWrapper({ store })
+    const { result } = renderHook(() => useCreateHousehold(), { wrapper })
+
+    let createdId = ''
+    await act(async () => {
+      const household = await result.current.createHousehold('Casa Nova')
+      createdId = household.id
+    })
+
+    expect(createdId).toBe('created-house')
+    expect(store.getState().householdSession.selectedId).toBe(createdId)
+    expect(result.current.isError).toBe(false)
   })
 })

@@ -65,12 +65,7 @@ export function CreateHouseholdPage() {
         spacing={2}
         sx={{ maxWidth: 640, mx: 'auto', pt: { xs: 2, md: 6 } }}
       >
-        {isNotProvisioned ? (
-          <HouseholdFeedback
-            title={t('createHousehold.notProvisionedTitle')}
-            message={t('createHousehold.notProvisioned')}
-          />
-        ) : isError ? (
+        {isError && !isNotProvisioned ? (
           <HouseholdFeedback onRetry={() => void refetch()} />
         ) : (
           <>

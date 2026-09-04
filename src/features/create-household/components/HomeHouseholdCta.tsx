@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next'
-
 import { useAuthSession } from '#/auth/useAuthSession'
 
 import { useMyHouseholds } from '../hooks/useMyHouseholds'
@@ -30,22 +28,17 @@ export function HomeHouseholdCta({ variant, onNavigate }: HomeHouseholdCtaProps)
 }
 
 function AuthenticatedHouseholdCta({ variant, onNavigate }: HomeHouseholdCtaProps) {
-  const { t } = useTranslation()
   const { households, isLoading, isError, isNotProvisioned, refetch } = useMyHouseholds()
 
   if (isLoading) {
     return <HouseholdCtaSkeleton variant={variant} />
   }
 
-  if (isNotProvisioned) {
-    return <HouseholdFeedback compact message={t('createHousehold.notProvisioned')} />
-  }
-
-  if (isError) {
+  if (isError && !isNotProvisioned) {
     return <HouseholdFeedback compact onRetry={() => void refetch()} />
   }
 
-  if (households.length === 0) {
+  if (isNotProvisioned || households.length === 0) {
     return <CreateSpaceButton variant={variant} onNavigate={onNavigate} />
   }
 

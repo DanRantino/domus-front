@@ -142,13 +142,36 @@ export function getDomusErrorCode(error: unknown): string | undefined {
   }
 
   const data = error.data
-  if (data && typeof data === 'object' && 'code' in data && typeof data.code === 'string') {
+  if (!data || typeof data !== 'object') {
+    return undefined
+  }
+
+  if ('code' in data && typeof data.code === 'string') {
     return data.code
+  }
+
+  if (
+    'error' in data &&
+    data.error &&
+    typeof data.error === 'object' &&
+    'code' in data.error &&
+    typeof data.error.code === 'string'
+  ) {
+    return data.error.code
   }
 
   return undefined
 }
 
 export function isNotProvisionedError(error: unknown): boolean {
-  return getDomusErrorCode(error) === 'not_provisioned'
+  const code = getDomusErrorCode(error)
+  if (code === 'not_provisioned') {
+    return true
+  }
+
+  if (code) {
+    return false
+  }
+
+  return !!error && typeof error === 'object' && 'status' in error && error.status === 403
 }

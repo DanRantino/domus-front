@@ -47,7 +47,7 @@ describe('housesApi', () => {
   })
 
   it('unwraps a 403 not_provisioned envelope', async () => {
-    stubDomusApi({ authenticated: true, notProvisioned: true })
+    stubDomusApi({ authenticated: true, notProvisioned: true, refuseProvision: true })
     const store = setupStore()
     const result = await store.dispatch(housesApi.endpoints.getHouses.initiate())
     expect(result.isError).toBe(true)

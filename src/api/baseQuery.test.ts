@@ -17,6 +17,13 @@ describe('getDomusErrorCode', () => {
 
   it('detects not_provisioned', () => {
     expect(isNotProvisionedError({ status: 403, data: { code: 'not_provisioned' } })).toBe(true)
+    expect(
+      isNotProvisionedError({
+        status: 403,
+        data: { error: { code: 'not_provisioned' } },
+      }),
+    ).toBe(true)
+    expect(isNotProvisionedError({ status: 403 })).toBe(true)
     expect(isNotProvisionedError({ status: 404, data: { code: 'not_found' } })).toBe(false)
   })
 })

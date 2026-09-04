@@ -39,13 +39,21 @@ describe('CreateHouseholdPage', () => {
     ).toBeInTheDocument()
   })
 
-  it('shows a not-provisioned state', async () => {
+  it('creates a household after provisioning when the caller is not provisioned', async () => {
     stubDomusApi({ authenticated: true, notProvisioned: true })
-    const { wrapper } = createHouseholdsWrapper()
+    const { wrapper, store } = createHouseholdsWrapper()
     render(<CreateHouseholdPage />, { wrapper })
 
-    expect(await screen.findByRole('heading', { name: 'Sem acesso à Domus' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Tentar de novo' })).not.toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Como chamamos sua Domus?' }),
+    ).toBeInTheDocument()
+    const user = userEvent.setup()
+    await user.type(screen.getByLabelText('Nome da Domus'), 'Casa Furst')
+    await user.click(screen.getByRole('button', { name: 'Criar minha Domus →' }))
+
+    await waitFor(() => {
+      expect(store.getState().householdSession.selectedId).toBe('created-house')
+    })
   })
 
   it('creates a household and goes to the ready invite step', async () => {
