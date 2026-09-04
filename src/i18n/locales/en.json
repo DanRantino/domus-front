@@ -93,9 +93,33 @@
     }
   },
   "dashboard": {
-    "hello": "Hello",
+    "hello": "Welcome",
     "configMissing": "Authentication is not configured.",
-    "redirecting": "Connecting..."
+    "redirecting": "Connecting...",
+    "weather": {
+      "title": "Weather now",
+      "loading": "Looking up the weather…",
+      "denied": "Allow location access to see the weather.",
+      "unavailable": "We could not determine your location.",
+      "error": "We could not load the weather.",
+      "temperature": "{{value}} °C",
+      "wind": "Wind {{value}} km/h",
+      "clear": "Clear sky",
+      "cloudy": "Cloudy",
+      "fog": "Fog",
+      "rain": "Rain",
+      "snow": "Snow",
+      "storm": "Storm"
+    }
+  },
+  "appNav": {
+    "brand": "Domus",
+    "sanctuary": "Sanctuary",
+    "log": "Log",
+    "larder": "Larder",
+    "households": "Households",
+    "notifications": "Notifications",
+    "account": "Account"
   },
   "start": {
     "title": "How do you want to start?",

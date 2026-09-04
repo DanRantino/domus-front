@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router'
 
 import { ProtectedRoute } from '#/auth/ProtectedRoute'
+import { AuthenticatedLayout } from '#/components/app-chrome/AuthenticatedLayout'
 import { HouseholdGate } from '#/features/create-household/components/HouseholdGate'
 import { CreateHouseholdPage } from '#/features/create-household/pages/CreateHouseholdPage'
 import { DashboardPage } from '#/pages/DashboardPage'
@@ -19,12 +20,17 @@ export const router = createBrowserRouter([
       { path: '/start/ready', element: <HouseReadyPage /> },
       { path: '/houses/new', element: <CreateHouseholdPage /> },
       {
-        path: '/dashboard',
         element: (
           <HouseholdGate>
-            <DashboardPage />
+            <AuthenticatedLayout />
           </HouseholdGate>
         ),
+        children: [
+          { path: '/dashboard', element: <DashboardPage /> },
+          { path: '/log', element: null },
+          { path: '/larder', element: null },
+          { path: '/households', element: null },
+        ],
       },
     ],
   },
