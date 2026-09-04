@@ -44,7 +44,7 @@ describe('useMyHouseholds', () => {
   })
 
   it('flags not_provisioned', async () => {
-    stubDomusApi({ authenticated: true, notProvisioned: true })
+    stubDomusApi({ authenticated: true, notProvisioned: true, refuseProvision: true })
     const { wrapper } = createHouseholdsWrapper()
     const { result } = renderHook(() => useMyHouseholds(), { wrapper })
 

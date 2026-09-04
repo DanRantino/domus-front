@@ -22,13 +22,15 @@ describe('getMe', () => {
     })
   })
 
-  it('surfaces not_provisioned', async () => {
+  it('silently provisions getMe when the caller is not provisioned', async () => {
     stubDomusApi({ notProvisioned: true })
     const store = setupStore()
     const result = await store.dispatch(meApi.endpoints.getMe.initiate())
-    expect(result.isError).toBe(true)
-    expect(result.error).toMatchObject({
-      data: { code: 'not_provisioned' },
+    expect(result.isSuccess).toBe(true)
+    expect(result.data).toMatchObject({
+      id: 'user-1',
+      theme: 'system',
+      houses: [],
     })
   })
 

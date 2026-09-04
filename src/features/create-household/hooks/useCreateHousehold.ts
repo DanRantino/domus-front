@@ -4,7 +4,7 @@ import { getDomusErrorCode, isNotProvisionedError } from '#/api/baseQuery'
 import { useProvisionMeMutation } from '#/api/me'
 import { useAppDispatch } from '#/app/hooks'
 
-import { useCreateHouseMutation } from '../api/housesApi'
+import { housesApi, useCreateHouseMutation } from '../api/housesApi'
 import { selectHousehold } from '../slice/householdSessionSlice'
 
 export function useCreateHousehold() {
@@ -18,6 +18,13 @@ export function useCreateHousehold() {
     try {
       const household = await createAfterProvisioning(name)
       dispatch(selectHousehold(household.id))
+      dispatch(
+        housesApi.util.updateQueryData('getHouses', undefined, (draft) => {
+          if (!draft.some((item) => item.id === household.id)) {
+            draft.push(household)
+          }
+        }),
+      )
       return household
     } catch (error) {
       setSubmitFailed(true)

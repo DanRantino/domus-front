@@ -97,6 +97,47 @@
     "configMissing": "Authentication is not configured.",
     "redirecting": "Connecting..."
   },
+  "start": {
+    "title": "How do you want to start?",
+    "loginPrompt": "Already use Domus?",
+    "login": "Log in",
+    "back": "Back",
+    "create": {
+      "title": "Create my Domus",
+      "description": "Start a new sanctuary for your family. Set the rules, invite members, and begin building your digital space.",
+      "cta": "Start"
+    },
+    "join": {
+      "title": "Join a Domus",
+      "description": "Did you receive an email invitation? Use the link or paste the invitation code.",
+      "cta": "Use invitation"
+    },
+    "invite": {
+      "title": "Join with an invitation",
+      "description": "The code is the token from the invitation email. Sign in with the same email that received the invite.",
+      "preview": "Join {{name}}",
+      "codeLabel": "Invitation code",
+      "codePlaceholder": "Paste the code here",
+      "codeRequired": "Enter the invitation code.",
+      "submit": "Join the home",
+      "loginToAccept": "Sign in to accept",
+      "invalid": "This invitation is invalid or has expired.",
+      "emailMismatch": "Sign in with the email that received the invitation.",
+      "acceptError": "We could not accept the invitation."
+    },
+    "ready": {
+      "title": "Your Domus is ready.",
+      "subtitle": "Who is part of your home?",
+      "addLabel": "Add member",
+      "add": "Add",
+      "emailLabel": "Email",
+      "emailPlaceholder": "email@example.com",
+      "emailInvalid": "Enter a valid email.",
+      "send": "Send invitations and continue",
+      "later": "Do this later",
+      "sendError": "We could not send some invitations."
+    }
+  },
   "createHousehold": {
     "eyebrow": "Your Domus",
     "title": "What do we call your Domus?",
@@ -115,6 +156,25 @@
     "submitError": "We could not create your Domus.",
     "switcherLabel": "Your homes",
     "selected": "Selected home",
-    "gateLoading": "Loading..."
+    "gateLoading": "Loading...",
+    "notProvisionedTitle": "No access to Domus",
+    "notProvisioned": "Your account has not been provisioned for this space yet."
+  },
+  "invites": {
+    "title": "Invite to this home",
+    "description": "Send an email invitation. They must sign in with the same address.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "person@email.com",
+    "emailInvalid": "Enter a valid email.",
+    "roleLabel": "Role",
+    "roleMember": "Member",
+    "roleAdmin": "Admin",
+    "submit": "Send invitation",
+    "createError": "We could not send the invitation.",
+    "loadError": "We could not load invitations.",
+    "retry": "Try again",
+    "empty": "No pending invitations.",
+    "resend": "Resend",
+    "revoke": "Revoke"
   }
 }

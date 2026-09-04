@@ -14,6 +14,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link as RouterLink } from 'react-router'
 
 import { DomusMarkIcon } from '#/components/brand/DomusMarkIcon'
 import { HomeHouseholdCta } from '#/features/create-household/components/HomeHouseholdCta'
@@ -236,7 +237,13 @@ export function HomePage() {
           >
             {t('home.hero.subtitle')}
           </Typography>
-          <Button variant="contained" size="large" sx={{ ...landingCtaSx, px: 3.5, py: 1.5 }}>
+          <Button
+            component={RouterLink}
+            to="/start"
+            variant="contained"
+            size="large"
+            sx={{ ...landingCtaSx, px: 3.5, py: 1.5 }}
+          >
             {t('home.hero.cta')}
           </Button>
         </Box>
@@ -431,7 +438,13 @@ export function HomePage() {
           >
             {t('home.cta.title')}
           </Typography>
-          <Button variant="contained" size="large" sx={{ ...landingCtaSx, px: 4, py: 1.75 }}>
+          <Button
+            component={RouterLink}
+            to="/start"
+            variant="contained"
+            size="large"
+            sx={{ ...landingCtaSx, px: 4, py: 1.75 }}
+          >
             {t('home.cta.button')}
           </Button>
         </Box>

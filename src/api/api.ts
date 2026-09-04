@@ -5,6 +5,6 @@ import { domusBaseQuery } from './baseQuery'
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: domusBaseQuery,
-  tagTypes: ['Me', 'Houses'],
+  tagTypes: ['Me', 'Houses', 'Invitations'],
   endpoints: () => ({}),
 })

@@ -97,6 +97,47 @@
     "configMissing": "Autenticação não configurada.",
     "redirecting": "Conectando..."
   },
+  "start": {
+    "title": "Como você quer começar?",
+    "loginPrompt": "Já usa o Domus?",
+    "login": "Login",
+    "back": "Voltar",
+    "create": {
+      "title": "Criar minha Domus",
+      "description": "Inicie um novo santuário para sua família. Defina as regras, convide membros e comece a construir seu espaço digital.",
+      "cta": "Começar"
+    },
+    "join": {
+      "title": "Entrar em uma Domus",
+      "description": "Você recebeu um convite por e-mail? Use o link ou cole o código do convite.",
+      "cta": "Usar convite"
+    },
+    "invite": {
+      "title": "Entrar com convite",
+      "description": "O código é o token enviado no e-mail de convite. Entre com o mesmo e-mail que recebeu o convite.",
+      "preview": "Entrar na {{name}}",
+      "codeLabel": "Código do convite",
+      "codePlaceholder": "Cole o código aqui",
+      "codeRequired": "Informe o código do convite.",
+      "submit": "Entrar na casa",
+      "loginToAccept": "Entrar para aceitar",
+      "invalid": "Este convite não é válido ou já expirou.",
+      "emailMismatch": "Entre com o e-mail que recebeu o convite.",
+      "acceptError": "Não foi possível aceitar o convite."
+    },
+    "ready": {
+      "title": "Sua Domus está pronta.",
+      "subtitle": "Quem faz parte da sua casa?",
+      "addLabel": "Adicionar membro",
+      "add": "Adicionar",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "email@exemplo.com",
+      "emailInvalid": "Informe um e-mail válido.",
+      "send": "Enviar convites e continuar",
+      "later": "Fazer isso depois",
+      "sendError": "Não foi possível enviar alguns convites."
+    }
+  },
   "createHousehold": {
     "eyebrow": "Sua Domus",
     "title": "Como chamamos sua Domus?",
@@ -115,6 +156,25 @@
     "submitError": "Não foi possível criar sua Domus.",
     "switcherLabel": "Suas casas",
     "selected": "Casa selecionada",
-    "gateLoading": "Carregando..."
+    "gateLoading": "Carregando...",
+    "notProvisionedTitle": "Sem acesso à Domus",
+    "notProvisioned": "Sua conta ainda não foi liberada neste espaço."
+  },
+  "invites": {
+    "title": "Convidar para esta casa",
+    "description": "Envie um convite por e-mail. A pessoa precisa entrar com o mesmo endereço.",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "pessoa@email.com",
+    "emailInvalid": "Informe um e-mail válido.",
+    "roleLabel": "Papel",
+    "roleMember": "Membro",
+    "roleAdmin": "Administrador",
+    "submit": "Enviar convite",
+    "createError": "Não foi possível enviar o convite.",
+    "loadError": "Não foi possível carregar os convites.",
+    "retry": "Tentar de novo",
+    "empty": "Nenhum convite pendente.",
+    "resend": "Reenviar",
+    "revoke": "Revogar"
   }
 }

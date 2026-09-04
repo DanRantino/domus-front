@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router'
 import { beforeEach, describe, expect, it } from 'vitest'
 
 import '#/i18n'
+import { housesApi } from '#/features/create-household/api/housesApi'
 import { skipCreate } from '#/features/create-household/slice/householdSessionSlice'
 import { setupStore } from '#/app/store'
 import { stubDomusApi } from '#/test/domusApi'
@@ -63,6 +64,19 @@ describe('HouseholdGate', () => {
     expect(await screen.findByText('Create page')).toBeInTheDocument()
   })
 
+  it('does not redirect while refetching an empty list', async () => {
+    stubDomusApi({ authenticated: true })
+    const store = setupStore()
+    await store.dispatch(housesApi.endpoints.getHouses.initiate())
+
+    stubDomusApi({ authenticated: true, hangGet: true })
+    void store.dispatch(housesApi.endpoints.getHouses.initiate(undefined, { forceRefetch: true }))
+
+    renderGate(store)
+    expect(await screen.findByLabelText('Carregando...')).toBeInTheDocument()
+    expect(screen.queryByText('Create page')).not.toBeInTheDocument()
+  })
+
   it('renders children when the visitor already has a household', async () => {
     stubDomusApi({
       authenticated: true,
@@ -79,12 +93,13 @@ describe('HouseholdGate', () => {
     expect(await screen.findByText('Dashboard ok')).toBeInTheDocument()
   })
 
-  it('keeps unprovisioned callers on create even after skip', async () => {
-    stubDomusApi({ authenticated: true, notProvisioned: true })
+  it('does not open the dashboard when skip is set but provisioning failed', async () => {
+    stubDomusApi({ authenticated: true, notProvisioned: true, failProvision: true })
     const store = setupStore()
     store.dispatch(skipCreate())
     renderGate(store)
-    expect(await screen.findByText('Create page')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Algo deu errado' })).toBeInTheDocument()
     expect(screen.queryByText('Dashboard ok')).not.toBeInTheDocument()
+    expect(screen.queryByText('Create page')).not.toBeInTheDocument()
   })
 })

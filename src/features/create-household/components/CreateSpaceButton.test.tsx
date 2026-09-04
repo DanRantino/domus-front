@@ -18,10 +18,7 @@ describe('CreateSpaceButton', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByRole('link', { name: 'Criar seu espaço' })).toHaveAttribute(
-      'href',
-      '/houses/new',
-    )
+    expect(screen.getByRole('link', { name: 'Criar seu espaço' })).toHaveAttribute('href', '/start')
   })
 
   it('notifies the drawer when clicked', async () => {
