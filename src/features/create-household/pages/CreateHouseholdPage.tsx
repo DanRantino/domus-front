@@ -30,7 +30,7 @@ export function CreateHouseholdPage() {
   async function handleCreate(name: string) {
     try {
       await createHousehold(name)
-      void navigate('/dashboard')
+      void navigate('/start/ready')
     } catch {
       // Mutation error is shown through isSubmitError.
     }
@@ -53,7 +53,7 @@ export function CreateHouseholdPage() {
     >
       <IconButton
         component={RouterLink}
-        to="/"
+        to="/start"
         aria-label={t('createHousehold.back')}
         sx={{ color: landing.cream, mb: { xs: 4, md: 8 } }}
       >

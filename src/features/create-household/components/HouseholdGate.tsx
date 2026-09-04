@@ -13,10 +13,11 @@ type HouseholdGateProps = {
 
 export function HouseholdGate({ children }: HouseholdGateProps) {
   const { t } = useTranslation()
-  const { households, isLoading, isError, isNotProvisioned, refetch } = useMyHouseholds()
+  const { households, isLoading, isFetching, isError, isNotProvisioned, refetch } =
+    useMyHouseholds()
   const { skippedCreate } = useHouseholdSession()
 
-  if (isLoading) {
+  if (isLoading || (isFetching && households.length === 0 && !skippedCreate)) {
     return <HouseholdGateSkeleton />
   }
 

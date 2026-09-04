@@ -26,7 +26,7 @@ export function CreateHouseholdPageSkeleton() {
     >
       <IconButton
         component={RouterLink}
-        to="/"
+        to="/start"
         aria-label={t('createHousehold.back')}
         sx={{ color: landing.cream, mb: { xs: 6, md: 10 } }}
       >
