@@ -5,7 +5,7 @@ import { setupStore } from '#/app/store'
 import { stubDomusApi } from '#/test/domusApi'
 
 describe('getMe', () => {
-  it('loads the current user envelope', async () => {
+  it('loads the current user from GraphQL me', async () => {
     stubDomusApi({ houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }] })
     const store = setupStore()
     const result = await store.dispatch(meApi.endpoints.getMe.initiate())
@@ -13,11 +13,13 @@ describe('getMe', () => {
     expect(result.isSuccess).toBe(true)
     expect(result.data).toEqual({
       id: 'user-1',
-      full_name: null,
-      notify_daily_tasks: true,
-      notify_expenses: true,
-      notify_family_chat: true,
-      theme: 'system',
+      name: null,
+      profile: {
+        theme: 'system',
+        notifyDailyTasks: true,
+        notifyExpenses: true,
+        notifyFamilyChat: true,
+      },
       houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }],
     })
   })
@@ -29,7 +31,7 @@ describe('getMe', () => {
     expect(result.isSuccess).toBe(true)
     expect(result.data).toMatchObject({
       id: 'user-1',
-      theme: 'system',
+      profile: { theme: 'system' },
       houses: [],
     })
   })
@@ -41,7 +43,7 @@ describe('getMe', () => {
 
     expect('data' in result && result.data).toMatchObject({
       id: 'user-1',
-      theme: 'system',
+      profile: { theme: 'system' },
       houses: [],
     })
   })

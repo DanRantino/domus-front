@@ -69,6 +69,20 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
   function meBody() {
     return {
       id: 'user-1',
+      name: null,
+      profile: {
+        theme: 'system',
+        notifyDailyTasks: true,
+        notifyExpenses: true,
+        notifyFamilyChat: true,
+      },
+      houses,
+    }
+  }
+
+  function restMeBody() {
+    return {
+      id: 'user-1',
       full_name: null,
       notify_daily_tasks: true,
       notify_expenses: true,
@@ -128,7 +142,34 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
       }
 
       blocked = false
-      return okEnvelope(meBody(), 201)
+      return okEnvelope(restMeBody(), 201)
+    }
+
+    if (method === 'POST' && path === '/graphql') {
+      if (options.hangGet) {
+        return new Promise(() => {})
+      }
+
+      if (blocked) {
+        return jsonResponse(200, {
+          data: { me: null },
+          errors: [
+            {
+              message: 'User is not provisioned',
+              extensions: { code: 'not_provisioned' },
+            },
+          ],
+        })
+      }
+
+      if (failGet) {
+        failGet = false
+        return jsonResponse(200, {
+          errors: [{ message: 'Failed to load', extensions: { code: 'internal_error' } }],
+        })
+      }
+
+      return jsonResponse(200, { data: { me: meBody() } })
     }
 
     if (blocked) {
@@ -260,7 +301,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
     }
 
     if (method === 'GET' && path === '/users/me') {
-      return okEnvelope(meBody())
+      return okEnvelope(restMeBody())
     }
 
     return failEnvelope(404, 'not_found', 'not found')
