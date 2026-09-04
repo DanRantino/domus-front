@@ -43,7 +43,7 @@ function Dashboard() {
           component="h1"
           sx={{ fontFamily: fonts.headline, fontSize: { xs: 32, md: 44 }, lineHeight: 1.2 }}
         >
-          {t('dashboard.hello')}, {me?.full_name}.
+          {me?.name ? `${t('dashboard.hello')}, ${me.name}.` : t('dashboard.hello')}
         </Typography>
       </Box>
       <CurrentWeatherCard

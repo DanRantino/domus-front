@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { setupStore } from '#/app/store'
 import '#/i18n'
+import { stubDomusApi } from '#/test/domusApi'
 import { AppThemeProvider } from '#/theme/AppThemeProvider'
 import { DashboardPage } from './DashboardPage'
 
@@ -46,20 +47,26 @@ function pendingGeolocation(): Geolocation {
 }
 
 function stubOpenMeteo() {
+  const originalFetch = globalThis.fetch
   vi.stubGlobal(
     'fetch',
-    vi.fn(async () => {
-      return new Response(
-        JSON.stringify({
-          current: {
-            time: '2026-09-04T11:00',
-            temperature_2m: 22.4,
-            weather_code: 0,
-            wind_speed_10m: 8.1,
-          },
-        }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      )
+    vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
+      if (url.includes('open-meteo.com')) {
+        return new Response(
+          JSON.stringify({
+            current: {
+              time: '2026-09-04T11:00',
+              temperature_2m: 22.4,
+              weather_code: 0,
+              wind_speed_10m: 8.1,
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        )
+      }
+
+      return originalFetch(input, init)
     }),
   )
 }
@@ -77,6 +84,7 @@ function renderDashboard() {
 describe('DashboardPage', () => {
   it('renders a welcome heading and nothing else', () => {
     stubGeolocation(pendingGeolocation())
+    stubDomusApi({ authenticated: true })
     renderDashboard()
 
     expect(screen.getByRole('heading', { level: 1, name: 'Bem-vindo' })).toBeInTheDocument()
@@ -86,8 +94,19 @@ describe('DashboardPage', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('greets the current user by name', async () => {
+    stubGeolocation(pendingGeolocation())
+    stubDomusApi({ authenticated: true, name: 'Marina' })
+    renderDashboard()
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Bem-vindo, Marina.' }),
+    ).toBeInTheDocument()
+  })
+
   it('shows current weather for the browser location', async () => {
     stubGeolocation(readyGeolocation())
+    stubDomusApi({ authenticated: true })
     stubOpenMeteo()
     renderDashboard()
 

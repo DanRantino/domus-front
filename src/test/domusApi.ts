@@ -69,7 +69,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
   function meBody() {
     return {
       id: 'user-1',
-      name: null,
+      name: options.name ?? null,
       profile: {
         theme: 'system',
         notifyDailyTasks: true,
