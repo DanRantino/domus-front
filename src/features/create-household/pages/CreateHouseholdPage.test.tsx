@@ -87,7 +87,7 @@ describe('CreateHouseholdPage', () => {
     expect(
       await screen.findByRole('heading', { name: 'Sua Domus está pronta.' }),
     ).toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: 'Olá' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Bem-vindo' })).not.toBeInTheDocument()
     expect(
       screen.queryByRole('heading', { name: 'Como chamamos sua Domus?' }),
     ).not.toBeInTheDocument()
@@ -118,7 +118,7 @@ describe('CreateHouseholdPage', () => {
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: 'Decidir mais tarde' }))
     expect(store.getState().householdSession.skippedCreate).toBe(true)
-    expect(await screen.findByRole('heading', { name: 'Olá' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Bem-vindo' })).toBeInTheDocument()
     expect(
       screen.queryByRole('heading', { name: 'Sua Domus está pronta.' }),
     ).not.toBeInTheDocument()

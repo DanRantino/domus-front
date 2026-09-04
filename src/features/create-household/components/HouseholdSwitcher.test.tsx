@@ -47,4 +47,13 @@ describe('HouseholdSwitcher', () => {
     await user.click(screen.getByRole('button', { name: 'Suas casas' }))
     await user.keyboard('{Escape}')
   })
+
+  it('renders the navbar variant with the selected household name', () => {
+    const { wrapper } = createHouseholdsWrapper({
+      preloadedState: { householdSession: { selectedId: 'h1', skippedCreate: false } },
+    })
+    render(<HouseholdSwitcher households={houses} variant="navbar" />, { wrapper })
+
+    expect(screen.getByRole('button', { name: 'Suas casas' })).toHaveTextContent('Casa Furst')
+  })
 })

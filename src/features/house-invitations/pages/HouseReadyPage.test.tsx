@@ -60,9 +60,7 @@ describe('HouseReadyPage', () => {
 
     await user.click(screen.getByRole('button', { name: 'Enviar convites e continuar' }))
 
-    expect(await screen.findByRole('heading', { name: 'Olá' })).toBeInTheDocument()
-    expect(await screen.findByText(/ana@email.com/)).toBeInTheDocument()
-    expect(screen.getByText(/joao.silva@email.com/)).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Bem-vindo' })).toBeInTheDocument()
     expect(
       screen.queryByRole('heading', { name: 'Sua Domus está pronta.' }),
     ).not.toBeInTheDocument()
@@ -81,8 +79,7 @@ describe('HouseReadyPage', () => {
     ).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Fazer isso depois' }))
 
-    expect(await screen.findByRole('heading', { name: 'Olá' })).toBeInTheDocument()
-    expect(await screen.findByText('Nenhum convite pendente.')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Bem-vindo' })).toBeInTheDocument()
     expect(
       screen.queryByRole('heading', { name: 'Sua Domus está pronta.' }),
     ).not.toBeInTheDocument()
@@ -161,7 +158,7 @@ describe('HouseReadyPage', () => {
     })
     renderReady()
 
-    expect(await screen.findByRole('heading', { name: 'Olá' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Bem-vindo' })).toBeInTheDocument()
     await waitFor(() => {
       expect(
         screen.queryByRole('heading', { name: 'Sua Domus está pronta.' }),

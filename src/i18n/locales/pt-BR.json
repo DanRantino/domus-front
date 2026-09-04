@@ -93,9 +93,33 @@
     }
   },
   "dashboard": {
-    "hello": "Olá",
+    "hello": "Bem-vindo",
     "configMissing": "Autenticação não configurada.",
-    "redirecting": "Conectando..."
+    "redirecting": "Conectando...",
+    "weather": {
+      "title": "Clima agora",
+      "loading": "Buscando o clima…",
+      "denied": "Permita a localização para ver o clima.",
+      "unavailable": "Não foi possível obter sua localização.",
+      "error": "Não foi possível carregar o clima.",
+      "temperature": "{{value}} °C",
+      "wind": "Vento {{value}} km/h",
+      "clear": "Céu limpo",
+      "cloudy": "Nublado",
+      "fog": "Neblina",
+      "rain": "Chuva",
+      "snow": "Neve",
+      "storm": "Tempestade"
+    }
+  },
+  "appNav": {
+    "brand": "Domus",
+    "sanctuary": "Santuário",
+    "log": "Diário",
+    "larder": "Despensa",
+    "households": "Casas",
+    "notifications": "Notificações",
+    "account": "Conta"
   },
   "start": {
     "title": "Como você quer começar?",
