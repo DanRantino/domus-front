@@ -2,7 +2,7 @@ import { Card, CardHeader, CardContent, Typography, Box, Checkbox } from '@mui/m
 import { useTranslation } from 'react-i18next'
 
 import { useGetMeQuery, type HouseTask } from '#/api/me'
-import { useToast } from '#/components/toast/ToastProvider'
+import { useToast } from '#/components/toast/useToast'
 import { useCompleteHouseTaskMutation } from '#/features/tasks/api/tasksApi'
 
 import { TasksCardSkeleton } from './TasksCardSkeleton'

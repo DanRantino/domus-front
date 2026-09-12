@@ -1,19 +1,8 @@
 import Alert from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 
-export type ToastSeverity = 'error' | 'success' | 'info'
-
-export type Toast = {
-  message: string
-  severity: ToastSeverity
-}
-
-type ToastContextValue = {
-  showToast: (toast: Toast) => void
-}
-
-const ToastContext = createContext<ToastContextValue | null>(null)
+import { ToastContext, type Toast } from './toastContext'
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
@@ -46,12 +35,4 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       </Snackbar>
     </ToastContext.Provider>
   )
-}
-
-export function useToast() {
-  const context = useContext(ToastContext)
-  if (!context) {
-    throw new Error('useToast must be used within ToastProvider')
-  }
-  return context
 }
