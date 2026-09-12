@@ -110,6 +110,15 @@
       "rain": "Rain",
       "snow": "Snow",
       "storm": "Storm"
+    },
+    "tasks": {
+      "title": "Tasks for {{name}}",
+      "loading": "Loading tasks...",
+      "complete": "Mark {{title}} as completed",
+      "completed": "{{title}} is completed",
+      "notCompleted": "Not completed",
+      "unassigned": "Unassigned",
+      "completeError": "We could not complete the task."
     }
   },
   "appNav": {
@@ -119,7 +128,8 @@
     "larder": "Larder",
     "households": "Households",
     "notifications": "Notifications",
-    "account": "Account"
+    "account": "Account",
+    "logout": "Log out"
   },
   "start": {
     "title": "How do you want to start?",

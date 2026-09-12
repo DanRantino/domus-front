@@ -12,6 +12,7 @@ import { useGetMeQuery } from '#/api/me'
 import { useHouseholdSession } from '#/features/create-household/hooks/useHouseholdSession'
 import { useMyHouseholds } from '#/features/create-household/hooks/useMyHouseholds'
 import i18n from '#/i18n'
+import { TasksCard } from '../components/TasksCard'
 
 function Dashboard() {
   const { data: me } = useGetMeQuery()
@@ -46,12 +47,21 @@ function Dashboard() {
           {me?.name ? `${t('dashboard.hello')}, ${me.name}.` : t('dashboard.hello')}
         </Typography>
       </Box>
-      <CurrentWeatherCard
-        location={location}
-        weather={weatherQuery.data}
-        isLoading={weatherQuery.isLoading || weatherQuery.isFetching}
-        isError={weatherQuery.isError}
-      />
+      <Box
+        display="grid"
+        gridTemplateColumns={{ xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }}
+        gap={4}
+        maxHeight={{ md: '20rem' }}
+        overflow={{ xs: 'visible', md: 'hidden' }}
+      >
+        <CurrentWeatherCard
+          location={location}
+          weather={weatherQuery.data}
+          isLoading={weatherQuery.isLoading || weatherQuery.isFetching}
+          isError={weatherQuery.isError}
+        />
+        <TasksCard householdId={selectedHousehold?.id} />
+      </Box>
     </Stack>
   )
 }

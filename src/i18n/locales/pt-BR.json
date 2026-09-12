@@ -110,6 +110,15 @@
       "rain": "Chuva",
       "snow": "Neve",
       "storm": "Tempestade"
+    },
+    "tasks": {
+      "title": "Tarefas de {{name}}",
+      "loading": "Carregando tarefas...",
+      "complete": "Concluir {{title}}",
+      "completed": "{{title}} concluída",
+      "notCompleted": "Não concluída",
+      "unassigned": "Sem responsável",
+      "completeError": "Não foi possível concluir a tarefa."
     }
   },
   "appNav": {
@@ -119,7 +128,8 @@
     "larder": "Despensa",
     "households": "Casas",
     "notifications": "Notificações",
-    "account": "Conta"
+    "account": "Conta",
+    "logout": "Sair"
   },
   "start": {
     "title": "Como você quer começar?",

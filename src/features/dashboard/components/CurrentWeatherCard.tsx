@@ -54,7 +54,8 @@ export function CurrentWeatherCard({
         borderColor: landing.line,
         borderRadius: '12px',
         p: { xs: 3, md: 4 },
-        maxWidth: 420,
+        maxHeight: '20rem',
+        minWidth: 0,
       }}
     >
       <Typography

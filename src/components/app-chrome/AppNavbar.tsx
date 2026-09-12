@@ -6,16 +6,21 @@ import Badge from '@mui/material/Badge'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { useState, type MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router'
 
+import { authLogoutPath } from '#/auth/paths'
 import { useAuthSession } from '#/auth/useAuthSession'
 import { HouseholdSwitcher } from '#/features/create-household/components/HouseholdSwitcher'
 import { useMyHouseholds } from '#/features/create-household/hooks/useMyHouseholds'
 import { landing } from '#/pages/home/landing'
 import { fonts, palette } from '#/theme/tokens'
+import { appTheme } from '#/theme/theme'
 
 const navItems = [
   { to: '/dashboard', key: 'appNav.sanctuary' },
@@ -40,6 +45,16 @@ export function AppNavbar() {
   const { households } = useMyHouseholds()
   const { picture, name } = useAuthSession()
   const initial = displayInitial(name)
+  const [accountMenuEl, setAccountMenuEl] = useState<HTMLElement | null>(null)
+  const accountMenuOpen = Boolean(accountMenuEl)
+
+  function openAccountMenu(event: MouseEvent<HTMLButtonElement>) {
+    setAccountMenuEl(event.currentTarget)
+  }
+
+  function closeAccountMenu() {
+    setAccountMenuEl(null)
+  }
 
   return (
     <Box
@@ -133,22 +148,72 @@ export function AppNavbar() {
           </Badge>
         </IconButton>
         <HouseholdSwitcher households={households} variant="navbar" />
-        <Avatar
-          src={picture}
-          alt={picture ? t('appNav.account') : undefined}
-          aria-label={picture ? undefined : t('appNav.account')}
-          sx={{
-            width: 32,
-            height: 32,
-            border: '1px solid',
-            borderColor: landing.line,
-            bgcolor: landing.surface,
-            color: landing.cream,
-            fontSize: 14,
+        <IconButton
+          onClick={openAccountMenu}
+          aria-label={t('appNav.account')}
+          aria-haspopup="menu"
+          aria-expanded={accountMenuOpen}
+          sx={{ p: 0.25 }}
+        >
+          <Avatar
+            src={picture}
+            alt=""
+            sx={{
+              width: 32,
+              height: 32,
+              border: '1px solid',
+              borderColor: landing.line,
+              bgcolor: landing.surface,
+              color: landing.cream,
+              fontSize: 14,
+            }}
+          >
+            {initial ?? <PersonOutline sx={{ fontSize: 20 }} />}
+          </Avatar>
+        </IconButton>
+        <Menu
+          anchorEl={accountMenuEl}
+          open={accountMenuOpen}
+          onClose={closeAccountMenu}
+          slotProps={{
+            paper: {
+              sx: {
+                bgcolor: landing.surface,
+                color: landing.cream,
+                minWidth: 160,
+                mt: 1,
+                padding: '0.25rem',
+              },
+            },
           }}
         >
-          {initial ?? <PersonOutline sx={{ fontSize: 20 }} />}
-        </Avatar>
+          <MenuItem
+            component="a"
+            sx={{
+              color: landing.cream,
+              padding: '0.25rem 0.5rem',
+              borderRadius: '0.25rem',
+              margin: '0.25rem 0',
+              textAlign: 'center',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              textDecoration: 'none',
+              backgroundColor: appTheme.palette.error.main,
+              '&:hover': {
+                backgroundColor: appTheme.palette.error.dark,
+              },
+            }}
+            href={authLogoutPath()}
+          >
+            {t('appNav.logout')}
+          </MenuItem>
+        </Menu>
       </Stack>
     </Box>
   )

@@ -6,6 +6,7 @@ import '#/features/create-household/api/housesApi'
 import { householdSessionReducer } from '#/features/create-household/slice/householdSessionSlice'
 import { weatherApi } from '#/features/dashboard/api/weatherApi'
 import '#/features/house-invitations/api/invitationsApi'
+import '#/features/tasks/api/tasksApi'
 
 const rootReducer = combineReducers({
   [api.reducerPath]: api.reducer,

@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router'
 import type { ReactElement, ReactNode } from 'react'
 
 import { setupStore, type AppStore, type RootState } from '#/app/store'
+import { ToastProvider } from '#/components/toast/ToastProvider'
 import { AppThemeProvider } from '#/theme/AppThemeProvider'
 
 export function createHouseholdsWrapper(options?: {
@@ -17,7 +18,9 @@ export function createHouseholdsWrapper(options?: {
     return (
       <MemoryRouter initialEntries={[route]}>
         <AppThemeProvider>
-          <Provider store={store}>{children}</Provider>
+          <ToastProvider>
+            <Provider store={store}>{children}</Provider>
+          </ToastProvider>
         </AppThemeProvider>
       </MemoryRouter>
     )

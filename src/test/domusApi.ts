@@ -14,6 +14,7 @@ type StubDomusApiOptions = {
   hangGet?: boolean
   failGet?: boolean
   failCreate?: boolean
+  failComplete?: boolean
   failInvite?: boolean
   inviteEmailFailed?: boolean
   failAcceptOnce?: boolean
@@ -64,6 +65,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
   const authenticated = options.authenticated ?? false
   let failGet = options.failGet ?? false
   let failCreate = options.failCreate ?? false
+  const failComplete = options.failComplete ?? false
   const failInvite = options.failInvite ?? false
   const inviteEmailFailed = options.inviteEmailFailed ?? false
   let failAcceptOnce = options.failAcceptOnce ?? false
@@ -209,6 +211,40 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
         house_id: house.id,
         house_name: house.name,
         role: invitation.role,
+      })
+    }
+
+    const completeTaskMatch = path.match(/^\/houses\/([^/]+)\/tasks\/([^/]+)\/complete$/)
+    if (method === 'POST' && completeTaskMatch) {
+      if (failComplete) {
+        return failEnvelope(500, 'internal_error', 'Failed to complete')
+      }
+
+      const houseId = completeTaskMatch[1] ?? ''
+      const taskId = completeTaskMatch[2] ?? ''
+      const house = houses.find((item) => item.id === houseId)
+      const task = house?.tasks?.find((item) => item.id === taskId)
+      if (!house || !task) {
+        return failEnvelope(404, 'not_found', 'Task not found')
+      }
+
+      task.status = 'completed'
+      task.completedAt = task.completedAt ?? '2026-09-12T18:00:00Z'
+      return okEnvelope({
+        id: task.id,
+        house_id: task.houseId,
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        due_at: task.dueAt,
+        completed_at: task.completedAt,
+        assignee: task.assignee
+          ? { user_id: task.assignee.userId, display_name: task.assignee.displayName }
+          : null,
+        created_by: {
+          user_id: task.createdBy.userId,
+          display_name: task.createdBy.displayName,
+        },
       })
     }
 
