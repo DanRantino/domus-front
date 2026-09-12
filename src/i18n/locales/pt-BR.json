@@ -110,6 +110,10 @@
       "rain": "Chuva",
       "snow": "Neve",
       "storm": "Tempestade"
+    },
+    "tasks": {
+      "complete": "Concluir {{title}}",
+      "completed": "{{title}} concluída"
     }
   },
   "appNav": {
@@ -119,7 +123,8 @@
     "larder": "Despensa",
     "households": "Casas",
     "notifications": "Notificações",
-    "account": "Conta"
+    "account": "Conta",
+    "logout": "Sair"
   },
   "start": {
     "title": "Como você quer começar?",

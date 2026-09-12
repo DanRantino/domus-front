@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { beforeEach, describe, expect, it } from 'vitest'
@@ -74,10 +75,8 @@ describe('AuthenticatedLayout', () => {
     renderLayout('/dashboard')
 
     await waitFor(() => {
-      expect(screen.getByRole('img', { name: 'Conta' })).toHaveAttribute(
-        'src',
-        'https://idp.test/photo.png',
-      )
+      const account = screen.getByRole('button', { name: 'Conta' })
+      expect(account.querySelector('img')).toHaveAttribute('src', 'https://idp.test/photo.png')
     })
   })
 
@@ -90,10 +89,27 @@ describe('AuthenticatedLayout', () => {
     renderLayout('/dashboard')
 
     await waitFor(() => {
-      const account = screen.getByLabelText('Conta')
+      const account = screen.getByRole('button', { name: 'Conta' })
       expect(account).toHaveTextContent('M')
       expect(account.querySelector('img')).not.toBeInTheDocument()
     })
+  })
+
+  it('opens an account menu with a logout link', async () => {
+    stubDomusApi({
+      authenticated: true,
+      name: 'Marina',
+      houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }],
+    })
+    const user = userEvent.setup()
+    renderLayout('/dashboard')
+
+    await user.click(await screen.findByRole('button', { name: 'Conta' }))
+
+    expect(screen.getByRole('menuitem', { name: 'Sair' })).toHaveAttribute(
+      'href',
+      '/auth/logout?returnUrl=%2F',
+    )
   })
 
   it('marks the matching nav item as current', () => {

@@ -110,6 +110,10 @@
       "rain": "Rain",
       "snow": "Snow",
       "storm": "Storm"
+    },
+    "tasks": {
+      "complete": "Mark {{title}} as completed",
+      "completed": "{{title}} is completed"
     }
   },
   "appNav": {
@@ -119,7 +123,8 @@
     "larder": "Larder",
     "households": "Households",
     "notifications": "Notifications",
-    "account": "Account"
+    "account": "Account",
+    "logout": "Log out"
   },
   "start": {
     "title": "How do you want to start?",
