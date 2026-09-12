@@ -123,15 +123,13 @@ export const appTheme = createTheme({
             background: 'transparent',
           },
           '&::-webkit-scrollbar-thumb': {
-            backgroundColor:
-              'color-mix(in srgb, var(--mui-palette-primary-main) 42%, transparent)',
+            backgroundColor: 'color-mix(in srgb, var(--mui-palette-primary-main) 42%, transparent)',
             borderRadius: 999,
             border: '2px solid transparent',
             backgroundClip: 'content-box',
           },
           '&::-webkit-scrollbar-thumb:hover': {
-            backgroundColor:
-              'color-mix(in srgb, var(--mui-palette-primary-main) 68%, transparent)',
+            backgroundColor: 'color-mix(in srgb, var(--mui-palette-primary-main) 68%, transparent)',
           },
           '&::-webkit-scrollbar-corner': {
             background: 'transparent',
