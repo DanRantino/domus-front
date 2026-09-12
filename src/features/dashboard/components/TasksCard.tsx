@@ -61,7 +61,9 @@ export function TaskItem({ task }: { task: HouseTask }) {
             }}
             slotProps={{
               input: {
-                'aria-label': t('dashboard.tasks.complete', { title: task.title }),
+                'aria-label': completed
+                  ? t('dashboard.tasks.completed', { title: task.title })
+                  : t('dashboard.tasks.complete', { title: task.title }),
               },
             }}
             sx={{ fontSize: 16, color: 'text.secondary' }}

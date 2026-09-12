@@ -39,11 +39,40 @@ describe('TasksCard', () => {
 
     const checkbox = await screen.findByRole('checkbox', { name: 'Concluir Comprar ração' })
     expect(checkbox).not.toBeChecked()
+    expect(checkbox).toBeEnabled()
 
     await user.click(checkbox)
 
     await waitFor(() => {
-      expect(screen.getByRole('checkbox', { name: 'Comprar ração concluída' })).toBeChecked()
+      const completed = screen.getByRole('checkbox', { name: 'Comprar ração concluída' })
+      expect(completed).toBeChecked()
+      expect(completed).toBeDisabled()
     })
+  })
+
+  it('keeps an already completed task checked and disabled', async () => {
+    stubDomusApi({
+      authenticated: true,
+      houses: [
+        {
+          id: 'h1',
+          name: 'Casa Furst',
+          role: 'admin',
+          tasks: [
+            {
+              ...pendingTask,
+              status: 'completed',
+              completedAt: '2026-09-12T18:00:00Z',
+            },
+          ],
+        },
+      ],
+    })
+    const { wrapper } = createHouseholdsWrapper()
+    render(<TasksCard householdId="h1" />, { wrapper })
+
+    const checkbox = await screen.findByRole('checkbox', { name: 'Comprar ração concluída' })
+    expect(checkbox).toBeChecked()
+    expect(checkbox).toBeDisabled()
   })
 })

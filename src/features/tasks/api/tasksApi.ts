@@ -1,5 +1,5 @@
 import { api } from '#/api/api'
-import type { HouseTask, HouseTaskMember } from '#/api/me'
+import { meApi, type HouseTask, type HouseTaskMember, type Me } from '#/api/me'
 
 type RestHouseTaskMember = {
   user_id: string
@@ -47,6 +47,22 @@ export const tasksApi = api.injectEndpoints({
         method: 'POST',
       }),
       transformResponse: (response: RestHouseTask) => houseTaskFromRest(response),
+      async onQueryStarted({ houseId, taskId }, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          dispatch(
+            meApi.util.updateQueryData('getMe', undefined, (draft: Me) => {
+              const house = draft.houses.find((item) => item.id === houseId)
+              const task = house?.tasks.find((item) => item.id === taskId)
+              if (task) {
+                Object.assign(task, data)
+              }
+            }),
+          )
+        } catch {
+          // Leave the sanctuary list unchanged; the caller still sees the error.
+        }
+      },
       invalidatesTags: ['Me', 'Tasks'],
     }),
   }),
