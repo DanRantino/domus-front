@@ -112,8 +112,13 @@
       "storm": "Storm"
     },
     "tasks": {
+      "title": "Tasks for {{name}}",
+      "loading": "Loading tasks...",
       "complete": "Mark {{title}} as completed",
-      "completed": "{{title}} is completed"
+      "completed": "{{title}} is completed",
+      "notCompleted": "Not completed",
+      "unassigned": "Unassigned",
+      "completeError": "We could not complete the task."
     }
   },
   "appNav": {

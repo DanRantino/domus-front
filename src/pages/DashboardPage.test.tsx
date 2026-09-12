@@ -3,6 +3,7 @@ import { Provider } from 'react-redux'
 import { describe, expect, it, vi } from 'vitest'
 
 import { setupStore } from '#/app/store'
+import { ToastProvider } from '#/components/toast/ToastProvider'
 import '#/i18n'
 import { stubDomusApi } from '#/test/domusApi'
 import { AppThemeProvider } from '#/theme/AppThemeProvider'
@@ -75,7 +76,9 @@ function renderDashboard() {
   return render(
     <AppThemeProvider>
       <Provider store={setupStore()}>
-        <DashboardPage />
+        <ToastProvider>
+          <DashboardPage />
+        </ToastProvider>
       </Provider>
     </AppThemeProvider>,
   )
@@ -102,6 +105,27 @@ describe('DashboardPage', () => {
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Bem-vindo, Marina.' }),
     ).toBeInTheDocument()
+  })
+
+  it('shows a tasks skeleton while the household is loading', () => {
+    stubGeolocation(pendingGeolocation())
+    stubDomusApi({ authenticated: true, hangGet: true })
+    renderDashboard()
+
+    expect(screen.getByLabelText('Carregando tarefas...')).toBeInTheDocument()
+    expect(screen.queryByText(/Tasks for/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/undefined/)).not.toBeInTheDocument()
+  })
+
+  it('omits the tasks card when the caller has no household', async () => {
+    stubGeolocation(pendingGeolocation())
+    stubDomusApi({ authenticated: true })
+    renderDashboard()
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText('Carregando tarefas...')).not.toBeInTheDocument()
+    })
+    expect(screen.queryByText(/Tarefas de/)).not.toBeInTheDocument()
   })
 
   it('shows current weather for the browser location', async () => {

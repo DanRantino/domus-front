@@ -14,6 +14,7 @@ type StubDomusApiOptions = {
   hangGet?: boolean
   failGet?: boolean
   failCreate?: boolean
+  failComplete?: boolean
   failInvite?: boolean
   inviteEmailFailed?: boolean
   failAcceptOnce?: boolean
@@ -64,6 +65,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
   const authenticated = options.authenticated ?? false
   let failGet = options.failGet ?? false
   let failCreate = options.failCreate ?? false
+  const failComplete = options.failComplete ?? false
   const failInvite = options.failInvite ?? false
   const inviteEmailFailed = options.inviteEmailFailed ?? false
   let failAcceptOnce = options.failAcceptOnce ?? false
@@ -214,6 +216,10 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
 
     const completeTaskMatch = path.match(/^\/houses\/([^/]+)\/tasks\/([^/]+)\/complete$/)
     if (method === 'POST' && completeTaskMatch) {
+      if (failComplete) {
+        return failEnvelope(500, 'internal_error', 'Failed to complete')
+      }
+
       const houseId = completeTaskMatch[1] ?? ''
       const taskId = completeTaskMatch[2] ?? ''
       const house = houses.find((item) => item.id === houseId)

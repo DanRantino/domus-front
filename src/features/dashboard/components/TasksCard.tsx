@@ -2,18 +2,29 @@ import { Card, CardHeader, CardContent, Typography, Box, Checkbox } from '@mui/m
 import { useTranslation } from 'react-i18next'
 
 import { useGetMeQuery, type HouseTask } from '#/api/me'
+import { useToast } from '#/components/toast/ToastProvider'
 import { useCompleteHouseTaskMutation } from '#/features/tasks/api/tasksApi'
 
-export function TasksCard({ householdId }: { householdId: string }) {
-  const { data: me } = useGetMeQuery()
-  const house = me?.houses.find((house) =>
-    householdId === '' ? me.houses[0] : house.id === householdId,
-  )
+import { TasksCardSkeleton } from './TasksCardSkeleton'
+
+export function TasksCard({ householdId }: { householdId?: string }) {
+  const { t } = useTranslation()
+  const { data: me, isLoading, isUninitialized } = useGetMeQuery()
+  const house = householdId ? me?.houses.find((item) => item.id === householdId) : me?.houses[0]
+
+  if (isUninitialized || isLoading) {
+    return <TasksCardSkeleton />
+  }
+
+  if (!house) {
+    return null
+  }
+
   return (
-    <Card sx={{ maxHeight: '20rem' }}>
-      <CardHeader title={`Tasks for ${house?.name}`} />
+    <Card sx={{ maxHeight: '20rem', minWidth: 0 }}>
+      <CardHeader title={t('dashboard.tasks.title', { name: house.name })} />
       <CardContent sx={{ overflowY: 'auto', maxHeight: '15rem' }}>
-        {house?.tasks.map((task) => (
+        {house.tasks.map((task) => (
           <TaskItem key={task.id} task={task} />
         ))}
       </CardContent>
@@ -23,6 +34,7 @@ export function TasksCard({ householdId }: { householdId: string }) {
 
 export function TaskItem({ task }: { task: HouseTask }) {
   const { t } = useTranslation()
+  const { showToast } = useToast()
   const [completeTask, { isLoading }] = useCompleteHouseTaskMutation()
   const completed = task.status === 'completed'
 
@@ -58,6 +70,13 @@ export function TaskItem({ task }: { task: HouseTask }) {
               }
 
               void completeTask({ houseId: task.houseId, taskId: task.id })
+                .unwrap()
+                .catch(() => {
+                  showToast({
+                    message: t('dashboard.tasks.completeError'),
+                    severity: 'error',
+                  })
+                })
             }}
             slotProps={{
               input: {
@@ -74,10 +93,12 @@ export function TaskItem({ task }: { task: HouseTask }) {
         <Typography sx={{ fontSize: 16, fontWeight: 600 }}>{task.title}</Typography>
         <Typography sx={{ fontSize: 14, color: 'text.secondary' }}>{task.description}</Typography>
         <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>
-          {task.completedAt ? new Date(task.completedAt).toLocaleDateString() : 'Not completed'}
+          {task.completedAt
+            ? new Date(task.completedAt).toLocaleDateString()
+            : t('dashboard.tasks.notCompleted')}
         </Typography>
         <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>
-          {task.assignee?.displayName ?? 'Unassigned'}
+          {task.assignee?.displayName ?? t('dashboard.tasks.unassigned')}
         </Typography>
       </Box>
     </Box>

@@ -20,7 +20,54 @@ const pendingTask = {
   createdBy: { userId: 'user-1', displayName: 'Ana Admin' },
 }
 
+function renderTasksCard(householdId?: string) {
+  const { wrapper } = createHouseholdsWrapper()
+  return render(<TasksCard householdId={householdId} />, { wrapper })
+}
+
 describe('TasksCard', () => {
+  it('shows a skeleton while household tasks are loading', () => {
+    stubDomusApi({ authenticated: true, hangGet: true })
+    renderTasksCard()
+
+    expect(screen.getByLabelText('Carregando tarefas...')).toBeInTheDocument()
+    expect(screen.queryByText(/Tasks for/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/undefined/)).not.toBeInTheDocument()
+  })
+
+  it('omits the card when the caller has no household', async () => {
+    stubDomusApi({ authenticated: true, houses: [] })
+    renderTasksCard()
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText('Carregando tarefas...')).not.toBeInTheDocument()
+    })
+    expect(screen.queryByText(/Tarefas de/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Tasks for/)).not.toBeInTheDocument()
+  })
+
+  it('renders localized copy for an incomplete unassigned task', async () => {
+    stubDomusApi({
+      authenticated: true,
+      houses: [
+        {
+          id: 'h1',
+          name: 'Casa Furst',
+          role: 'admin',
+          tasks: [{ ...pendingTask, assignee: null }],
+        },
+      ],
+    })
+    renderTasksCard('h1')
+
+    expect(await screen.findByText('Tarefas de Casa Furst')).toBeInTheDocument()
+    expect(screen.getByText('Não concluída')).toBeInTheDocument()
+    expect(screen.getByText('Sem responsável')).toBeInTheDocument()
+    expect(screen.queryByText('Tasks for Casa Furst')).not.toBeInTheDocument()
+    expect(screen.queryByText('Not completed')).not.toBeInTheDocument()
+    expect(screen.queryByText('Unassigned')).not.toBeInTheDocument()
+  })
+
   it('completes a pending task from the checkbox', async () => {
     stubDomusApi({
       authenticated: true,
@@ -33,8 +80,7 @@ describe('TasksCard', () => {
         },
       ],
     })
-    const { wrapper } = createHouseholdsWrapper()
-    render(<TasksCard householdId="h1" />, { wrapper })
+    renderTasksCard('h1')
     const user = userEvent.setup()
 
     const checkbox = await screen.findByRole('checkbox', { name: 'Concluir Comprar ração' })
@@ -68,11 +114,36 @@ describe('TasksCard', () => {
         },
       ],
     })
-    const { wrapper } = createHouseholdsWrapper()
-    render(<TasksCard householdId="h1" />, { wrapper })
+    renderTasksCard('h1')
 
     const checkbox = await screen.findByRole('checkbox', { name: 'Comprar ração concluída' })
     expect(checkbox).toBeChecked()
     expect(checkbox).toBeDisabled()
+  })
+
+  it('shows a toast when completing a task fails', async () => {
+    stubDomusApi({
+      authenticated: true,
+      failComplete: true,
+      houses: [
+        {
+          id: 'h1',
+          name: 'Casa Furst',
+          role: 'admin',
+          tasks: [{ ...pendingTask }],
+        },
+      ],
+    })
+    renderTasksCard('h1')
+    const user = userEvent.setup()
+
+    const checkbox = await screen.findByRole('checkbox', { name: 'Concluir Comprar ração' })
+    await user.click(checkbox)
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Não foi possível concluir a tarefa.',
+    )
+    expect(checkbox).toBeEnabled()
+    expect(checkbox).not.toBeChecked()
   })
 })

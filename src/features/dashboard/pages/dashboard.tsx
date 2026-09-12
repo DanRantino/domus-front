@@ -49,10 +49,10 @@ function Dashboard() {
       </Box>
       <Box
         display="grid"
-        gridTemplateColumns="1fr 1fr 1fr"
+        gridTemplateColumns={{ xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }}
         gap={4}
-        maxHeight="20rem"
-        overflow="hidden"
+        maxHeight={{ md: '20rem' }}
+        overflow={{ xs: 'visible', md: 'hidden' }}
       >
         <CurrentWeatherCard
           location={location}
@@ -60,7 +60,7 @@ function Dashboard() {
           isLoading={weatherQuery.isLoading || weatherQuery.isFetching}
           isError={weatherQuery.isError}
         />
-        <TasksCard householdId={selectedHousehold?.id ?? ''} />
+        <TasksCard householdId={selectedHousehold?.id} />
       </Box>
     </Stack>
   )
