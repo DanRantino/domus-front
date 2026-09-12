@@ -7,6 +7,7 @@ The frontend MUST resolve a provisioned Domus User for authenticated product sur
 - **WHEN** an authenticated provisioned caller opens an authenticated product surface that needs current-user data
 - **THEN** the frontend MUST request GraphQL `me`
 - **AND** MUST obtain `id`, `name`, `profile`, and `houses` from the success payload
+- **AND** MUST obtain sanctuary `tasks` nested under each house
 - **AND** MUST use `houses` as the caller's membership list for shell and household-gate surfaces
 
 #### Scenario: Unprovisioned GraphQL me triggers self-serve provisioning
@@ -24,7 +25,7 @@ When provisioned, GraphQL `me` MUST return:
 - Domus `id`
 - `name` (null when `full_name` is unset or empty)
 - `profile` with `theme` and notification booleans (`notifyDailyTasks`, `notifyExpenses`, `notifyFamilyChat`)
-- `houses` as an array of the caller's memberships, each with House `id`, `name`, and membership `role` (empty when the user has none)
+- `houses` as an array of the caller's memberships, each with House `id`, `name`, membership `role`, and sanctuary `tasks` (empty when the user has none)
 
 Unauthenticated callers MUST receive an authentication failure (HTTP 401 or equivalent). Authenticated callers without a Domus User MUST receive a typed unprovisioned denial (`not_provisioned`), not an authentication failure.
 
@@ -32,6 +33,11 @@ Unauthenticated callers MUST receive an authentication failure (HTTP 401 or equi
 - **WHEN** a provisioned Domus User invokes GraphQL `me` with a valid authenticated session
 - **THEN** the system MUST return success
 - **AND** MUST include `id`, `name`, `profile`, and `houses` in the success payload
+
+#### Scenario: Provisioned caller with house tasks
+- **WHEN** a provisioned Domus User with House memberships invokes GraphQL `me`
+- **THEN** the system MUST include sanctuary `tasks` under each house
+- **AND** a house with no sanctuary tasks MUST have `tasks` as an empty array
 
 #### Scenario: Provisioned caller with no houses
 - **WHEN** a provisioned Domus User with no House memberships invokes GraphQL `me`

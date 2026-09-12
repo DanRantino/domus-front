@@ -4,6 +4,27 @@ import { api } from './api'
 import { isNotProvisionedError, provisionSelf } from './baseQuery'
 import { executeGraphql } from './graphql'
 
+export type HouseTaskMember = {
+  userId: string
+  displayName: string | null
+}
+
+export type HouseTask = {
+  id: string
+  houseId: string
+  title: string
+  description: string | null
+  status: string
+  dueAt: string | null
+  completedAt: string | null
+  assignee: HouseTaskMember | null
+  createdBy: HouseTaskMember
+}
+
+export type MeHouse = Household & {
+  tasks: HouseTask[]
+}
+
 export type Me = {
   id: string
   name: string | null
@@ -13,7 +34,7 @@ export type Me = {
     notifyExpenses: boolean
     notifyFamilyChat: boolean
   }
-  houses: Household[]
+  houses: MeHouse[]
 }
 
 const meQuery = `
@@ -31,6 +52,23 @@ const meQuery = `
         id
         name
         role
+        tasks {
+          id
+          houseId
+          title
+          description
+          status
+          dueAt
+          completedAt
+          assignee {
+            userId
+            displayName
+          }
+          createdBy {
+            userId
+            displayName
+          }
+        }
       }
     }
   }
@@ -107,6 +145,6 @@ function meFromRest(data: RestMe): Me {
       notifyExpenses: data.notify_expenses,
       notifyFamilyChat: data.notify_family_chat,
     },
-    houses: data.houses,
+    houses: data.houses.map((house) => ({ ...house, tasks: [] })),
   }
 }

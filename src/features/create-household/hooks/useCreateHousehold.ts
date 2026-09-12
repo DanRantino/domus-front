@@ -28,7 +28,7 @@ export function useCreateHousehold() {
       dispatch(
         meApi.util.updateQueryData('getMe', undefined, (draft) => {
           if (!draft.houses.some((item) => item.id === household.id)) {
-            draft.houses.push(household)
+            draft.houses.push({ ...household, tasks: [] })
           }
         }),
       )

@@ -6,7 +6,28 @@ import { stubDomusApi } from '#/test/domusApi'
 
 describe('getMe', () => {
   it('loads the current user from GraphQL me', async () => {
-    stubDomusApi({ houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }] })
+    stubDomusApi({
+      houses: [
+        {
+          id: 'h1',
+          name: 'Casa Furst',
+          role: 'admin',
+          tasks: [
+            {
+              id: 'task-1',
+              houseId: 'h1',
+              title: 'Comprar ração',
+              description: 'Ração do cachorro',
+              status: 'pending',
+              dueAt: '2026-09-04T00:00:00Z',
+              completedAt: null,
+              assignee: { userId: 'user-2', displayName: 'Bruno Member' },
+              createdBy: { userId: 'user-1', displayName: 'Ana Admin' },
+            },
+          ],
+        },
+      ],
+    })
     const store = setupStore()
     const result = await store.dispatch(meApi.endpoints.getMe.initiate())
 
@@ -20,7 +41,26 @@ describe('getMe', () => {
         notifyExpenses: true,
         notifyFamilyChat: true,
       },
-      houses: [{ id: 'h1', name: 'Casa Furst', role: 'admin' }],
+      houses: [
+        {
+          id: 'h1',
+          name: 'Casa Furst',
+          role: 'admin',
+          tasks: [
+            {
+              id: 'task-1',
+              houseId: 'h1',
+              title: 'Comprar ração',
+              description: 'Ração do cachorro',
+              status: 'pending',
+              dueAt: '2026-09-04T00:00:00Z',
+              completedAt: null,
+              assignee: { userId: 'user-2', displayName: 'Bruno Member' },
+              createdBy: { userId: 'user-1', displayName: 'Ana Admin' },
+            },
+          ],
+        },
+      ],
     })
   })
 
