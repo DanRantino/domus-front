@@ -1,12 +1,15 @@
 import { vi } from 'vitest'
 
+import type { HouseTask } from '#/api/me'
 import type { Household } from '#/features/create-household/types'
 import type { HouseInvitation } from '#/features/house-invitations/types'
+
+type StubHouse = Household & { tasks?: HouseTask[] }
 
 type StubInvitation = HouseInvitation & { token?: string }
 
 type StubDomusApiOptions = {
-  houses?: Household[]
+  houses?: StubHouse[]
   invitations?: StubInvitation[]
   hangGet?: boolean
   failGet?: boolean
@@ -76,7 +79,12 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
         notifyExpenses: true,
         notifyFamilyChat: true,
       },
-      houses,
+      houses: houses.map((house) => ({
+        id: house.id,
+        name: house.name,
+        role: house.role,
+        tasks: house.tasks ?? [],
+      })),
     }
   }
 
@@ -88,7 +96,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
       notify_expenses: true,
       notify_family_chat: true,
       theme: 'system',
-      houses,
+      houses: houses.map(({ id, name, role }) => ({ id, name, role })),
     }
   }
 
@@ -269,7 +277,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
         return failEnvelope(500, 'internal_error', 'Failed to load households')
       }
 
-      return okEnvelope(houses)
+      return okEnvelope(houses.map(({ id, name, role }) => ({ id, name, role })))
     }
 
     if (method === 'GET' && path.startsWith('/houses/')) {
@@ -279,7 +287,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
         return failEnvelope(404, 'not_found', 'House not found')
       }
 
-      return okEnvelope(house)
+      return okEnvelope({ id: house.id, name: house.name, role: house.role })
     }
 
     if (method === 'POST' && path === '/houses') {
