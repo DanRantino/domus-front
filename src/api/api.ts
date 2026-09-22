@@ -6,5 +6,7 @@ export const api = createApi({
   reducerPath: 'api',
   baseQuery: domusBaseQuery,
   tagTypes: ['Me', 'Houses', 'Invitations', 'Tasks'],
+  refetchOnFocus: false,
+  refetchOnReconnect: false,
   endpoints: () => ({}),
 })
