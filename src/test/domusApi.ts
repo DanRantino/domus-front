@@ -1,13 +1,28 @@
 import { vi } from 'vitest'
 
+import type { HouseTask } from '#/api/me'
 import type { Household } from '#/features/create-household/types'
+import type { HouseInvitation } from '#/features/house-invitations/types'
+
+type StubHouse = Household & { tasks?: HouseTask[] }
+
+type StubInvitation = HouseInvitation & { token?: string }
 
 type StubDomusApiOptions = {
-  houses?: Household[]
+  houses?: StubHouse[]
+  invitations?: StubInvitation[]
   hangGet?: boolean
   failGet?: boolean
   failCreate?: boolean
+  failComplete?: boolean
+  failInvite?: boolean
+  inviteEmailFailed?: boolean
+  failAcceptOnce?: boolean
   notProvisioned?: boolean
+  provisionAlreadyExists?: boolean
+  provisionable?: boolean
+  failProvision?: boolean
+  refuseProvision?: boolean
   authenticated?: boolean
   picture?: string | null
   name?: string | null
@@ -36,24 +51,62 @@ function apiPath(pathname: string): string {
   return pathname.startsWith('/api/') ? pathname.slice('/api'.length) : pathname
 }
 
+function requestBody(input: RequestInfo | URL, init?: RequestInit): Promise<string> {
+  if (input instanceof Request) {
+    return input.text()
+  }
+
+  return Promise.resolve(typeof init?.body === 'string' ? init.body : '')
+}
+
 export function stubDomusApi(options: StubDomusApiOptions = {}): void {
   const houses = [...(options.houses ?? [])]
+  const invitations: StubInvitation[] = [...(options.invitations ?? [])]
   const authenticated = options.authenticated ?? false
   let failGet = options.failGet ?? false
   let failCreate = options.failCreate ?? false
+  const failComplete = options.failComplete ?? false
+  const failInvite = options.failInvite ?? false
+  const inviteEmailFailed = options.inviteEmailFailed ?? false
+  let failAcceptOnce = options.failAcceptOnce ?? false
+  let blocked = Boolean(options.notProvisioned || options.provisionable)
+
+  function meBody() {
+    return {
+      id: 'user-1',
+      name: options.name ?? null,
+      profile: {
+        theme: 'system',
+        notifyDailyTasks: true,
+        notifyExpenses: true,
+        notifyFamilyChat: true,
+      },
+      houses: houses.map((house) => ({
+        id: house.id,
+        name: house.name,
+        role: house.role,
+        tasks: house.tasks ?? [],
+      })),
+    }
+  }
+
+  function restMeBody() {
+    return {
+      id: 'user-1',
+      full_name: null,
+      notify_daily_tasks: true,
+      notify_expenses: true,
+      notify_family_chat: true,
+      theme: 'system',
+      houses: houses.map(({ id, name, role }) => ({ id, name, role })),
+    }
+  }
 
   vi.stubGlobal('fetch', async (input: RequestInfo | URL, init?: RequestInit) => {
-    const url =
-      typeof input === 'string'
-        ? input
-        : input instanceof URL
-          ? input.href
-          : input.url
-    const { pathname } = new URL(url, 'http://localhost')
-    const path = apiPath(pathname)
-    const method = (
-      input instanceof Request ? input.method : (init?.method ?? 'GET')
-    ).toUpperCase()
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
+    const parsed = new URL(url, 'http://localhost')
+    const path = apiPath(parsed.pathname)
+    const method = (input instanceof Request ? input.method : (init?.method ?? 'GET')).toUpperCase()
 
     if (method === 'GET' && path === '/auth/session') {
       return jsonResponse(200, {
@@ -63,12 +116,195 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
       })
     }
 
+    if (method === 'GET' && path === '/invitations/preview') {
+      const token = parsed.searchParams.get('token') ?? ''
+      const invitation = invitations.find(
+        (item) => item.token === token && item.status === 'pending',
+      )
+      const house = invitation ? houses.find((item) => item.id === invitation.house_id) : undefined
+      if (!invitation || !house) {
+        return failEnvelope(404, 'not_found', 'Invitation not found')
+      }
+
+      return okEnvelope({ house_name: house.name })
+    }
+
     if (options.hangGet && method === 'GET' && path === '/houses') {
       return new Promise(() => {})
     }
 
-    if (options.notProvisioned) {
+    if (method === 'POST' && path === '/users/me') {
+      if (options.failProvision) {
+        return failEnvelope(500, 'internal_error', 'Failed to provision')
+      }
+
+      if (options.refuseProvision) {
+        return failEnvelope(403, 'not_provisioned', 'User is not provisioned')
+      }
+
+      if (options.provisionAlreadyExists) {
+        blocked = false
+        return failEnvelope(409, 'already_exists', 'User already exists')
+      }
+
+      if (!blocked) {
+        return failEnvelope(409, 'already_exists', 'User already exists')
+      }
+
+      blocked = false
+      return okEnvelope(restMeBody(), 201)
+    }
+
+    if (method === 'POST' && path === '/graphql') {
+      if (options.hangGet) {
+        return new Promise(() => {})
+      }
+
+      if (blocked) {
+        return jsonResponse(200, {
+          data: { me: null },
+          errors: [
+            {
+              message: 'User is not provisioned',
+              extensions: { code: 'not_provisioned' },
+            },
+          ],
+        })
+      }
+
+      if (failGet) {
+        failGet = false
+        return jsonResponse(200, {
+          errors: [{ message: 'Failed to load', extensions: { code: 'internal_error' } }],
+        })
+      }
+
+      return jsonResponse(200, { data: { me: meBody() } })
+    }
+
+    if (blocked) {
       return failEnvelope(403, 'not_provisioned', 'User is not provisioned')
+    }
+
+    if (method === 'POST' && path === '/invitations/accept') {
+      if (failAcceptOnce) {
+        failAcceptOnce = false
+        return failEnvelope(500, 'internal_error', 'Failed to accept')
+      }
+
+      const rawBody = await requestBody(input, init)
+      const body = rawBody ? (JSON.parse(rawBody) as { token?: string }) : {}
+      const invitation = invitations.find(
+        (item) => item.token === body.token && item.status === 'pending',
+      )
+      const house = invitation ? houses.find((item) => item.id === invitation.house_id) : undefined
+      if (!invitation || !house) {
+        return failEnvelope(404, 'not_found', 'Invitation not found')
+      }
+
+      invitation.status = 'accepted'
+      if (!houses.some((item) => item.id === house.id)) {
+        houses.push({ id: house.id, name: house.name, role: invitation.role })
+      }
+
+      return okEnvelope({
+        house_id: house.id,
+        house_name: house.name,
+        role: invitation.role,
+      })
+    }
+
+    const completeTaskMatch = path.match(/^\/houses\/([^/]+)\/tasks\/([^/]+)\/complete$/)
+    if (method === 'POST' && completeTaskMatch) {
+      if (failComplete) {
+        return failEnvelope(500, 'internal_error', 'Failed to complete')
+      }
+
+      const houseId = completeTaskMatch[1] ?? ''
+      const taskId = completeTaskMatch[2] ?? ''
+      const house = houses.find((item) => item.id === houseId)
+      const task = house?.tasks?.find((item) => item.id === taskId)
+      if (!house || !task) {
+        return failEnvelope(404, 'not_found', 'Task not found')
+      }
+
+      task.status = 'completed'
+      task.completedAt = task.completedAt ?? '2026-09-12T18:00:00Z'
+      return okEnvelope({
+        id: task.id,
+        house_id: task.houseId,
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        due_at: task.dueAt,
+        completed_at: task.completedAt,
+        assignee: task.assignee
+          ? { user_id: task.assignee.userId, display_name: task.assignee.displayName }
+          : null,
+        created_by: {
+          user_id: task.createdBy.userId,
+          display_name: task.createdBy.displayName,
+        },
+      })
+    }
+
+    const invitationMatch = path.match(
+      /^\/houses\/([^/]+)\/invitations(?:\/([^/]+))?(?:\/resend)?$/,
+    )
+    if (invitationMatch) {
+      const houseId = invitationMatch[1] ?? ''
+      const invitationId = invitationMatch[2]
+      const isResend = path.endsWith('/resend')
+
+      if (method === 'GET' && !invitationId) {
+        return okEnvelope(
+          invitations.filter((item) => item.house_id === houseId && item.status === 'pending'),
+        )
+      }
+
+      if (method === 'POST' && !invitationId) {
+        if (failInvite) {
+          return failEnvelope(500, 'internal_error', 'Failed to invite')
+        }
+
+        const rawBody = await requestBody(input, init)
+        const body = rawBody ? (JSON.parse(rawBody) as { email?: string; role?: string }) : {}
+        const email = body.email?.trim().toLowerCase() ?? ''
+        if (!email.includes('@')) {
+          return failEnvelope(400, 'validation_error', 'Email is required')
+        }
+
+        const invitation: StubInvitation = {
+          id: `invite-${invitations.length + 1}`,
+          house_id: houseId,
+          email,
+          role: body.role === 'admin' ? 'admin' : 'member',
+          status: 'pending',
+          expires_at: '2026-09-04T00:00:00Z',
+          created_at: '2026-08-28T00:00:00Z',
+          token: 'new-token',
+          email_sent: !inviteEmailFailed,
+        }
+        invitations.push(invitation)
+        return okEnvelope(invitation, 201)
+      }
+
+      const invitation = invitations.find(
+        (item) => item.id === invitationId && item.house_id === houseId,
+      )
+      if (!invitation) {
+        return failEnvelope(404, 'not_found', 'Invitation not found')
+      }
+
+      if (method === 'DELETE') {
+        invitation.status = 'revoked'
+        return okEnvelope(invitation)
+      }
+
+      if (method === 'POST' && isResend) {
+        invitation.token = 'rotated-token'
+        return okEnvelope({ ...invitation, token: invitation.token, email_sent: true })
+      }
     }
 
     if (method === 'GET' && path === '/houses') {
@@ -77,7 +313,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
         return failEnvelope(500, 'internal_error', 'Failed to load households')
       }
 
-      return okEnvelope(houses)
+      return okEnvelope(houses.map(({ id, name, role }) => ({ id, name, role })))
     }
 
     if (method === 'GET' && path.startsWith('/houses/')) {
@@ -87,7 +323,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
         return failEnvelope(404, 'not_found', 'House not found')
       }
 
-      return okEnvelope(house)
+      return okEnvelope({ id: house.id, name: house.name, role: house.role })
     }
 
     if (method === 'POST' && path === '/houses') {
@@ -96,12 +332,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
         return failEnvelope(500, 'internal_error', 'Failed to create household')
       }
 
-      const rawBody =
-        input instanceof Request
-          ? await input.text()
-          : typeof init?.body === 'string'
-            ? init.body
-            : ''
+      const rawBody = await requestBody(input, init)
       const body = rawBody ? (JSON.parse(rawBody) as { name?: string }) : {}
       const name = body.name?.trim() ?? ''
       if (!name) {
@@ -114,15 +345,7 @@ export function stubDomusApi(options: StubDomusApiOptions = {}): void {
     }
 
     if (method === 'GET' && path === '/users/me') {
-      return okEnvelope({
-        id: 'user-1',
-        full_name: null,
-        notify_daily_tasks: true,
-        notify_expenses: true,
-        notify_family_chat: true,
-        theme: 'system',
-        houses,
-      })
+      return okEnvelope(restMeBody())
     }
 
     return failEnvelope(404, 'not_found', 'not found')

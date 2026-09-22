@@ -23,8 +23,4 @@ export const housesApi = api.injectEndpoints({
   }),
 })
 
-export const {
-  useGetHousesQuery,
-  useGetHouseQuery,
-  useCreateHouseMutation,
-} = housesApi
+export const { useGetHousesQuery, useGetHouseQuery, useCreateHouseMutation } = housesApi

@@ -1,18 +1,145 @@
-import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
+import { Provider } from 'react-redux'
+import { describe, expect, it, vi } from 'vitest'
 
+import { setupStore } from '#/app/store'
+import { ToastProvider } from '#/components/toast/ToastProvider'
 import '#/i18n'
+import { stubDomusApi } from '#/test/domusApi'
 import { AppThemeProvider } from '#/theme/AppThemeProvider'
 import { DashboardPage } from './DashboardPage'
 
-describe('DashboardPage', () => {
-  it('renders the hello placeholder', () => {
-    render(
-      <AppThemeProvider>
-        <DashboardPage />
-      </AppThemeProvider>,
-    )
+function stubGeolocation(geolocation: Geolocation | undefined) {
+  vi.stubGlobal('navigator', {
+    ...window.navigator,
+    geolocation,
+  })
+}
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Olá' })).toBeInTheDocument()
+function readyGeolocation(): Geolocation {
+  return {
+    getCurrentPosition(success) {
+      success({
+        coords: {
+          latitude: -23.55,
+          longitude: -46.63,
+          accuracy: 10,
+          altitude: null,
+          altitudeAccuracy: null,
+          heading: null,
+          speed: null,
+        },
+        timestamp: Date.now(),
+      } as GeolocationPosition)
+    },
+    watchPosition: vi.fn(),
+    clearWatch: vi.fn(),
+  }
+}
+
+function pendingGeolocation(): Geolocation {
+  return {
+    getCurrentPosition() {
+      // Leave the request hanging so the heading can be asserted independently.
+    },
+    watchPosition: vi.fn(),
+    clearWatch: vi.fn(),
+  }
+}
+
+function stubOpenMeteo() {
+  const originalFetch = globalThis.fetch
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
+      if (url.includes('open-meteo.com')) {
+        return new Response(
+          JSON.stringify({
+            current: {
+              time: '2026-09-04T11:00',
+              temperature_2m: 22.4,
+              weather_code: 0,
+              wind_speed_10m: 8.1,
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        )
+      }
+
+      return originalFetch(input, init)
+    }),
+  )
+}
+
+function renderDashboard() {
+  return render(
+    <AppThemeProvider>
+      <Provider store={setupStore()}>
+        <ToastProvider>
+          <DashboardPage />
+        </ToastProvider>
+      </Provider>
+    </AppThemeProvider>,
+  )
+}
+
+describe('DashboardPage', () => {
+  it('renders a welcome heading and nothing else', () => {
+    stubGeolocation(pendingGeolocation())
+    stubDomusApi({ authenticated: true })
+    renderDashboard()
+
+    expect(screen.getByRole('heading', { level: 1, name: 'Bem-vindo' })).toBeInTheDocument()
+    expect(screen.queryByText('Casa Furst')).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('heading', { name: 'Convidar para esta casa' }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('greets the current user by name', async () => {
+    stubGeolocation(pendingGeolocation())
+    stubDomusApi({ authenticated: true, name: 'Marina' })
+    renderDashboard()
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Bem-vindo, Marina.' }),
+    ).toBeInTheDocument()
+  })
+
+  it('shows a tasks skeleton while the household is loading', () => {
+    stubGeolocation(pendingGeolocation())
+    stubDomusApi({ authenticated: true, hangGet: true })
+    renderDashboard()
+
+    expect(screen.getByLabelText('Carregando tarefas...')).toBeInTheDocument()
+    expect(screen.queryByText(/Tasks for/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/undefined/)).not.toBeInTheDocument()
+  })
+
+  it('omits the tasks card when the caller has no household', async () => {
+    stubGeolocation(pendingGeolocation())
+    stubDomusApi({ authenticated: true })
+    renderDashboard()
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText('Carregando tarefas...')).not.toBeInTheDocument()
+    })
+    expect(screen.queryByText(/Tarefas de/)).not.toBeInTheDocument()
+  })
+
+  it('shows current weather for the browser location', async () => {
+    stubGeolocation(readyGeolocation())
+    stubDomusApi({ authenticated: true })
+    stubOpenMeteo()
+    renderDashboard()
+
+    expect(await screen.findByText('22 °C')).toBeInTheDocument()
+    expect(screen.getByText('Céu limpo')).toBeInTheDocument()
+    expect(screen.getByText('Vento 8 km/h')).toBeInTheDocument()
+    await waitFor(() => {
+      const fetchMock = vi.mocked(fetch)
+      expect(fetchMock).toHaveBeenCalled()
+    })
   })
 })

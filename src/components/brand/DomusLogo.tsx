@@ -1,9 +1,6 @@
 import type { SVGProps } from 'react'
 
-export function DomusLogo({
-  title,
-  ...props
-}: SVGProps<SVGSVGElement> & { title?: string }) {
+export function DomusLogo({ title, ...props }: SVGProps<SVGSVGElement> & { title?: string }) {
   return (
     <svg
       viewBox="-10 -14 564.50 124"
@@ -15,14 +12,20 @@ export function DomusLogo({
       {...props}
     >
       {title ? <title>{title}</title> : null}
-    <g transform="translate(0.00)">
-      <path d="M6 0h20.5v100H6V0ZM0 0h28.5v3.2H0V0ZM0 96.8h28.5V100H0v-3.2Z" />
-      <path fillRule="evenodd" d="M24 1.6C64 1.6 88 20 88 50s-24 48.4-64 48.4V1.6ZM26 5.8C58 5.8 70 24 70 50s-12 44.2-44 44.2V5.8Z" />
-    </g>
-    <g transform="translate(106.00)">
-      <path fillRule="evenodd" d="M50-2.2a52.2 52.2 0 1 1 0 104.4A52.2 52.2 0 1 1 50-2.2ZM50 6.2a31.2 43.8 0 1 0 0 87.6 31.2 43.8 0 1 0 0-87.6Z" />
-    </g>
-    <g transform="translate(222.00 -10.00) scale(0.5)">
+      <g transform="translate(0.00)">
+        <path d="M6 0h20.5v100H6V0ZM0 0h28.5v3.2H0V0ZM0 96.8h28.5V100H0v-3.2Z" />
+        <path
+          fillRule="evenodd"
+          d="M24 1.6C64 1.6 88 20 88 50s-24 48.4-64 48.4V1.6ZM26 5.8C58 5.8 70 24 70 50s-12 44.2-44 44.2V5.8Z"
+        />
+      </g>
+      <g transform="translate(106.00)">
+        <path
+          fillRule="evenodd"
+          d="M50-2.2a52.2 52.2 0 1 1 0 104.4A52.2 52.2 0 1 1 50-2.2ZM50 6.2a31.2 43.8 0 1 0 0 87.6 31.2 43.8 0 1 0 0-87.6Z"
+        />
+      </g>
+      <g transform="translate(222.00 -10.00) scale(0.5)">
         <defs>
           <mask id="domusRoofGapWm" maskUnits="userSpaceOnUse">
             <rect x="0" y="0" width="280" height="240" fill="#fff" />
@@ -52,15 +55,22 @@ export function DomusLogo({
           />
           <path d="M67.90,30.92 L132.90,221.42 L147.10,216.58 L82.10,26.08 Z M197.90,26.08 L132.90,216.58 L147.10,221.42 L212.10,30.92 Z" />
         </g>
-    </g>
-    <g transform="translate(378.00)">
-      <path d="M6 0h20.5v68H6V0ZM0 0h28.5v3.2H0V0Z" />
-      <path d="M67.8 0h6.4v68h-6.4V0Zm-3.2 0h13.2v3.2H64.6V0Z" />
-      <path d="M6 62C6 90 20.5 100 40.1 100S74.2 90 74.2 62H67.8C67.8 84.5 55 89.5 40.1 89.5S26.5 84.5 26.5 62H6Z" />
-    </g>
-    <g transform="translate(474.50)">
-      <path fill="none" stroke="currentColor" strokeWidth={11} strokeLinecap="butt" strokeLinejoin="round" d="M53 22C53 12.5 44.5 6.2 34.5 6.2 21.5 6.2 13.5 16 13.5 28 13.5 41 24.5 48.5 39.5 55.5 54.5 62.5 62.5 71.5 62.5 83 62.5 92.8 53.5 94.8 39.5 94.8 26.5 94.8 17.5 88 15.5 80" />
-    </g>
+      </g>
+      <g transform="translate(378.00)">
+        <path d="M6 0h20.5v68H6V0ZM0 0h28.5v3.2H0V0Z" />
+        <path d="M67.8 0h6.4v68h-6.4V0Zm-3.2 0h13.2v3.2H64.6V0Z" />
+        <path d="M6 62C6 90 20.5 100 40.1 100S74.2 90 74.2 62H67.8C67.8 84.5 55 89.5 40.1 89.5S26.5 84.5 26.5 62H6Z" />
+      </g>
+      <g transform="translate(474.50)">
+        <path
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={11}
+          strokeLinecap="butt"
+          strokeLinejoin="round"
+          d="M53 22C53 12.5 44.5 6.2 34.5 6.2 21.5 6.2 13.5 16 13.5 28 13.5 41 24.5 48.5 39.5 55.5 54.5 62.5 62.5 71.5 62.5 83 62.5 92.8 53.5 94.8 39.5 94.8 26.5 94.8 17.5 88 15.5 80"
+        />
+      </g>
     </svg>
   )
 }

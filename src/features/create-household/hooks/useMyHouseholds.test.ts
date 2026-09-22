@@ -40,11 +40,13 @@ describe('useMyHouseholds', () => {
     await vi.waitFor(() => {
       expect(result.current.isSuccess).toBe(true)
     })
-    expect(result.current.households).toEqual([{ id: 'h1', name: 'Casa Furst', role: 'admin' }])
+    expect(result.current.households).toEqual([
+      { id: 'h1', name: 'Casa Furst', role: 'admin', tasks: [] },
+    ])
   })
 
   it('flags not_provisioned', async () => {
-    stubDomusApi({ authenticated: true, notProvisioned: true })
+    stubDomusApi({ authenticated: true, notProvisioned: true, refuseProvision: true })
     const { wrapper } = createHouseholdsWrapper()
     const { result } = renderHook(() => useMyHouseholds(), { wrapper })
 

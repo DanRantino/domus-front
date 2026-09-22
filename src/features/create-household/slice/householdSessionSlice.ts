@@ -1,10 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-import {
-  defaultHouseholdSession,
-  loadHouseholdSession,
-  saveHouseholdSession,
-} from '../persistence'
+import { defaultHouseholdSession, loadHouseholdSession, saveHouseholdSession } from '../persistence'
 import type { HouseholdSessionState } from '../types'
 
 function persist(state: HouseholdSessionState): void {

@@ -50,7 +50,13 @@ export function HouseholdFeedback({
   }
 
   return (
-    <Stack spacing={2} alignItems="center" textAlign="center" aria-live="polite" sx={{ maxWidth: 480 }}>
+    <Stack
+      spacing={2}
+      alignItems="center"
+      textAlign="center"
+      aria-live="polite"
+      sx={{ maxWidth: 480 }}
+    >
       <Typography component="h1" variant="h4" sx={{ color: landing.cream }}>
         {resolvedTitle}
       </Typography>

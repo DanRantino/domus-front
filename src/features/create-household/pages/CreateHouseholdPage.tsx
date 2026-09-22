@@ -30,7 +30,7 @@ export function CreateHouseholdPage() {
   async function handleCreate(name: string) {
     try {
       await createHousehold(name)
-      void navigate('/dashboard')
+      void navigate('/start/ready')
     } catch {
       // Mutation error is shown through isSubmitError.
     }
@@ -53,20 +53,19 @@ export function CreateHouseholdPage() {
     >
       <IconButton
         component={RouterLink}
-        to="/"
+        to="/start"
         aria-label={t('createHousehold.back')}
         sx={{ color: landing.cream, mb: { xs: 4, md: 8 } }}
       >
         <ArrowBack />
       </IconButton>
 
-      <Stack alignItems="center" spacing={2} sx={{ maxWidth: 640, mx: 'auto', pt: { xs: 2, md: 6 } }}>
-        {isNotProvisioned ? (
-          <HouseholdFeedback
-            title={t('createHousehold.notProvisionedTitle')}
-            message={t('createHousehold.notProvisioned')}
-          />
-        ) : isError ? (
+      <Stack
+        alignItems="center"
+        spacing={2}
+        sx={{ maxWidth: 640, mx: 'auto', pt: { xs: 2, md: 6 } }}
+      >
+        {isError && !isNotProvisioned ? (
           <HouseholdFeedback onRetry={() => void refetch()} />
         ) : (
           <>

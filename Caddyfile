@@ -15,7 +15,8 @@
 	handle @logto {
 		reverse_proxy {$DOMUS_API_UPSTREAM} {
 			header_up Host {host}
-			header_up X-Forwarded-Proto {scheme}
+			# TLS ends at the Railway edge, so {scheme} is always http on this listener.
+			header_up X-Forwarded-Proto {http.request.header.X-Forwarded-Proto}
 			header_up X-Forwarded-Host {host}
 		}
 	}
@@ -24,7 +25,8 @@
 		reverse_proxy {$DOMUS_API_UPSTREAM} {
 			header_up Host {host}
 			header_up X-Forwarded-Prefix /api
-			header_up X-Forwarded-Proto {scheme}
+			# Same as the Logto routes: keep the edge scheme, not Caddy's own http.
+			header_up X-Forwarded-Proto {http.request.header.X-Forwarded-Proto}
 			header_up X-Forwarded-Host {host}
 		}
 	}

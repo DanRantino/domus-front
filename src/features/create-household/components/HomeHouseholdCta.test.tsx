@@ -40,15 +40,12 @@ describe('HomeHouseholdCta', () => {
     })
   })
 
-  it('shows not-provisioned copy without retry', async () => {
+  it('shows the create button when the caller is not provisioned', async () => {
     stubDomusApi({ authenticated: true, notProvisioned: true })
     const { wrapper } = createHouseholdsWrapper()
     render(<HomeHouseholdCta variant="header" />, { wrapper })
 
-    expect(
-      await screen.findByText('Sua conta ainda não foi liberada neste espaço.'),
-    ).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Tentar de novo' })).not.toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: 'Criar seu espaço' })).toBeInTheDocument()
   })
 
   it('shows the switcher when the visitor has households', async () => {

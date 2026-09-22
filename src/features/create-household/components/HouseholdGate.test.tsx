@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router'
 import { beforeEach, describe, expect, it } from 'vitest'
 
 import '#/i18n'
+import { meApi } from '#/api/me'
 import { skipCreate } from '#/features/create-household/slice/householdSessionSlice'
 import { setupStore } from '#/app/store'
 import { stubDomusApi } from '#/test/domusApi'
@@ -52,16 +53,28 @@ describe('HouseholdGate', () => {
     expect(await screen.findByText('Create page')).toBeInTheDocument()
   })
 
-  it('shows a not-provisioned state without retry', async () => {
+  it('redirects to create when the caller is not provisioned', async () => {
     stubDomusApi({ authenticated: true, notProvisioned: true })
     renderGate()
-    expect(await screen.findByRole('heading', { name: 'Sem acesso à Domus' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Tentar de novo' })).not.toBeInTheDocument()
+    expect(await screen.findByText('Create page')).toBeInTheDocument()
   })
 
   it('redirects to create when there are no households', async () => {
     renderGate()
     expect(await screen.findByText('Create page')).toBeInTheDocument()
+  })
+
+  it('does not redirect while refetching an empty list', async () => {
+    stubDomusApi({ authenticated: true })
+    const store = setupStore()
+    await store.dispatch(meApi.endpoints.getMe.initiate())
+
+    stubDomusApi({ authenticated: true, hangGet: true })
+    void store.dispatch(meApi.endpoints.getMe.initiate(undefined, { forceRefetch: true }))
+
+    renderGate(store)
+    expect(await screen.findByLabelText('Carregando...')).toBeInTheDocument()
+    expect(screen.queryByText('Create page')).not.toBeInTheDocument()
   })
 
   it('renders children when the visitor already has a household', async () => {
@@ -78,5 +91,15 @@ describe('HouseholdGate', () => {
     store.dispatch(skipCreate())
     renderGate(store)
     expect(await screen.findByText('Dashboard ok')).toBeInTheDocument()
+  })
+
+  it('does not open the dashboard when skip is set but provisioning failed', async () => {
+    stubDomusApi({ authenticated: true, notProvisioned: true, failProvision: true })
+    const store = setupStore()
+    store.dispatch(skipCreate())
+    renderGate(store)
+    expect(await screen.findByRole('heading', { name: 'Algo deu errado' })).toBeInTheDocument()
+    expect(screen.queryByText('Dashboard ok')).not.toBeInTheDocument()
+    expect(screen.queryByText('Create page')).not.toBeInTheDocument()
   })
 })

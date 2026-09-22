@@ -32,23 +32,26 @@ describe('HomePage', () => {
     stubDomusApi({ authenticated: false })
     renderHome()
 
-    expect(screen.getByRole('heading', { level: 1, name: 'A alma digital da sua casa.' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'A alma digital da sua casa.' }),
+    ).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Entrar' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Começar' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Começar' })).toHaveAttribute('href', '/start')
     expect(await screen.findByRole('link', { name: 'Criar seu espaço' })).toHaveAttribute(
       'href',
-      '/houses/new',
+      '/start',
     )
     expect(
       screen.getByRole('heading', { name: 'Uma casa, um lugar para tudo.' }),
     ).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', { name: 'Organização compartilhada' }),
-    ).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Organização compartilhada' })).toBeInTheDocument()
     expect(
       screen.getByRole('heading', { name: 'Sua casa continua sendo sua.' }),
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Criar minha Domus' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Criar minha Domus' })).toHaveAttribute(
+      'href',
+      '/start',
+    )
     expect(screen.getByRole('link', { name: 'DOMUS' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Nossa visão' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Crie sua Domus' })).toBeInTheDocument()

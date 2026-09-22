@@ -39,6 +39,8 @@ O runtime é Caddy a servir `dist/`. Build e deploy: [`Dockerfile`](Dockerfile) 
 
 Não definir `HOST`. Não apontar `VITE_DOMUS_API_BASE_URL` para `*.railway.internal` — o browser não resolve a rede privada. O Caddy do front é que alcança a API na rede interna.
 
+O TLS termina no edge da Railway (`auto_https off`; o contentor só escuta HTTP). Nos proxies de `/Callback`, `/SignedOutCallback`, `/auth/*` e `/api/*`, o Caddy copia o `X-Forwarded-Proto` do edge para a API. `{scheme}` nesse listener é sempre `http` e faz o SDK Logto emitir `redirect_uri=http://…/Callback`, que o Logto rejeita com `oidc.invalid_redirect_uri`.
+
 Segredos Logto (`Logto__AppId`, `Logto__AppSecret`) ficam no serviço da **API**, não no bundle do front. Não há `VITE_LOGTO_*`.
 
 Na API do mesmo ambiente, a origem CORS continua a URL **pública** deste serviço (Swagger / clientes Bearer em `api.domus.dev`):

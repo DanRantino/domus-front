@@ -37,7 +37,7 @@ describe('skeletons', () => {
       </MemoryRouter>,
     )
     expect(screen.getByLabelText('Carregando suas casas...')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Voltar' })).toHaveAttribute('href', '/')
+    expect(screen.getByRole('link', { name: 'Voltar' })).toHaveAttribute('href', '/start')
   })
 
   it('renders the dashboard gate skeleton', () => {

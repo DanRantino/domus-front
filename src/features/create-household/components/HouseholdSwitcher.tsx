@@ -1,5 +1,7 @@
 import Check from '@mui/icons-material/Check'
+import HomeOutlined from '@mui/icons-material/HomeOutlined'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
@@ -8,11 +10,12 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { landing, landingCtaSx } from '#/pages/home/landing'
+import { palette } from '#/theme/tokens'
 
 import { useHouseholdSession } from '../hooks/useHouseholdSession'
 import type { Household } from '../types'
 
-type Variant = 'header' | 'drawer'
+type Variant = 'header' | 'drawer' | 'navbar'
 
 type HouseholdSwitcherProps = {
   households: Household[]
@@ -20,18 +23,39 @@ type HouseholdSwitcherProps = {
   onNavigate?: () => void
 }
 
-export function HouseholdSwitcher({
-  households,
-  variant,
-  onNavigate,
-}: HouseholdSwitcherProps) {
+const navbarSwitcherSx = {
+  bgcolor: landing.surface,
+  color: landing.cream,
+  borderRadius: '10px',
+  px: 1.5,
+  py: 0.75,
+  minHeight: 40,
+  maxWidth: { xs: 148, sm: 220 },
+  fontWeight: 500,
+  fontSize: 14,
+  textTransform: 'none',
+  boxShadow: 'none',
+  '&:hover': {
+    bgcolor: palette.neutral[700],
+    boxShadow: 'none',
+  },
+  '& .MuiButton-startIcon': {
+    color: palette.primary[300],
+    mr: 1,
+  },
+  '& .MuiButton-endIcon': {
+    ml: 0.75,
+    color: landing.muted,
+  },
+} as const
+
+export function HouseholdSwitcher({ households, variant, onNavigate }: HouseholdSwitcherProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { selectedId, selectHousehold } = useHouseholdSession()
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
-  const selected =
-    households.find((household) => household.id === selectedId) ?? households[0]
+  const selected = households.find((household) => household.id === selectedId) ?? households[0]
 
   function openMenu(event: MouseEvent<HTMLButtonElement>) {
     setAnchorEl(event.currentTarget)
@@ -58,14 +82,22 @@ export function HouseholdSwitcher({
         aria-label={t('createHousehold.switcherLabel')}
         aria-haspopup="menu"
         aria-expanded={open}
+        startIcon={variant === 'navbar' ? <HomeOutlined /> : undefined}
         endIcon={<KeyboardArrowDown />}
         sx={
-          variant === 'header'
-            ? { ...landingCtaSx, display: { xs: 'none', sm: 'inline-flex' } }
-            : { ...landingCtaSx, justifyContent: 'space-between', width: '100%' }
+          variant === 'navbar'
+            ? navbarSwitcherSx
+            : variant === 'header'
+              ? { ...landingCtaSx, display: { xs: 'none', sm: 'inline-flex' } }
+              : { ...landingCtaSx, justifyContent: 'space-between', width: '100%' }
         }
       >
-        {selected?.name ?? t('createHousehold.switcherLabel')}
+        <Box
+          component="span"
+          sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+        >
+          {selected?.name ?? t('createHousehold.switcherLabel')}
+        </Box>
       </Button>
       <Menu
         anchorEl={anchorEl}

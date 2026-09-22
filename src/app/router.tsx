@@ -1,29 +1,37 @@
 import { createBrowserRouter } from 'react-router'
 
 import { ProtectedRoute } from '#/auth/ProtectedRoute'
+import { AuthenticatedLayout } from '#/components/app-chrome/AuthenticatedLayout'
 import { HouseholdGate } from '#/features/create-household/components/HouseholdGate'
 import { CreateHouseholdPage } from '#/features/create-household/pages/CreateHouseholdPage'
 import { DashboardPage } from '#/pages/DashboardPage'
 import { HomePage } from '#/pages/HomePage'
+import { HouseReadyPage } from '#/features/house-invitations/pages/HouseReadyPage'
+import { JoinHouseholdPage } from '#/features/house-invitations/pages/JoinHouseholdPage'
+import { StartPage } from '#/pages/StartPage'
 
 export const router = createBrowserRouter([
-  { path: '/', element: <HomePage /> },
   {
-    path: '/houses/new',
-    element: (
-      <ProtectedRoute>
-        <CreateHouseholdPage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/dashboard',
-    element: (
-      <ProtectedRoute>
-        <HouseholdGate>
-          <DashboardPage />
-        </HouseholdGate>
-      </ProtectedRoute>
-    ),
+    element: <ProtectedRoute publicPaths={['/', '/start', '/start/invite']} />,
+    children: [
+      { path: '/', element: <HomePage /> },
+      { path: '/start', element: <StartPage /> },
+      { path: '/start/invite', element: <JoinHouseholdPage /> },
+      { path: '/start/ready', element: <HouseReadyPage /> },
+      { path: '/houses/new', element: <CreateHouseholdPage /> },
+      {
+        element: (
+          <HouseholdGate>
+            <AuthenticatedLayout />
+          </HouseholdGate>
+        ),
+        children: [
+          { path: '/dashboard', element: <DashboardPage /> },
+          { path: '/log', element: null },
+          { path: '/larder', element: null },
+          { path: '/households', element: null },
+        ],
+      },
+    ],
   },
 ])

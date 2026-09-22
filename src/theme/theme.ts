@@ -109,6 +109,34 @@ export const appTheme = createTheme({
     borderRadius: 8,
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        '*': {
+          scrollbarWidth: 'thin',
+          scrollbarColor:
+            'color-mix(in srgb, var(--mui-palette-primary-main) 42%, transparent) transparent',
+          '&::-webkit-scrollbar': {
+            width: 8,
+            height: 8,
+          },
+          '&::-webkit-scrollbar-track': {
+            background: 'transparent',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'color-mix(in srgb, var(--mui-palette-primary-main) 42%, transparent)',
+            borderRadius: 999,
+            border: '2px solid transparent',
+            backgroundClip: 'content-box',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: 'color-mix(in srgb, var(--mui-palette-primary-main) 68%, transparent)',
+          },
+          '&::-webkit-scrollbar-corner': {
+            background: 'transparent',
+          },
+        },
+      },
+    },
     MuiButton: {
       defaultProps: {
         disableElevation: true,
