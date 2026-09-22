@@ -13,6 +13,7 @@ import { landing, landingCtaSx } from '#/pages/home/landing'
 import { palette } from '#/theme/tokens'
 
 import { useHouseholdSession } from '../hooks/useHouseholdSession'
+import { findSelectedHousehold } from '../selectHousehold'
 import type { Household } from '../types'
 
 type Variant = 'header' | 'drawer' | 'navbar'
@@ -55,7 +56,7 @@ export function HouseholdSwitcher({ households, variant, onNavigate }: Household
   const { selectedId, selectHousehold } = useHouseholdSession()
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
-  const selected = households.find((household) => household.id === selectedId) ?? households[0]
+  const selected = findSelectedHousehold(households, selectedId)
 
   function openMenu(event: MouseEvent<HTMLButtonElement>) {
     setAnchorEl(event.currentTarget)
