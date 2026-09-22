@@ -3,25 +3,26 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useTranslation } from 'react-i18next'
 
+import { useGetMeQuery } from '#/api/me'
+import { useHouseholdSession } from '#/features/create-household/hooks/useHouseholdSession'
+import { useMyHouseholds } from '#/features/create-household/hooks/useMyHouseholds'
+import { findSelectedHousehold } from '#/features/create-household/selectHousehold'
+import i18n from '#/i18n'
 import { fonts } from '#/theme/tokens'
 
 import { useGetCurrentWeatherQuery } from '../api/weatherApi'
 import { CurrentWeatherCard } from '../components/CurrentWeatherCard'
-import { useBrowserLocation } from '../hooks/useBrowserLocation'
-import { useGetMeQuery } from '#/api/me'
-import { useHouseholdSession } from '#/features/create-household/hooks/useHouseholdSession'
-import { useMyHouseholds } from '#/features/create-household/hooks/useMyHouseholds'
-import i18n from '#/i18n'
 import { TasksCard } from '../components/TasksCard'
+import { useBrowserLocation } from '../hooks/useBrowserLocation'
+import { dashboardCardMaxHeight } from '../layout'
 
 function Dashboard() {
   const { data: me } = useGetMeQuery()
   const { t } = useTranslation()
   const location = useBrowserLocation()
   const { selectedId } = useHouseholdSession()
-  const selectedHousehold = useMyHouseholds().households.find(
-    (household) => household.id === selectedId,
-  )
+  const { households } = useMyHouseholds()
+  const selectedHousehold = findSelectedHousehold(households, selectedId)
   const weatherQuery = useGetCurrentWeatherQuery(
     location.coordinates ?? { latitude: 0, longitude: 0 },
     {
@@ -51,7 +52,7 @@ function Dashboard() {
         display="grid"
         gridTemplateColumns={{ xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' }}
         gap={4}
-        maxHeight={{ md: '20rem' }}
+        maxHeight={{ md: dashboardCardMaxHeight }}
         overflow={{ xs: 'visible', md: 'hidden' }}
       >
         <CurrentWeatherCard
