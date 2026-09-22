@@ -58,6 +58,6 @@ Crie um aplicativo **Traditional Web** (não SPA) por ambiente. Redirect URIs na
 | Ambiente | Redirect URI | Post sign-out redirect URI |
 | --- | --- | --- |
 | Local | `https://web.domus.dev/Callback` | `https://web.domus.dev/SignedOutCallback` |
-| Railway | `https://<área-pública-do-front>/Callback` | `https://<área-pública-do-front>/SignedOutCallback` |
+| Railway | `https://<domínio-público-do-front>/Callback` | `https://<domínio-público-do-front>/SignedOutCallback` |
 
 Não use `/api/Callback`. O Caddy entrega `/Callback` e `/SignedOutCallback` à API.
