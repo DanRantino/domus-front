@@ -5,17 +5,13 @@ import { useTranslation } from 'react-i18next'
 
 import { fonts } from '#/theme/tokens'
 
-import { landing } from './landing'
+import { landing, landingCardSx, landingEyebrowSx, landingStatSx } from './landing'
 
 const taskKeys = ['item1', 'item2', 'item3'] as const
 const progressTrack = 'rgba(239, 235, 227, 0.12)'
 
 const cardSx = {
-  bgcolor: landing.surface,
-  border: '1px solid',
-  borderColor: landing.line,
-  borderRadius: '12px',
-  p: { xs: 3, md: 4 },
+  ...landingCardSx,
   minHeight: { md: 280 },
 } as const
 
@@ -89,28 +85,8 @@ export function DashboardPreview() {
       </Box>
 
       <Box sx={{ ...cardSx, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <Typography
-          sx={{
-            color: landing.muted,
-            fontSize: 12,
-            fontWeight: 600,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            mb: 2,
-          }}
-        >
-          {t('home.showcase.bills.title')}
-        </Typography>
-        <Typography
-          component="p"
-          sx={{
-            fontFamily: fonts.headline,
-            fontSize: { xs: 40, md: 48 },
-            lineHeight: 1.1,
-            color: landing.cream,
-            mb: 3,
-          }}
-        >
+        <Typography sx={landingEyebrowSx}>{t('home.showcase.bills.title')}</Typography>
+        <Typography component="p" sx={{ ...landingStatSx, mb: 3 }}>
           {t('home.showcase.bills.amount')}
         </Typography>
         <LinearProgress

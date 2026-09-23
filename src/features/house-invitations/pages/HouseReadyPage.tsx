@@ -11,6 +11,7 @@ import { Navigate, useNavigate } from 'react-router'
 
 import { useHouseholdSession } from '#/features/create-household/hooks/useHouseholdSession'
 import { useMyHouseholds } from '#/features/create-household/hooks/useMyHouseholds'
+import { findSelectedHousehold } from '#/features/create-household/selectHousehold'
 import { HouseReadyInviteCard } from '#/features/house-invitations/components/HouseReadyInviteCard'
 import { useCreateHouseInvitationMutation } from '#/features/house-invitations/api/invitationsApi'
 import { landing, landingCtaSx } from '#/pages/home/landing'
@@ -26,7 +27,7 @@ export function HouseReadyPage() {
   const [isSending, setIsSending] = useState(false)
   const [sendError, setSendError] = useState(false)
 
-  const selected = households.find((household) => household.id === selectedId) ?? households[0]
+  const selected = findSelectedHousehold(households, selectedId)
 
   function addEmail(email: string) {
     const normalized = email.trim().toLowerCase()

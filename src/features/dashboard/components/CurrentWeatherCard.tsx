@@ -2,10 +2,10 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { useTranslation } from 'react-i18next'
 
-import { landing } from '#/pages/home/landing'
-import { fonts } from '#/theme/tokens'
+import { landing, landingCardSx, landingEyebrowSx, landingStatSx } from '#/pages/home/landing'
 
 import type { BrowserLocationState } from '../hooks/useBrowserLocation'
+import { dashboardCardSx } from '../layout'
 import type { CurrentWeather } from '../types'
 import { weatherConditionFromCode } from '../weatherCondition'
 
@@ -37,50 +37,19 @@ export function CurrentWeatherCard({
     body = t(`dashboard.weather.${weatherConditionFromCode(weather.weatherCode)}`)
   }
 
-  const temperature =
-    location.status === 'ready' && weather && !isError
-      ? t('dashboard.weather.temperature', { value: Math.round(weather.temperatureC) })
-      : null
-  const wind =
-    location.status === 'ready' && weather && !isError
-      ? t('dashboard.weather.wind', { value: Math.round(weather.windSpeedKmh) })
-      : null
+  const showMetrics = location.status === 'ready' && weather != null && !isError
+  const temperature = showMetrics
+    ? t('dashboard.weather.temperature', { value: Math.round(weather.temperatureC) })
+    : null
+  const wind = showMetrics
+    ? t('dashboard.weather.wind', { value: Math.round(weather.windSpeedKmh) })
+    : null
 
   return (
-    <Box
-      sx={{
-        bgcolor: landing.surface,
-        border: '1px solid',
-        borderColor: landing.line,
-        borderRadius: '12px',
-        p: { xs: 3, md: 4 },
-        maxHeight: '20rem',
-        minWidth: 0,
-      }}
-    >
-      <Typography
-        sx={{
-          color: landing.muted,
-          fontSize: 12,
-          fontWeight: 600,
-          letterSpacing: '0.14em',
-          textTransform: 'uppercase',
-          mb: 2,
-        }}
-      >
-        {t('dashboard.weather.title')}
-      </Typography>
+    <Box sx={{ ...landingCardSx, ...dashboardCardSx }}>
+      <Typography sx={landingEyebrowSx}>{t('dashboard.weather.title')}</Typography>
       {temperature ? (
-        <Typography
-          component="p"
-          sx={{
-            fontFamily: fonts.headline,
-            fontSize: { xs: 40, md: 48 },
-            lineHeight: 1.1,
-            color: landing.cream,
-            mb: 1,
-          }}
-        >
+        <Typography component="p" sx={{ ...landingStatSx, mb: 1 }}>
           {temperature}
         </Typography>
       ) : null}

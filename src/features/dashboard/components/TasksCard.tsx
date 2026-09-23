@@ -3,14 +3,16 @@ import { useTranslation } from 'react-i18next'
 
 import { useGetMeQuery, type HouseTask } from '#/api/me'
 import { useToast } from '#/components/toast/useToast'
+import { findSelectedHousehold } from '#/features/create-household/selectHousehold'
 import { useCompleteHouseTaskMutation } from '#/features/tasks/api/tasksApi'
 
+import { dashboardCardSx, taskItemRowSx, tasksCardContentSx } from '../layout'
 import { TasksCardSkeleton } from './TasksCardSkeleton'
 
 export function TasksCard({ householdId }: { householdId?: string }) {
   const { t } = useTranslation()
   const { data: me, isLoading, isUninitialized } = useGetMeQuery()
-  const house = householdId ? me?.houses.find((item) => item.id === householdId) : me?.houses[0]
+  const house = findSelectedHousehold(me?.houses ?? [], householdId)
 
   if (isUninitialized || isLoading) {
     return <TasksCardSkeleton />
@@ -21,9 +23,9 @@ export function TasksCard({ householdId }: { householdId?: string }) {
   }
 
   return (
-    <Card sx={{ maxHeight: '20rem', minWidth: 0 }}>
+    <Card sx={dashboardCardSx}>
       <CardHeader title={t('dashboard.tasks.title', { name: house.name })} />
-      <CardContent sx={{ overflowY: 'auto', maxHeight: '15rem' }}>
+      <CardContent sx={tasksCardContentSx}>
         {house.tasks.map((task) => (
           <TaskItem key={task.id} task={task} />
         ))}
@@ -39,20 +41,7 @@ export function TaskItem({ task }: { task: HouseTask }) {
   const completed = task.status === 'completed'
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'row',
-        gap: 1,
-        border: '1px solid',
-        borderColor: 'divider',
-        borderRadius: 1,
-        p: 1,
-        mb: 1,
-        alignItems: 'center',
-        justifyContent: 'start',
-      }}
-    >
+    <Box sx={taskItemRowSx}>
       <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, width: '3rem', height: '100%' }}>
         <Box
           sx={{
