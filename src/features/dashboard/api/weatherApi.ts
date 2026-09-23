@@ -49,6 +49,8 @@ const openMeteoBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQuer
 export const weatherApi = createApi({
   reducerPath: 'weatherApi',
   baseQuery: openMeteoBaseQuery,
+  refetchOnFocus: false,
+  refetchOnReconnect: false,
   endpoints: (build) => ({
     getCurrentWeather: build.query<CurrentWeather, Coordinates>({
       query: ({ latitude, longitude }) => ({
