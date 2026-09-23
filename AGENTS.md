@@ -21,8 +21,7 @@ Reference branch for facts: `nonprod`.
 | Tests helpers | `src/test/` |
 | Import alias | `#/*` → `src/*` (also `@` in Vite) |
 
-Capability behavior specs: `openspec/specs/` (and change proposals under `openspec/changes/`).  
-**Note:** `.cursor/rules/workflow.mdc` mentions `specs/<capability>/`; the real path is `openspec/specs/`. Prefer the tree and `product.mdc`.
+Code patterns: [`.cursor/rules/frontend.mdc`](.cursor/rules/frontend.mdc) and the nearest feature under `src/features/`. Product direction, only when the task is not a local UI change: [`docs/product/domus-overview.md`](docs/product/domus-overview.md).
 
 ## Commands (from `package.json`)
 
