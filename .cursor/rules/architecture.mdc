@@ -1,6 +1,6 @@
 ---
-description: Core architecture rules for Domus
-alwaysApply: true
+description: Frontend architecture and identity boundaries for Domus. Read before changing auth, identity handling, or introducing a new architectural pattern.
+alwaysApply: false
 ---
 
 # Domus Architecture
