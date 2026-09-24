@@ -15,7 +15,7 @@ Other scripts (`dev`, `build`, Storybook) are in `package.json`. Bundle env name
 
 ## When to read
 
-- Before editing `src/**/*.{ts,tsx}`: [`.cursor/rules/frontend.mdc`](.cursor/rules/frontend.mdc). Copy the nearest feature under `src/features/`.
+- Before editing `src/**/*.{ts,tsx}`: [`.cursor/rules/frontend.mdc`](.cursor/rules/frontend.mdc). Inspect and follow patterns in the nearest relevant feature under `src/features/`.
 - Visual changes: [`docs/design.md`](docs/design.md) and `src/theme/`.
 - Existing capability behavior: `openspec/specs/` (canonical path; not top-level `specs/`).
 - A new domain capability: [`.cursor/rules/product.mdc`](.cursor/rules/product.mdc).
