@@ -19,6 +19,4 @@ Read that document when:
 
 Do not load it for localized implementation tasks that do not require broader product context.
 
-Capability specifications under `openspec/specs/` are the source of truth for behavior already implemented or explicitly specified.
-
-The product overview describes direction and context. It does not imply that every documented capability currently exists.
+Implemented behavior lives in the code. The product overview describes direction and context. It does not imply that every documented capability currently exists.
