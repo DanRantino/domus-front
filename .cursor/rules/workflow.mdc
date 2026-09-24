@@ -78,3 +78,5 @@ Do not load documentation for libraries unless the task requires details that ca
 When external documentation is required, consult only the relevant section.
 
 Prefer small, focused implementation steps that can be independently validated.
+
+A task that crosses repositories opens `../domus-dev/docs/agents/INDEX.md` and only the topic that change needs.
